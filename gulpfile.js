@@ -1,31 +1,33 @@
+// подключаем gulp
 var gulp = require('gulp');
-// var browserSync = require('browser-sync');
-//
-// gulp.task('run', function() {
-//     browserSync({
-//         server: {
-//             baseDir: 'server'
-//         },
-//     })
-// })
 
+// Подключаем gulp-sass
+var sass = require('gulp-sass');
+
+// подключаем gulp-nodemon
 var nodemon = require('gulp-nodemon');
 
+// Отслеживаем изменения во всех файлах кроме нижеперечисленных
 gulp.task('run', function() {
-    return nodemon({
+    nodemon({
         script: 'local.js',
-        ext: 'js html json',
+        ext: 'js html json scss',
         env: { NODE_ENV: 'local' },
         legacyWatch: true,
         ignore: [
-            'public/**',
+            'public/css/**',
             'node_modules/**',
             '.git/**',
             '.vagrant/**',
             '.idea/**'
         ]
     });
+    gulp.watch(__dirname + '/public/scss/**/*.scss', ['sass']);
 });
 
-//
-
+gulp.task('sass', function() {
+    // Получаем все файлы с окончанием .scss в папке public/scss и дочерних директориях
+    return gulp.src('public/scss/**/*.scss')
+        .pipe(sass())
+        .pipe(gulp.dest('public/css'))
+});
