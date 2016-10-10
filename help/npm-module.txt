@@ -1,0 +1,84 @@
+1. Как создавать собственный модуль?
+Заходим в папку модуля и вызываем 
+	npm init
+	- entry point: (index.js)  точка входа
+	- test command: ?
+	
+2. Поиск модуля (после s можно через пробел)
+	npm s some_module_name
+
+3. Загрузка модуля 
+	npm i some_module_name
+   Там же выбираем дерикторию куда её ставим (папка node_modules либо корень проекта packede.json)
+	
+   Загрузка модуля через git
+	npm i git://github.com/visionmedia/express.git	
+   
+   Загрузка как с composer
+	В корне проекта создаем файл package.json, где express - наш модуль
+	{
+		"name" : "my",
+		"version" : "0.0.1",
+
+		"dependencies" : {
+			"express" : "3"
+		}
+	}
+   И запускаем npm i
+
+
+   Глобальная загрузка модуля
+	sudo npm -g i uglify-js
+   Установит примерно /usr/local/lib/node_modules/express
+
+
+4. Обновляем модули 
+	npm up (модуль)
+
+5. Удаляем модуль
+	npm r some_module_name
+	
+6. Для публикации своего модуля
+	npm adduser
+	npm publich
+
+7. Модуль Util
+	util.format('','')
+	util.inspect(obj)
+	util.inherits() <- говорит чей был метод, родителя или потомка, проходит по всему дереву
+
+8. Express 4
+
+	sudo npm i -g express
+	sudo nmp i -g express-generator
+
+   После всего делаем проверку:
+	express -h
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

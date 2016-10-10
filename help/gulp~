@@ -1,0 +1,20 @@
+Автообновление сервера
+
+Ставится как обычный модуль:
+npm install gulp --save-dev
+npm install browser-sync --save-dev
+
+В коде:
+var gulp = require('gulp');
+var browserSync = require('browser-sync');
+gulp.task('browserSync', function() {
+  browserSync({
+    server: {
+      baseDir: 'app'
+    },
+  })
+})
+//app - папка, которую будемо обновляти
+
+Полезная статья
+http://webformyself.com/gulp-dlya-nachinayushhix/

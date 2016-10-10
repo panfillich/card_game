@@ -1,0 +1,29 @@
+Устанавливаем Node.js на Ubuntu
+
+	sudo apt-get update
+
+	(Установим такую штуку как nvm которая позволяет выбрать версию Node.js)
+	sudo apt-get install build-essential libssl-dev
+
+	(https://github.com/creationix/nvm <- последняя версия nvm тут)
+	curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.32.0/install.sh -o install_nvm.sh
+	
+	nano install_nvm.sh
+	bash install_nvm.sh
+	source ~/.profile
+	
+	(Посмотреть список версий NODE.JS)
+	nvm ls-remote
+
+	nvm install 6.7.0
+
+	node -v	
+
+	(Менеджер пакетов)
+	sudo apt-get install npm
+
+	(Чтобы ставить пакеты локально)
+	npm install express
+
+	(Чтобы ставить пакеты глобально для всех версий)
+	npm install -g express

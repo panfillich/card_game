@@ -1,0 +1,38 @@
+1) Инициализировать проект
+	npm init
+
+2) Добавить модуль/фреймворк express:
+	npm i express --save
+   Пример кода:
+
+3) Модуль util
+	npm i util --save
+   Пример кода:
+	//Подключаем модуль
+	var util = require('util');
+	//1 вариант - красивый вывод в консоль
+	var obj = {"1":1}
+	console.log(util.inspect(obj));
+	//2 вариант - подстановка значений
+	var str = util.format("My %s %d %j", "string", "...", {test:"obj"});
+	console.log(str)
+	//3 вариант inherits показывает какой метод какому классу пренадлежит при 		наследовании
+4) EventEmitter - события (встроенные)
+	var EventEmitter = require('events').EventEmitter;
+	var server = new EventEmitter;
+	//1 - Обработка ошибок
+	server.emit('error', function(err){
+		
+	});
+
+	//
+
+3) Подключение модуля:
+
+	//in module (some_file.js)
+	exports = SomeClass;
+
+	//in code
+	var SomeClass = require('./user');
+
+

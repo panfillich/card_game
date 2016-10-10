@@ -1,0 +1,32 @@
+Для пустого проекта:
+
+1) Заходим в папку и инициализируем проект:
+	$ mkdir vagrant_getting_started
+	$ cd vagrant_getting_started
+	$ vagrant init
+
+2) Добавляем box (ubuntu 16):
+	$ vagrant box add ubuntu/xenial64
+   Можно и так:
+	$ vagrant box add my-box /path/to/the/new.box
+	$ vagrant init my-box
+   Сохраняем BOX из виртуалки (virtual-box), vagrant-ubuntu64 - название виртуальной машины
+	$vagrant package --base vagrant-ubuntu64	
+
+3) Запускаем машину:
+	$ vagrant up
+
+4) Заходим на машину: 
+	$ vagrant ssh
+
+5) Проброс портов (Vagrantfile в корне проекта guest - виртуальная машина):
+	Vagrant.configure("2") do |config|
+  		config.vm.box = "box"
+  		config.vm.provision :shell, path: "bootstrap.sh"
+  		config.vm.network :forwarded_port, guest: 3000, host: 3000
+	end
+6) Общие папки:
+
+
+
+
