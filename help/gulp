@@ -4,7 +4,8 @@
 npm install gulp --save-dev
 npm install browser-sync --save-dev
 
-В коде:
+//Создаем файл gulpfile.js
+//В файле пишем код:
 var gulp = require('gulp');
 var browserSync = require('browser-sync');
 gulp.task('browserSync', function() {
@@ -15,7 +16,9 @@ gulp.task('browserSync', function() {
   })
 })
 //app - папка, которую будемо обновляти
+//В консоли : $gulp browserSync
 
 Полезная статья
 http://webformyself.com/gulp-dlya-nachinayushhix/
 http://expressjs.com/ru/guide/routing.html
+http://modx.ws/gulp-uroki
