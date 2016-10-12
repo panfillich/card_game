@@ -7,11 +7,7 @@ var app = require('./server/app');
 var server;
 var envConfig = require('./server/config');
 
-app.set('env', process.env.NODE_ENV || 'local');
-
-if (app.get('env') == 'local') {
-     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-}
+const ENV_NODE = process.env.NODE_ENV || 'prod';
 
 if (envConfig.useSSL) {
     // var options = {
