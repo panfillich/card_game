@@ -9,7 +9,7 @@ var app = express();
 // ];
 
 app.get('/', function (req, res) {
-    res.send('Hello2 World!');
+    res.send('Hello World!');
 });
 
 // var config = {
