@@ -1,5 +1,6 @@
 {
   "apiPort": 3000,
+  "publicFolder": "public",
   "path": {
     "SSLKey" : "C:/.../key.pem",
     "SSLCert": "C:/.../server.crt"
