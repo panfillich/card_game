@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.14.0",
+    "nunjucks": "^2.5.2",
     "util": "^0.10.3"
   },
   "devDependencies": {

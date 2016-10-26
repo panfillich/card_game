@@ -20,9 +20,9 @@ gulp.task('default', ['webpack','scss','run']);
 gulp.task('run', function() {
     nodemon({
         script: 'local.js',
-        ext: 'js html json scss',
-        env: { NODE_ENV: 'dev' }, //Переменные окружения dev || prod
-        legacyWatch: true,  //Для Vagrant
+        ext: 'js ejs html json scss',
+        env: { NODE_ENV: 'dev' },   //Переменные окружения dev || prod
+        legacyWatch: true,          //Для Vagrant
         ignore: [
             'public/css/**',
             'node_modules/**',
