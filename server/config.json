@@ -8,7 +8,6 @@
         "js": {
           "bootstrap": "/bootstrap/4.0.0/js/bootstrap.min.js",
           "jquery": "/jquery/3.1.1/jquery.min.js",
-          "cocos": "/cocos/cocos2d.min.js",
           "tether": "/tether.min.js"
         },
         "css":{
@@ -19,7 +18,6 @@
          "js" : {
            "bootstrap": "/bootstrap/4.0.0/js/bootstrap.js",
            "jquery": "/jquery/3.1.1/jquery.js",
-           "cocos": "/cocos/cocos2d.js",
            "tether": "/tether.min.js"
          },
          "css" : {

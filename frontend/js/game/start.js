@@ -1,30 +1,58 @@
 let path = require('./path');
-/*let cc = require('exports?cc!./cocos2d.js');*/
 
-window.onload = function(){
+let CONF = require('./config');
 
-    cc.game.onStart = function(){
-        //load resources
-        cc.LoaderScene.preload([path.backgroung], function () {
-            var MyScene = cc.Scene.extend({
-                onEnter:function () {
-                    this._super();
-                    var size = cc.director.getWinSize();
-                    var sprite = cc.Sprite.create(path.backgroung);
-                    sprite.setPosition(size.width / 2, size.height / 2);
+let PIXI = require('pixi.js');
 
-                    sprite.setScale(0.8);
-                    this.addChild(sprite, 0);
+var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
+document.body.appendChild(renderer.view);
 
-                    var label = cc.LabelTTF.create("Hello World", "Arial", 40);
-                    label.setPosition(size.width / 2, size.height / 2);
-                    this.addChild(label, 1);
-                }
-            });
-            cc.director.runScene(new MyScene());
-        }, this);
-    };
+// create the root of the scene graph
+var stage = new PIXI.Container();
 
+// create a texture from an image path
+var texture = PIXI.Texture.fromImage('bunny.png');
 
-    cc.game.run("gameCanvas");
-};
+// create a new Sprite using the texture
+var bunny = new PIXI.Sprite(texture);
+
+// center the sprite's anchor point
+bunny.anchor.x = 0.5;
+bunny.anchor.y = 0.5;
+
+// move the sprite to the center of the screen
+bunny.position.x = 200;
+bunny.position.y = 150;
+
+//Размер
+bunny.height    = 20;
+bunny.width     = 20;
+
+stage.addChild(bunny);
+
+// start animating
+animate();
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    // just for fun, let's rotate mr rabbit a little
+    // bunny.position += 1;
+    bunny.rotation += 0.1;
+
+    // render the container
+    renderer.render(stage);
+
+    console.log(bunny.position.x);
+
+    let posX = Number(bunny.position.x);
+
+    if(posX < 300 && posX > 0){
+        console.log('-');
+        bunny.position.x -= 1;
+    } else if(Number(bunny.position.x) < 0){
+        console.log('+');
+        bunny.position.x += 1;
+    }
+}
+

@@ -1,0 +1,36 @@
+{
+  "mercenaries": [
+    {
+      "id": 1,
+      "name": "cancer",
+      "img": "",
+      "damage": 1,
+      "life": 2,
+      "cost": {
+        "lifeHero": null,
+        "godCoins": null,
+        "usualCoins": 1
+      }
+    },
+    {
+      "id": 2,
+      "name": "swan",
+      "img": "",
+      "damage": 5,
+      "life": 5,
+      "cost": {
+        "usualCoins": 5
+      }
+    },
+    {
+      "id": 3,
+      "name": "pike",
+      "img": "",
+      "damage": 3,
+      "life": 3,
+      "cost": {
+        "usualCoins": 3
+      }
+    }
+  ]
+}

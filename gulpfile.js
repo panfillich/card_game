@@ -29,20 +29,18 @@ gulp.task('run', function() {
         ignore: [
             'public/css/**',
             'node_modules/**',
-            'frontend/**',
+            //'frontend/js/game/**/*.*',
             'public/**',
             '.git/**',
             '.vagrant/**',
-            '.idea/**',
-            'frontend/js/game/cocos2d.js',
-            'obf/**',
+            '.idea/**'
         ]
     }).on('restart', function (files) {
         console.log(files);
     });
     gulp.watch(__dirname + '/frontend/scss/**/*.scss', ['scss']);
     gulp.watch(__dirname + '/frontend/js/**/*.js', ['webpack']);
-    gulp.watch(__dirname + '/frontend/js/game/*.js', ['obfuscation']);
+    /*gulp.watch(__dirname + '/frontend/js/game/*.js', ['obfuscation']);*/
 });
 
 gulp.task('scss', function() {
@@ -98,15 +96,20 @@ gulp.task("webpack", function() {
 
         //ES7(ES2016) to ES6(ES2015)
         module: {
+            noParse: [ /.*(pixi\.js).*/ ],
             loaders:[
                 {
-                    test:   /\.js$/,
+                    test:   /\.js?$/,
                     loader: 'babel',
                     exclude: /\.cocos2d.js/,
                     query: {
                         compact: false,
                         presets: ['es2015']
                     }
+                },
+                {
+                    test: /\.json$/,
+                    loader: "json"
                 }
             ]
         }

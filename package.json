@@ -25,6 +25,7 @@
     "gulp-sass": "^2.3.2",
     "gulp-util": "^3.0.7",
     "imports-loader": "^0.6.5",
+    "json-loader": "^0.5.4",
     "webpack": "^1.13.2",
     "webpack-obfuscator": "^0.7.3",
     "webpack-sources": "^0.1.2"
