@@ -47,13 +47,14 @@ app.use(function (req, res, next) {
     app.locals.bootstrapCss = resource.css.bootstrap;
     app.locals.jquery       = resource.js.jquery;
     app.locals.cocos        = resource.js.cocos;
+    app.locals.tether       = resource.js.tether;
     next()
 })
 
 app.use(myLogger);
 
 app.get('/', function (req, res) { res.redirect('home') });
-app.get('/game', function (req, res) {res.redirect('home')});
+app.get('/game', pages.game);
 app.get('/home', pages.home)
 
 module.exports = app;

@@ -10,6 +10,9 @@ var nodemon = require('gulp-nodemon');
 // Подключаем webpack (ES7->ES6 and Many JS -> One JS)
 var webpack = require("webpack");
 
+//Плагин для webpack (обфустификатор, 2 модуля )
+var JavaScriptObfuscator = require('webpack-obfuscator');
+
 // Подключаем gulp-util (Для отображения информации)
 var gutil = require("gulp-util");
 
@@ -30,13 +33,16 @@ gulp.task('run', function() {
             'public/**',
             '.git/**',
             '.vagrant/**',
-            '.idea/**'
+            '.idea/**',
+            'frontend/js/game/cocos2d.js',
+            'obf/**',
         ]
     }).on('restart', function (files) {
         console.log(files);
     });
     gulp.watch(__dirname + '/frontend/scss/**/*.scss', ['scss']);
     gulp.watch(__dirname + '/frontend/js/**/*.js', ['webpack']);
+    gulp.watch(__dirname + '/frontend/js/game/*.js', ['obfuscation']);
 });
 
 gulp.task('scss', function() {
@@ -51,9 +57,10 @@ gulp.task("webpack", function() {
     webpack({
         context: __dirname + "/frontend/js",
         entry: {
-            home: "./home",
-            chat: "./chat",
-            common: "./common"
+            "s_home": "./home",
+            "s_chat": "./chat",
+            "g_start": "./game/start",
+            //"s_common": "./common"
             // Для включения в общую сборку нескольких файлов:
             //  common: ["./common", "./welcom"]
         },
@@ -79,9 +86,14 @@ gulp.task("webpack", function() {
             new webpack.NoErrorsPlugin(),
             //Выделяем общую часть из всех модулей
             new webpack.optimize.CommonsChunkPlugin({
-                name: "common",
+                name: "s_common",
+                chunks: ["home", "chat"],
                 minChunks: 2 //Т.е. берем общий код не из всех а хотябы из 2х
-            })
+            })/*,
+            //Делаем обустификацию кода
+            new JavaScriptObfuscator({
+                rotateUnicodeArray: false
+            })*/
         ],
 
         //ES7(ES2016) to ES6(ES2015)
@@ -90,7 +102,9 @@ gulp.task("webpack", function() {
                 {
                     test:   /\.js$/,
                     loader: 'babel',
+                    exclude: /\.cocos2d.js/,
                     query: {
+                        compact: false,
                         presets: ['es2015']
                     }
                 }
@@ -104,4 +118,14 @@ gulp.task("webpack", function() {
            //callback();
     });
 });
+
+
+var obfuscate = require('gulp-obfuscate');
+
+gulp.task('obfuscation', function () {
+    return gulp.src('public/js/obf/**/*.js')
+        .pipe(obfuscate())
+        .pipe(gulp.dest('obf'));
+});
+
 

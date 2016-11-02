@@ -6,3 +6,7 @@ exports.home = function (req, res) {
     })*/
     res.render('pages/home.html', { what: 'best', who: 'me' });
 }
+
+exports.game = function (req, res) {
+    res.render('pages/game.html', { title: 'The best game', who: 'me' });
+}
