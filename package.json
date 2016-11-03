@@ -12,6 +12,7 @@
     "express": "^4.14.0",
     "nunjucks": "^2.5.2",
     "pixi.js": "^4.1.1",
+    "stats.js": "^0.17.0",
     "util": "^0.10.3"
   },
   "devDependencies": {

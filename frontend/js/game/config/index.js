@@ -7,6 +7,6 @@ let config = {
   'FPS' : 60
 };
 
-config.cords = cards;
+config.cards = cards;
 
 module.exports = config;

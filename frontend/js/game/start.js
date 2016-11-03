@@ -4,7 +4,17 @@ let CONF = require('./config');
 
 let PIXI = require('pixi.js');
 
-var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
+let Stats = require('stats.js');
+
+let stats = new Stats();
+document.body.appendChild( stats.domElement );
+stats.domElement.style.position = "absolute";
+stats.domElement.style.top = "0px";
+
+
+let subMath = require('./math/subMath');
+
+var renderer = PIXI.autoDetectRenderer(300, 300,{backgroundColor : 0x1099bb});
 document.body.appendChild(renderer.view);
 
 // create the root of the scene graph
@@ -13,46 +23,54 @@ var stage = new PIXI.Container();
 // create a texture from an image path
 var texture = PIXI.Texture.fromImage('bunny.png');
 
-// create a new Sprite using the texture
-var bunny = new PIXI.Sprite(texture);
+//Рисуем прямоугольник
+var graphics = new PIXI.Graphics();
+graphics.lineStyle(2, 0xFF00FF, 1);
+graphics.beginFill(0xFF00BB, 0.25);
+graphics.drawRoundedRect(200, 200, 63, 88, 15);
+graphics.endFill();
+stage.addChild(graphics);
 
-// center the sprite's anchor point
-bunny.anchor.x = 0.5;
-bunny.anchor.y = 0.5;
 
-// move the sprite to the center of the screen
-bunny.position.x = 200;
-bunny.position.y = 150;
 
-//Размер
-bunny.height    = 20;
-bunny.width     = 20;
+function createNewBunny() {
+    let bunny = new PIXI.Sprite(texture);
+    bunny.anchor.x = 0.5;
+    bunny.anchor.y = 0.5;
+    bunny.position.x = subMath.getRandomInt(0,300);
+    bunny.position.y = subMath.getRandomInt(0,300);
+    bunny.height    = 20;
+    bunny.width     = 20;
+    stage.addChild(bunny);
+}
 
-stage.addChild(bunny);
+for (let i = 0; i <=20000; i++) {
+    createNewBunny();
+}
 
-// start animating
 animate();
 
 function animate() {
+    stats.begin();
     requestAnimationFrame(animate);
 
-    // just for fun, let's rotate mr rabbit a little
-    // bunny.position += 1;
-    bunny.rotation += 0.1;
+    stage.children.forEach(function (child) {
+        let randomVal_x = subMath.getRandomInt(-5,5);
+        let randomVal_y = subMath.getRandomInt(-5,5);
+
+        child.position.x =  child.position.x + randomVal_x;
+        child.position.y =  child.position.y + randomVal_y;
+
+        child.rotation += 0.1;
+    });
+
+    createNewBunny();
+
+
 
     // render the container
     renderer.render(stage);
-
-    console.log(bunny.position.x);
-
-    let posX = Number(bunny.position.x);
-
-    if(posX < 300 && posX > 0){
-        console.log('-');
-        bunny.position.x -= 1;
-    } else if(Number(bunny.position.x) < 0){
-        console.log('+');
-        bunny.position.x += 1;
-    }
+    stats.end();
 }
+
 
