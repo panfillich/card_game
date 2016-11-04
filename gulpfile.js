@@ -65,8 +65,10 @@ gulp.task("webpack", function() {
         output: {
             path: __dirname + "/public/js",
             filename: "[name].js",
-            //Весь модуль будет засунут в переменную window.my_library
-            library:  "[name]"
+            //Весь модуль будет засунут в переменную window.my_library_name
+            library:  "[name]",
+            //Папка для динамической загрузки
+            publicPath:'/js/'
         },
 
         watch:false,    //Автообновление

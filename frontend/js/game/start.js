@@ -1,16 +1,23 @@
 let path = require('./path');
 
-let CONF = require('./config');
+let conf = require('./config');
 
 let PIXI = require('pixi.js');
 
-let Stats = require('stats.js');
+let FrameRender = require('./logic/framerander');
+let frameRender = new FrameRender();
 
-let stats = new Stats();
-document.body.appendChild( stats.domElement );
-stats.domElement.style.position = "absolute";
-stats.domElement.style.top = "0px";
-
+if(conf.debugMod || conf.showFPS) {
+    require.ensure(['stats.js'], function(require) {
+        let Stats = require('stats.js');
+        let stats = new Stats();
+        document.body.appendChild( stats.domElement );
+        stats.domElement.style.position = "absolute";
+        stats.domElement.style.top = "0px";
+        frameRender.addStartEvent(stats.begin);
+        frameRender.addEndEvent(stats.end);
+    });
+}
 
 let subMath = require('./math/subMath');
 
@@ -44,16 +51,12 @@ function createNewBunny() {
     stage.addChild(bunny);
 }
 
-for (let i = 0; i <=20000; i++) {
+for (let i = 0; i <=1; i++) {
     createNewBunny();
 }
 
-animate();
-
-function animate() {
-    stats.begin();
+function renderering() {
     requestAnimationFrame(animate);
-
     stage.children.forEach(function (child) {
         let randomVal_x = subMath.getRandomInt(-5,5);
         let randomVal_y = subMath.getRandomInt(-5,5);
@@ -66,11 +69,19 @@ function animate() {
 
     createNewBunny();
 
-
-
     // render the container
     renderer.render(stage);
-    stats.end();
+    //stats.end();
+}
+
+frameRender.addStartEvent(renderering);
+
+animate();
+
+function animate() {
+    frameRender.startEvents();
+    frameRender.mainEvents();
+    frameRender.endEvents();
 }
 
 

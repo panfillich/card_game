@@ -1,9 +1,8 @@
 let cards = require('./cards');
 
 let config = {
-  'debugMod':{
-
-  },
+  'debugMod': true,
+  'showFPS':true,
   'FPS' : 60
 };
 
