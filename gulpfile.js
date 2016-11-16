@@ -16,121 +16,102 @@ var JavaScriptObfuscator = require('webpack-obfuscator');
 // Подключаем gulp-util (Для отображения информации)
 var gutil = require("gulp-util");
 
-//Запускаем всё $ gulp
-gulp.task('default', ['webpack','scss','run']);
+// Для работы в нескольких потоков
+var pm2 = require('pm2');
 
-// Отслеживаем изменения во всех файлах кроме нижеперечисленных
-gulp.task('run', function() {
+
+// let api_public_task = require("./gulp_tasks/api_public");
+// api_public_task.run();
+//
+// let api_private_task = require("./gulp_tasks/api_private");
+// api_private_task.run();
+
+gulp.task('server', function() {
     nodemon({
-        script: 'local.js',
+        script: 'servers/public_api/start.js',
         ext: 'js ejs html json scss',
         env: { NODE_ENV: 'dev' },   //Переменные окружения dev || prod
         legacyWatch: true,          //Для Vagrant
-        ignore: [
-            'public/css/**',
-            'node_modules/**',
-            //'frontend/js/game/**/*.*',
-            'public/**',
-            '.git/**',
-            '.vagrant/**',
-            '.idea/**'
+        watch: [
+            'servers/public_api/**/*.js'
         ]
     }).on('restart', function (files) {
         console.log(files);
     });
-    gulp.watch(__dirname + '/frontend/scss/**/*.scss', ['scss']);
-    gulp.watch(__dirname + '/frontend/js/**/*.js', ['webpack']);
-    /*gulp.watch(__dirname + '/frontend/js/game/*.js', ['obfuscation']);*/
+
+    nodemon({
+        script: 'servers/private_api/start.js',
+        ext: 'js ejs html json scss',
+        env: { NODE_ENV: 'dev' },   //Переменные окружения dev || prod
+        legacyWatch: true,          //Для Vagrant
+        watch: [
+            'servers/private_api/**/*.js'
+        ]
+    }).on('restart', function (files) {
+        console.log(files);
+    });
 });
 
-gulp.task('scss', function() {
-    // Получаем все файлы с окончанием .scss в папке public/scss и дочерних директориях
-    return gulp.src('frontend/scss/**/*.scss')
-        .pipe(sass())
-        .pipe(gulp.dest('public/css'))
+//Запускаем всё $ gulp
+
+
+gulp.task('private_api_start', function () {
+    pm2.connect(true, function () {
+
+        pm2.start({
+            name: 'private_api',
+            script: 'servers/private_api/start.js',
+            env: {
+                "NODE_ENV": "dev"
+            }
+        });
+
+        pm2.streamLogs('private_api', 0);
+    });
 });
 
-gulp.task("webpack", function() {
-    // run webpack
-    webpack({
-        context: __dirname + "/frontend/js",
-        entry: {
-            "s_home": "./home",
-            "s_chat": "./chat",
-            "g_start": "./game/start",
-            //"s_common": "./common"
-            // Для включения в общую сборку нескольких файлов:
-            //  common: ["./common", "./welcom"]
-        },
-        output: {
-            path: __dirname + "/public/js",
-            filename: "[name].js",
-            //Весь модуль будет засунут в переменную window.my_library_name
-            library:  "[name]",
-            //Папка для динамической загрузки
-            publicPath:'/js/'
-        },
+gulp.task('public_api_start', function () {
+    pm2.connect(true, function () {
 
-        watch:false,    //Автообновление
+        pm2.start({
+            name: 'public_api',
+            script: 'servers/public_api/start.js',
+            env: {
+                "NODE_ENV": "dev"
+            }
+        })
 
-        watchOptions: {
-            poll: true, //Для Vagrant
-            aggregateTimeout: 50 //Задержка
-        },
-
-        //Для отладки
-        // devtool: "source-map",
-
-        plugins:[
-            //Файлы не создаются, если в них есть ошибки
-            new webpack.NoErrorsPlugin(),
-            //Выделяем общую часть из всех модулей
-            new webpack.optimize.CommonsChunkPlugin({
-                name: "s_common",
-                chunks: ["home", "chat"],
-                minChunks: 2 //Т.е. берем общий код не из всех а хотябы из 2х
-            })/*,
-            //Делаем обустификацию кода
-            new JavaScriptObfuscator({
-                rotateUnicodeArray: false
-            })*/
-        ],
-
-        //ES7(ES2016) to ES6(ES2015)
-        module: {
-            noParse: [ /.*(pixi\.js).*/ ],
-            loaders:[
-                {
-                    test:   /\.js?$/,
-                    loader: 'babel',
-                    exclude: /\.cocos2d.js/,
-                    query: {
-                        compact: false,
-                        presets: ['es2015']
-                    }
-                },
-                {
-                    test: /\.json$/,
-                    loader: "json"
-                }
-            ]
-        }
-    }, function(err, stats) {
-            if(err) throw new gutil.PluginError("webpack", err);
-            gutil.log("[webpack]", stats.toString({
-                 // output options
-            }));
-           //callback();
+        pm2.streamLogs('public_api', 0);
     });
 });
 
 
-var obfuscate = require('gulp-obfuscate');
-
-gulp.task('obfuscation', function () {
-    return gulp.src('public/js/obf/**/*.js')
-        .pipe(obfuscate())
-        .pipe(gulp.dest('obf'));
+gulp.task('private_api_reload', function () {
+    pm2.connect(true, function () {
+        pm2.restart('private_api',  function(err, apps) {
+            pm2.disconnect();   // Disconnect from PM2
+            if (err) throw err
+        });
+        pm2.streamLogs('private_api', 0);
+    });
 });
 
+gulp.task('public_api_reload', function () {
+    pm2.connect(true, function () {
+        pm2.restart('public_api',  function(err, apps) {
+            pm2.disconnect();   // Disconnect from PM2
+            if (err) throw err
+        });
+        pm2.streamLogs('public_api', 0);
+    });
+});
 
+gulp.task('start_servers', ['private_api_start', 'public_api_start']);
+
+gulp.task('check_servers', function () {
+    gulp.watch(__dirname + '/servers/private_api/**/*.*', ['private_api_reload']);
+    gulp.watch(__dirname + '/servers/public_api/**/*.*', ['public_api_reload']);
+});
+
+gulp.task('default', ['start_servers', 'check_servers']);
+// gulp.task('default', [api_public_task.name, api_private_task.name]);

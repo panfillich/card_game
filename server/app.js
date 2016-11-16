@@ -49,7 +49,7 @@ app.use(function (req, res, next) {
     app.locals.cocos        = resource.js.cocos;
     app.locals.tether       = resource.js.tether;
     next()
-})
+});
 
 app.use(myLogger);
 
