@@ -47,7 +47,7 @@ class Pm2_task{
         }
     }
 
-    run(){
+    start(){
         let fullName = this.fullName;
         let shortName = this.shortName;
 
@@ -55,8 +55,10 @@ class Pm2_task{
             return false;
         }
 
+        let startName = fullName + '_start';
+
         //start processes
-        gulp.task(fullName + '_start', function () {
+        gulp.task(startName, function () {
             pm2.connect(true, function () {
                 pm2.start({
                     name: shortName,
@@ -69,8 +71,21 @@ class Pm2_task{
             });
         });
 
+        this.startName = startName;
+    }
+
+    reload(){
+        let fullName = this.fullName;
+        let shortName = this.shortName;
+
+        if (!fullName){
+            return false;
+        }
+
+        let reloadName = fullName + '_reload';
+
         //reload processes
-        gulp.task(fullName + '_reload', function () {
+        gulp.task(reloadName, function () {
             pm2.connect(true, function () {
                 pm2.restart(shortName,  function(err, apps) {
                     pm2.disconnect();   // Disconnect from PM2
@@ -79,6 +94,8 @@ class Pm2_task{
                 pm2.streamLogs(shortName, 0);
             });
         });
+
+        this.reloadName = reloadName;
     }
 
     watch(){
