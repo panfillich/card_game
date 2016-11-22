@@ -1,9 +1,11 @@
-var webpack = require("webpack");
+let webpack = require("webpack");
+
+let JavaScriptObfuscator = require("webpack-obfuscator");
 
 module.exports = {
     context: __dirname + "/frontend",
     entry: {
-        home : ["webpack-dev-server/client",'webpack/hot/dev-server', "./home"]
+        index : ["webpack-dev-server/client",'webpack/hot/dev-server', "./main"]
         // "home": "./js/home",
         // "s_chat": "./js/chat",
         // "g_start": "./js/game/start",
@@ -14,12 +16,12 @@ module.exports = {
     //extensions: ['.js', '.jsx'],
     output: {
         path: __dirname + "/public",
-        publicPath: "/",
-        //filename: "[name].js",
+        // publicPath: "/",
+        filename: "[name].js",
         //Весь модуль будет засунут в переменную window.my_library_name
         //library:  "[name]",
         //Папка для динамической загрузки
-        //publicPath: __dirname + '/public/'
+        publicPath: '/'
     },
 
     watch: true,    //Автообновление
@@ -30,17 +32,17 @@ module.exports = {
     plugins: [
         //Файлы не создаются, если в них есть ошибки
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin()
+        new webpack.NoErrorsPlugin(),
         //Выделяем общую часть из всех модулей
         /*new webpack.optimize.CommonsChunkPlugin({
          name: "s_common",
          chunks: ["home", "chat"],
          minChunks: 2 //Т.е. берем общий код не из всех а хотябы из 2х
-         })/*,
+         }),*/
          //Делаем обустификацию кода
-         new JavaScriptObfuscator({
-         rotateUnicodeArray: false
-         })*/
+         // new JavaScriptObfuscator({
+         //    rotateUnicodeArray: false
+         // })
     ],
 
     //ES7(ES2016) to ES6(ES2015)
@@ -53,7 +55,7 @@ module.exports = {
                 exclude: [/node_modules/],
                 query: {
                     compact: false,
-                    presets: ['es2015']
+                    presets: ['es2015', 'react']
                 }
             },
             {

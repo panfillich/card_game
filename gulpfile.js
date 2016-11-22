@@ -6,7 +6,7 @@ let gulp        = require('gulp');
 let Pm2_task    = require('./gulp/pm2_task.js');
 
 let public_api  = new Pm2_task('public_api','pub_api');
-//let private_api = new Pm2_task('private_api','priv_api');
+let private_api = new Pm2_task('private_api','priv_api');
 
 var gutil = require("gulp-util");
 
@@ -17,21 +17,21 @@ let WebpackDevServer = require('webpack-dev-server');
 
 //Таски, которые запускают процессы
 public_api.start();
-//private_api.start();
+private_api.start();
 gulp.task('start_servers', [
     public_api.startName,
-    //private_api.startName
+    private_api.startName
 ]);
 
 //Таски, которые перезапускают процессы
 public_api.reload();
-//private_api.reload();
+private_api.reload();
 
 //Мониторинг изменения файлов в папке servers
 //и перезапуск соответствующего процесса
 gulp.task('check_servers', function () {
     public_api.watch();
-    //private_api.watch();
+    private_api.watch();
 });
 //---------------------------------------------------------//
 
@@ -61,15 +61,32 @@ gulp.task('webpack-dev-server', function (callback) {
         contentBase: __dirname + "/public/",
         stats: {
             colors: true
+        },
+        // historyApiFallback: {
+        //     index: 'index.html'
+        // }
+        proxy:{
+            '/pub-api':{
+                target: 'http://localhost:3003',
+                pathRewrite: {'/pub-api' : '/'}
+            },
+            '/priv-api':{
+                target: 'http://localhost:3002',
+                pathRewrite:{'/priv-api':'/'}
+            },
+            /*'/public':{
+                target: 'http://localhost:3000',
+                pathRewrite:{'/public':'/'}
+            }*/
         }
+
     }).listen(3000, '0.0.0.0', function (err) {
         if (err) {
             throw new gutil.PluginError('webpack-dev-server', err);
         }
-        gutil.log('[webpack-dev-server]', 'http://localhost:3002/webpack-dev-server/index.html');
+        gutil.log('[webpack-dev-server]', 'http://localhost:3000/webpack-dev-server/index.html');
     });
 });
-
 
 gulp.task('default', ['start_servers', 'check_servers', 'webpack-dev-server']);
 

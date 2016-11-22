@@ -6,8 +6,11 @@ server = app.listen(3002, function() {
 });
 
 app.get('/', function (req, res) {
-    console.log(3002);
-    res.send('Hello2 World!')
+    res.send("Hello World! It's private-API!");
+});
+
+app.get('/ping', function (req, res) {
+   res.send('pong from private-API')
 })
 
 
