@@ -57,7 +57,7 @@ gulp.task('webpack-dev-server', function (callback) {
              aggregateTimeout: 30,
              poll: true // is this the same as specifying --watch-poll?
         },
-        publicPath: "/",
+        publicPath: "/public/",
         contentBase: __dirname + "/public/",
         stats: {
             colors: true
@@ -65,7 +65,31 @@ gulp.task('webpack-dev-server', function (callback) {
         // historyApiFallback: {
         //     index: 'index.html'
         // }
-        proxy:{
+        proxy:[
+            {   context: ['/pub-api/**'],
+                target: 'http://localhost:3003',
+                pathRewrite: {'/pub-api': '/'}
+            },
+            {   context: ['/priv-api/**'],
+                target: 'http://localhost:3003',
+                pathRewrite: {'/pub-api': '/'}
+            },
+            {   context: ['/*.*'],
+                target: 'http://localhost:3000/public'
+            },
+            {   context: ['/**'],
+                target: 'http://localhost:3000',
+                bypass: function(req, res, proxyOptions) {
+                    return '/index.html';
+                }
+            }
+
+
+
+
+        ]
+
+        /*proxy:{
             '/pub-api':{
                 target: 'http://localhost:3003',
                 pathRewrite: {'/pub-api' : '/'}
@@ -74,11 +98,15 @@ gulp.task('webpack-dev-server', function (callback) {
                 target: 'http://localhost:3002',
                 pathRewrite:{'/priv-api':'/'}
             },
+            // '/':{
+            //     target: 'http://localhost:3000',
+            //     pathRewrite:{'/':'/index.html?path='}
+            // }
             /*'/public':{
-                target: 'http://localhost:3000',
-                pathRewrite:{'/public':'/'}
-            }*/
-        }
+             target: 'http://localhost:3000',
+             pathRewrite:{'/public':'/'}
+             }
+        }*/
 
     }).listen(3000, '0.0.0.0', function (err) {
         if (err) {

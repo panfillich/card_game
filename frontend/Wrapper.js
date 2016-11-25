@@ -2,7 +2,49 @@ import React from 'react';
 
 import ReactDOM from 'react-dom';
 
-class App extends React.Component{
+let Mixin = InnerComponent => class extends React.Component {
+    constructor(){
+        super();
+        this.update = this.update.bind(this);
+        this.state = {val: 0};
+    }
+
+    defaultProps(){
+        return
+    }
+
+    update() {
+        update.setState({val: this.state});
+    }
+
+    componentWillMount(){
+        console.log('will mount');
+    }
+
+    render(){
+        return <InnerComponent
+            update={this.update}
+            {...this.state}
+            {...this.props}
+        />
+    }
+
+    componentDidMount() {
+        console.log('mounted');
+    }
+
+}
+
+const Button = (props) => (
+    <button onClick={props.update}>
+        {props.txt} - {props.val}
+    </button>
+)
+
+let ButtonMixed = Mixin(Button)
+
+
+/*class App extends React.Component{
     constructor(){
         super();
         this.state = {
@@ -67,7 +109,7 @@ class Wrapper extends React.Component {
             </div>
         )
     }
-}
+}*/
 
 
-export default Wrapper
+// export default App

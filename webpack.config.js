@@ -1,6 +1,8 @@
 let webpack = require("webpack");
 
 let JavaScriptObfuscator = require("webpack-obfuscator");
+let redux_devtools = require("redux-devtools");
+
 
 module.exports = {
     context: __dirname + "/frontend",
@@ -32,7 +34,14 @@ module.exports = {
     plugins: [
         //Файлы не создаются, если в них есть ошибки
         new webpack.HotModuleReplacementPlugin(),
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify('production')
+            }
+        }),
         new webpack.NoErrorsPlugin(),
+
+
         //Выделяем общую часть из всех модулей
         /*new webpack.optimize.CommonsChunkPlugin({
          name: "s_common",
