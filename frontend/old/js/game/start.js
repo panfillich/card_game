@@ -1,6 +1,6 @@
 let path = require('./path');
 
-let conf = require('./config');
+let conf = require('./config/index');
 
 let PIXI = require('pixi.js');
 

@@ -1,13 +1,13 @@
 let webpack = require("webpack");
-
 let JavaScriptObfuscator = require("webpack-obfuscator");
-let redux_devtools = require("redux-devtools");
+let ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+let cssNameFormat = '[name]';
 
 module.exports = {
     context: __dirname + "/frontend",
     entry: {
-        index : ["webpack-dev-server/client",'webpack/hot/dev-server', "./main"]
+        index : ["webpack-dev-server/client",'webpack/hot/dev-server', "./index"]
         // "home": "./js/home",
         // "s_chat": "./js/chat",
         // "g_start": "./js/game/start",
@@ -40,7 +40,7 @@ module.exports = {
             }
         }),
         new webpack.NoErrorsPlugin(),
-
+        new ExtractTextPlugin(`${cssNameFormat}.css`)
 
         //Выделяем общую часть из всех модулей
         /*new webpack.optimize.CommonsChunkPlugin({
@@ -70,7 +70,14 @@ module.exports = {
             {
                 test: /\.json$/,
                 loader: "json"
-            }//,
+            },
+            {
+                test: /\.scss$/,
+                loader: ExtractTextPlugin.extract('style', 'css?sourceMap!sass?sourceMap')
+
+                // loaders: ExtractTextPlugin.extract('style', 'css', 'postcss', 'sass')
+            }
+            //,
             // {
             //     test: /\.scss$/,
             //     loaders: ["style", "css", "sass"]

@@ -1,18 +1,20 @@
 // https://trank.com.ua/course/ReactJS
 // https://maxfarseer.gitbooks.io/react-course-ru/content/
-//https://habrahabr.ru/post/269831/
+// https://maxfarseer.gitbooks.io/redux-course-ru/content/asinhronnie_actions.html
+// https://habrahabr.ru/post/269831/
+
 import React from 'react';
 
 import ReactDOM from 'react-dom';
 
 import { Router, Route, browserHistory } from 'react-router';
 
-import ContactList from './contact_list';
+import ContactList from './old/contact_list';
 
-import App from './app';
-import Article from './article';
+import App from './old/app';
+import Article from './old/article';
 
-import Timer from './timer';
+import Timer from './old/timer';
 
 
 require.ensure(['stats.js'], function(require) {
@@ -22,7 +24,7 @@ require.ensure(['stats.js'], function(require) {
 });
 
 
-let data = require('./contact_list/data');
+let data = require('./old/contact_list/data');
 
 // console.dir(data);
 
