@@ -1,6 +1,7 @@
 let webpack = require("webpack");
 let JavaScriptObfuscator = require("webpack-obfuscator");
 let ExtractTextPlugin = require('extract-text-webpack-plugin');
+// let OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 let cssNameFormat = '[name]';
 
@@ -32,26 +33,50 @@ module.exports = {
     //devtool: "source-map",
 
     plugins: [
-        //Файлы не создаются, если в них есть ошибки
+        //--Для webpack-dev-server и горячей перезагрузки
         new webpack.HotModuleReplacementPlugin(),
+
+        //--Переменные окружения
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('production')
             }
         }),
-        new webpack.NoErrorsPlugin(),
-        new ExtractTextPlugin(`${cssNameFormat}.css`)
 
-        //Выделяем общую часть из всех модулей
-        /*new webpack.optimize.CommonsChunkPlugin({
+        //--Файлы не создаются, если в них есть ошибки
+        new webpack.NoErrorsPlugin(),
+
+        //--Создает css файл index.js
+        new ExtractTextPlugin(`${cssNameFormat}.css`),
+
+        //--Подключаем jquery (для bootstrap)
+        //  чтобы в любом месте сразу писать через $
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery",
+            "window.Tether": 'tether'
+        }),
+
+        //--Убирает комментарии и сжимает css
+        /*new OptimizeCssAssetsPlugin({
+            assetNameRegExp: /\.css$/g,
+            cssProcessor: require('cssnano'),
+            cssProcessorOptions: { discardComments: {removeAll: true } },
+            canPrint: true
+        }),
+
+        //--Выделяем общую часть из всех модулей
+         new webpack.optimize.CommonsChunkPlugin({
          name: "s_common",
          chunks: ["home", "chat"],
          minChunks: 2 //Т.е. берем общий код не из всех а хотябы из 2х
-         }),*/
-         //Делаем обустификацию кода
-         // new JavaScriptObfuscator({
-         //    rotateUnicodeArray: false
-         // })
+         }),
+
+         //--Делаем обустификацию кода
+         new JavaScriptObfuscator({
+            rotateUnicodeArray: false
+         })
+         */
     ],
 
     //ES7(ES2016) to ES6(ES2015)
@@ -77,11 +102,7 @@ module.exports = {
 
                 // loaders: ExtractTextPlugin.extract('style', 'css', 'postcss', 'sass')
             }
-            //,
-            // {
-            //     test: /\.scss$/,
-            //     loaders: ["style", "css", "sass"]
-            // }
+
         ]
     }
 }

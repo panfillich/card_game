@@ -5,13 +5,22 @@ import User from '../components/User'
 import Page from '../components/Page'
 import * as pageActions from '../actions/PageActions'
 
+import Helmet from "react-helmet"
+
+import Nav from './Nav'
+
 class App extends Component {
 
     render() {
+
         const { user, page } = this.props
         const { setYear, getPhotos } = this.props.pageActions
 
         return <div>
+            <Helmet
+                title="My Title"
+            />
+            <Nav />
             <User name={user.name} />
             <Page photos={page.photos} year={page.year} setYear={setYear} getPhotos = {getPhotos} />
 

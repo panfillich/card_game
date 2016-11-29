@@ -2,6 +2,8 @@
 // https://maxfarseer.gitbooks.io/react-course-ru/content/
 // https://maxfarseer.gitbooks.io/redux-course-ru/content/asinhronnie_actions.html
 // https://habrahabr.ru/post/269831/
+// https://habrahabr.ru/post/311964/
+// https://maxfarseer.gitbooks.io/react-router-course-ru/content/indexredirect.html
 
 import React from 'react';
 
