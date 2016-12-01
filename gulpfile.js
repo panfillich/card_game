@@ -3,7 +3,7 @@ let gulp        = require('gulp');
 
 //-------------| Серверная часть |-------------------------//
 // Общий шаблон/класс для работы с pm2
-let Pm2_task    = require('./gulp/pm2_task.js');
+let Pm2_task    = require('./pm2_task.js');
 
 let public_api  = new Pm2_task('public_api','pub_api');
 let private_api = new Pm2_task('private_api','priv_api');

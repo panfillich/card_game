@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
 import NavLink from '../components/NavLink'
+let f = require('../actions/API/public');
 
 export default class App extends Component {
+
     render() {
+        //
+        f.checkApi()
         return (
             <div className='container'>
                 <ul className='nav nav-pills'>

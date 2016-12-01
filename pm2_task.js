@@ -104,8 +104,7 @@ class Pm2_task{
         if (!fullName){
             return false;
         }
-
-        gulp.watch(__dirname + '/servers/'+fullName+'/**/*.*', [fullName + '_reload']);
+        gulp.watch(__dirname+'/servers/'+fullName+'/**/*.*', [fullName + '_reload']);
     }
 }
 

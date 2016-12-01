@@ -5,6 +5,11 @@
 // https://habrahabr.ru/post/311964/
 // https://maxfarseer.gitbooks.io/react-router-course-ru/content/indexredirect.html
 
+//Взаимодействие с серваком
+//https://gkp43215.gitbooks.io/redux-in-russian/content/docs/advanced/ExampleRedditAPI.html
+//http://blog.zacorp.ru/frontend/luchshie-praktiki-react-ajax/#3-redux-async-actions
+//https://gkp43215.gitbooks.io/redux-in-russian/content/docs/advanced/ExampleRedditAPI.html
+
 import React from 'react';
 
 import ReactDOM from 'react-dom';

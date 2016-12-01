@@ -6,7 +6,7 @@ server = app.listen(3003, function() {
 });
 
 app.get('/', function (req, res) {
-    console.log(3003);
+    //console.log(3003);
     res.send("Hello World! It's private-API!");
 });
 

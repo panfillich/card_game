@@ -6,7 +6,8 @@ server = app.listen(3002, function() {
 });
 
 app.get('/', function (req, res) {
-    res.send("Hello World! It's private-API!");
+    //df////
+    res.send("Hello World! It's private-AP1I!");
 });
 
 app.get('/ping', function (req, res) {
