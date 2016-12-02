@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch';
 
-export function getPhotos(year) {
-    fetch('http://localhost:3000/pub-api/').then(req => req)
+export function get(year) {
+    fetch('http://localhost:3000/pub-api/').then(req => {return req})
         .then(function (response) {
             console.log(response)
             return response.json()
