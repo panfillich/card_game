@@ -4,7 +4,7 @@ let gulp = require('gulp');
 
 class Pm2_task{
     constructor(fullName, shortName) {
-        // this.is_reload = false;
+        this.is_reload = false;
 
         this._fullName  = null;
         this._shortName = null;
@@ -84,21 +84,23 @@ class Pm2_task{
             return false;
         }
 
-        let reloadName = fullName + '_reload';
+        let reload_task = function () {
+            if(!this.is_reload) {
+                this.is_reload = true;
+                pm2.connect(true, function () {
+                    // console.log(this.is_reload);
+                    pm2.restart(shortName, function (err, apps) {
+                        pm2.disconnect();   // Disconnect from PM2
+                        if (err) throw err
+                    });
+                    pm2.streamLogs(shortName, 0);
+                });
+                this.is_reload = false;
+            }
+        }
 
         //reload processes
-        gulp.task(reloadName, function () {
-            pm2.connect(true, function () {
-                // console.log(this.is_reload);
-                pm2.restart(shortName,  function(err, apps) {
-                    pm2.disconnect();   // Disconnect from PM2
-                    if (err) throw err
-                });
-                pm2.streamLogs(shortName, 0);
-            });
-        }).bind(this);
-
-        this.reloadName = reloadName;
+        gulp.task(fullName + '_reload', reload_task.bind(this));
     }
 
     watch(){

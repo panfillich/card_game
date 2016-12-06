@@ -28,7 +28,9 @@ app.get('/', function (req, res) {
 
 app.get('/ping', function (req, res) {
     //console.log(3002);
-    res.send('pong from public-API')
+    res.json({
+        pong: true
+    })
 });
 
 
