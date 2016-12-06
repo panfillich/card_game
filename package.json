@@ -10,8 +10,10 @@
   "author": "Creator",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "bootstrap": "^4.0.0-alpha.5",
     "express": "^4.14.0",
+    "helmet": "^3.1.0",
     "isomorphic-fetch": "^2.2.1",
     "jquery": "^3.1.1",
     "nunjucks": "^2.5.2",
@@ -47,7 +49,6 @@
     "redux-devtools-log-monitor": "^1.1.1",
     "redux-logger": "^2.7.4",
     "sass-loader": "^4.0.2",
-    "scss-loader": "0.0.1",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.2",

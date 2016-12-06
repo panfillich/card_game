@@ -4,11 +4,11 @@ import Public from './public'
 
 
 class API{
-    static public(){
+    static get public(){
         return Public;
     }
 
-    static private(){
+    static get private(){
         return Private;
     }
 }
