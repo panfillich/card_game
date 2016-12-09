@@ -67,8 +67,13 @@ class Pm2_task{
                     script: 'servers/'+fullName+'/start.js',
                     env: {
                         "NODE_ENV": "dev"
-                    }
+                    },
+                    restartDelay : 10000
+                }, function (err) {
+
                 });
+
+                // http://pm2.keymetrics.io/docs/usage/use-pm2-with-cloud-providers/
                 pm2.streamLogs(shortName, 0);
             });
         });
@@ -85,22 +90,23 @@ class Pm2_task{
         }
 
         let reload_task = function () {
-            if(!this.is_reload) {
-                this.is_reload = true;
-                pm2.connect(true, function () {
-                    // console.log(this.is_reload);
-                    pm2.restart(shortName, function (err, apps) {
-                        pm2.disconnect();   // Disconnect from PM2
-                        if (err) throw err
+            let is_reload = false
+            function reload() {
+                if(!is_reload) {
+                    is_reload = true
+                    pm2.connect(true, function () {
+                        pm2.restart(shortName, function (err, app) {
+                             is_reload = false
+                            if (err) throw err
+                        });
                     });
-                    pm2.streamLogs(shortName, 0);
-                });
-                this.is_reload = false;
+                }
             }
+            return reload;
         }
 
         //reload processes
-        gulp.task(fullName + '_reload', reload_task.bind(this));
+        gulp.task(fullName + '_reload', reload_task());
     }
 
     watch(){

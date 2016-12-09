@@ -2,10 +2,12 @@
 let express = require('express');
 
 let app = express();
+let log = require('./logger')(module);
 
 let initialisers = [
     require('./config'),
-];
+    require('./controllers')
+]; ////////////////////////////////
 
 let config = {
     express: app,
@@ -15,23 +17,12 @@ let config = {
 initialisers.forEach(function(initializer) {
     initializer(config);
 });
-
+ //
 server = app.listen(3003, function() {
     console.log('api_public listening on port ' + 3003);
 });
 
 
-app.get('/', function (req, res) {
-    //console.log(3003);
-    res.send("Hello World! It's public-API!");
-});
-
-app.get('/ping', function (req, res) {
-    //console.log(3002);
-    res.json({
-        pong: true
-    })
-});
 
 
 
