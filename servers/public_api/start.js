@@ -7,7 +7,7 @@ let log = require('./logger')(module);
 let initialisers = [
     require('./config'),
     require('./controllers')
-]; ////////////////////////////////
+]; ////////////////////////////
 
 let config = {
     express: app,

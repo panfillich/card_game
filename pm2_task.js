@@ -68,7 +68,7 @@ class Pm2_task{
                     env: {
                         "NODE_ENV": "dev"
                     },
-                    restartDelay : 10000
+                    autorestart : false
                 }, function (err) {
 
                 });
