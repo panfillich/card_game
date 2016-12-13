@@ -21,3 +21,15 @@ CREATE DATABASE card_game
   DEFAULT COLLATE utf8_general_ci;
 
 SHOW DATABASES;
+
+
+/----/ sequelize /----/
+
+Инициировать проект
+npm run sequelize init
+
+Создать миграцию
+sequelize migration:create
+
+Запустить миграцию
+sequelize db:migrate --name="users"
