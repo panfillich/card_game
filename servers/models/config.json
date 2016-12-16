@@ -1,0 +1,29 @@
+{
+  "development": {
+    "username": "root",
+    "password": "root",
+    "database": "card_game",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "port": "3306",
+    "seederStorage": "sequelize"
+  },
+  "test": {
+    "username": "root",
+    "password": "root",
+    "database": "card_game",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "port": "3306",
+    "seederStorage": "sequelize"
+  },
+  "production": {
+    "username": "root",
+    "password": "root",
+    "database": "card_game",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "port": "3306",
+    "seederStorage": "sequelize"
+  }
+}
