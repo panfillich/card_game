@@ -29,7 +29,17 @@ SHOW DATABASES;
 npm run sequelize init
 
 Создать миграцию
-sequelize migration:create
+npm run sequelize migration:create
 
 Запустить миграцию
-sequelize db:migrate --name="users"
+npm run sequelize db:migrate --name="users"
+
+Создать сид
+npm run sequelize seed:create
+
+Запустить сид
+npm run sequelize db:seed
+
+Откатить всё
+npm run sequelize db:seed:undo:all
+npm run sequelize db:migrate:undo:all
