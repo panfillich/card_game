@@ -83,31 +83,7 @@ gulp.task('webpack-dev-server', function (callback) {
                     return '/index.html';
                 }
             }
-
-
-
-
         ]
-
-        /*proxy:{
-            '/pub-api':{
-                target: 'http://localhost:3003',
-                pathRewrite: {'/pub-api' : '/'}
-            },
-            '/priv-api':{
-                target: 'http://localhost:3002',
-                pathRewrite:{'/priv-api':'/'}
-            },
-            // '/':{
-            //     target: 'http://localhost:3000',
-            //     pathRewrite:{'/':'/index.html?path='}
-            // }
-            /*'/public':{
-             target: 'http://localhost:3000',
-             pathRewrite:{'/public':'/'}
-             }
-        }*/
-
     }).listen(3000, '0.0.0.0', function (err) {
         if (err) {
             throw new gutil.PluginError('webpack-dev-server', err);

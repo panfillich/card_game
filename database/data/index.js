@@ -9,8 +9,8 @@ let add_data = function (queryInterface, Sequelize) {
             email: 'user' + current_num + '@gmail.com',
             password: '',
             token: '',
-            created_at: new Date(),
-            updated_at: new Date()
+            createdAt: new Date(),
+            updatedAt: new Date()
         })
         current_num++;
     }

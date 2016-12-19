@@ -12,10 +12,10 @@ module.exports = {
                 email: Sequelize.STRING(256),
                 password: Sequelize.STRING(256),
                 token: Sequelize.STRING(256),
-                created_at: {
+                createdAt: {
                     type: Sequelize.DATE
                 },
-                updated_at: {
+                updatedAt: {
                     type: Sequelize.DATE
                 }
             },

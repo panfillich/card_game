@@ -1,12 +1,13 @@
 {
   "development": {
     "username": "root",
-    "password": "Qwerty123!",
+    "password": "root",
     "database": "card_game",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "port": "3306",
-    "seederStorage": "sequelize"
+    "seederStorage": "sequelize",
+    "logging": false
   },
   "test": {
     "username": "root",
