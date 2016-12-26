@@ -2,9 +2,9 @@
 module.exports = {
     up: function (queryInterface, Sequelize) {
         queryInterface.createTable(
-            'news',
+            'articles',
             {
-                newsId: {
+                articlesId: {
                     type: Sequelize.INTEGER,
                     primaryKey: true,
                     autoIncrement: true
@@ -30,8 +30,31 @@ module.exports = {
                 //all — заменяет «index» и «follow», т.е. страница индексируется и гиперссылки на ней учитываются (действует по умолчанию);
                 //none — заменяет «noindex» и «nofollow», т.е. страница не индексируется и гиперссылки на ней не учитываются.
                 article: {
-                    type:Sequelize.STRING,
-                    defaultValue: ''
+                    type:Sequelize.TEXT('medium')
+                },
+                comment: {
+                    type: Sequelize.INTEGER(2),
+                    defaultValue: 0
+                    // 0 - без комментариев
+                    // 1 - комментарии включены
+                    // 2 - комментарии видны, но добавление новых запрещено
+                },
+                type: {
+                    type: Sequelize.INTEGER(2),
+                    defaultValue: 0
+                    // 0 - без категории
+                    // 1 - новости
+                    // 2 - гайды
+                    // 3 - тех. моменты
+                },
+                status: {
+                    type: Sequelize.INTEGER(2),
+                    defaultValue: 0
+                    // 0 - не опубликован
+                    // 1 - опубликован
+                },
+                publishAt: {
+                    type: Sequelize.DATE
                 },
                 createdAt: {
                     type: Sequelize.DATE,
@@ -51,6 +74,6 @@ module.exports = {
     },
 
     down: function (queryInterface, Sequelize) {
-        return queryInterface.dropTable('news');
+        return queryInterface.dropTable('articles');
     }
 };

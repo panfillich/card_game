@@ -1,12 +1,4 @@
-let random_words = [
-    'fish', 'meat', 'pork', 'biscuits', 'cucumber', 'pop-corn', 'milk',
-    'banana', 'drink', 'beer', 'food', 'and', 'is', 'not', 'water',
-    'potatoes', 'tomatoes', 'sandwich', 'cup of tee', 'cup of coffee'
-];
-
-function get_fish_text(count, random_words) {
-    let fish_text_arr = [];
-}
+let get_fish_text = require('../../lib/fish_text');
 
 let add_data = function (queryInterface, Sequelize) {
     let list_users = [];
@@ -21,18 +13,34 @@ let add_data = function (queryInterface, Sequelize) {
             webToken: '',
             webTokenCreate: new Date(),
             gameToken: '',
-            gameTokenCreate: new Date()//,
-            /*createdAt: new Date(),
-            updatedAt: new Date()*/
+            gameTokenCreate: new Date()
         });
-        current_num++;
+        cur_num_user++;
     }
     queryInterface.bulkInsert('users', list_users);
 
 
-    let list_news = [];
-    let cur_num_news  = 0;
-    let count_news = 10;
+    let list_articles = [];
+    let cur_num_articles  = 0;
+    let count_articles = 10;
+
+    while (cur_num_articles<count_articles) {
+        list_articles.push({
+            title: get_fish_text(1),
+            keywords: get_fish_text(10), //10 слов
+            description: get_fish_text(15),
+            language: 'en',
+            robots: 'index',
+            article: get_fish_text(250),
+            comment: 1,
+            type: 1,
+            status: 1,
+            publishAt: new Date(3000, 1, 1, 0, 0, 0, 0)
+    });
+        cur_num_articles++;
+    }
+    queryInterface.bulkInsert('articles', list_articles);
+
 
 
 }
