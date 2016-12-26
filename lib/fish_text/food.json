@@ -1,22 +1,146 @@
 [
-  "fish",
-  "meat",
-  "pork",
-  "biscuits",
-  "cucumber",
-  "pop-corn",
-  "milk",
-  "banana",
-  "drink",
-  "beer",
-  "food",
-  "and",
-  "is",
-  "not",
-  "water",
-  "potatoes",
-  "tomatoes",
-  "sandwich",
-  "cup of tee",
-  "cup of coffee"
+  {
+    "en":"fish",
+    "ru":"рыба"
+  },
+  {
+    "en":"meat",
+    "ru":"мясо"
+  },
+  {
+    "en":"pork",
+    "ru":"свинина"
+  },
+  {
+    "en":"ham",
+    "ru":"ветчина"
+  },
+  {
+    "en":"beef",
+    "ru":"говядина"
+  },
+  {
+    "en":"biscuits",
+    "ru":"печенье"
+  },
+  {
+    "en":"cucumber",
+    "ru":"огурец"
+  },
+  {
+    "en":"cereal",
+    "ru":"каша"
+  },
+  {
+    "en":"beans",
+    "ru":"фасоль"
+  },
+  {
+    "en":"peas",
+    "ru":"горох"
+  },
+  {
+    "en":"onion",
+    "ru":"лук"
+  },
+  {
+    "en":"garlic",
+    "ru":"чеснок"
+  },
+  {
+    "en":"mushrooms",
+    "ru":"грибы"
+  },
+  {
+    "en":"peas",
+    "ru":"груша"
+  },
+  {
+    "en":"strawberries",
+    "ru":"клубника"
+  },
+  {
+    "en":"a bag of shopping",
+    "ru":"сумка для покупок"
+  },
+  {
+    "en":"a box of chocolates",
+    "ru":"коробка шоколада"
+  },
+  {
+    "en":"bowl",
+    "ru":"миска"
+  },
+  {
+    "en":"a carton of orange",
+    "ru":"бумажный пакет сока"
+  },
+  {
+    "en":"a packet of cigarettes",
+    "ru":"пачка сигарет"
+  },
+  {
+    "en":"potatoes",
+    "ru":"картоха"
+  },
+  {
+    "en":"sandwich",
+    "ru":"бутерброд"
+  },
+  {
+    "en":"tomatoes",
+    "ru":"помидоры"
+  },
+  {
+    "en":"beer",
+    "ru":"пиво"
+  },
+  {
+    "en":"a jug of milk",
+    "ru":"графин молока"
+  },
+  {
+    "en":"bunch of flowers",
+    "ru":"букет цветов"
+  },
+  {
+    "en":"a sheet of paper",
+    "ru":"лист бумаги"
+  },
+  {
+    "en":"hamburger",
+    "ru":"гамбургер"
+  },
+  {
+    "en":"a slice of bread",
+    "ru":"ломоть хлеба"
+  },
+  {
+    "en":"a herd of cows",
+    "ru":"стадо коров"
+  },
+  {
+    "en":"cheese",
+    "ru":"сыр"
+  },
+  {
+    "en":"a piece of wood",
+    "ru":"кусок дерева/доска"
+  },
+  {
+    "en":"a bit of butter",
+    "ru":"кусочек масла"
+  },
+  {
+    "en":"a tin of fruit",
+    "ru":"консервная банка фруктов"
+  },
+  {
+    "en":"a tube of toothpaste",
+    "ru":"тюбик зубной пасты"
+  },
+  {
+    "en":"grapes",
+    "ru":"виноград"
+  }
 ]

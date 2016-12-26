@@ -1,31 +1,32 @@
-let table_name = 'comments';
+let table_name = 'questionsType';
 
 module.exports = {
     up: function (queryInterface, Sequelize) {
         queryInterface.createTable(
             table_name,
             {
-                commentId: {
+                typeQuestionId: {
                     type: Sequelize.INTEGER,
                     primaryKey: true,
                     autoIncrement: true
                 },
-                articleId: {
+                question: {
+                    type: Sequelize.STRING(255)
+                },
+                parentId: {
                     type: Sequelize.INTEGER
                 },
-                userId: {
-                    type: Sequelize.INTEGER
+                publishStatus: {
+                    type: Sequelize.INTEGER(3),
+                    defaultValue: 0
+                    // 0 - не опубликован
+                    // 1 - опубликован
                 },
-                comment: {
-                    type:Sequelize.TEXT('tiny')
-                },
-                createdAt: {
-                    type: Sequelize.DATE,
-                    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-                },
-                updatedAt: {
-                    type: Sequelize.DATE,
-                    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+                type: {
+                    type: Sequelize.INTEGER(2),
+                    defaultValue: 0
+                    // 0 - нет ответа
+                    // 1 - предпологает ответ
                 }
             },
             {

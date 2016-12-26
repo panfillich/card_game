@@ -1,22 +1,30 @@
-let table_name = 'users';
+let table_name = 'feedbacks';
 
 module.exports = {
     up: function (queryInterface, Sequelize) {
         queryInterface.createTable(
             table_name,
             {
-                userId: {
+                feedbackId: {
                     type: Sequelize.INTEGER,
                     primaryKey: true,
                     autoIncrement: true
                 },
-                login: Sequelize.STRING(256),
-                email: Sequelize.STRING(256),
-                password: Sequelize.STRING(256),
-                webToken: Sequelize.STRING(512),
-                webTokenCreate: Sequelize.DATE,
-                gameToken: Sequelize.STRING(512),
-                gameTokenCreate: Sequelize.DATE,
+                userId: {
+                    type: Sequelize.INTEGER
+                },
+                typeQuestionId: {
+                    type: Sequelize.INTEGER
+                },
+                type: {
+                    type: Sequelize.INTEGER(2),
+                    defaultValue: 0
+                    //0 - вопрос пользователя
+                    //1 - ответ администрации
+                },
+
+                //ДОДУМАТЬ + ДОДЕЛАТЬ
+
                 createdAt: {
                     type: Sequelize.DATE,
                     defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
@@ -27,7 +35,7 @@ module.exports = {
                 }
             },
             {
-                engine: 'InnoDB',// default: 'InnoDB'
+                engine: 'MYISAM',                     // default: 'InnoDB'
                 charset: 'utf8',
                 collate: 'utf8_general_ci'
             }

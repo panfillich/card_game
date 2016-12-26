@@ -1,20 +1,27 @@
-let table_name = 'sessions';
+let table_name = 'achievesType';
 
 module.exports = {
     up: function (queryInterface, Sequelize) {
         queryInterface.createTable(
             table_name,
             {
-                id: {
+                achieveTypeId: {
                     type: Sequelize.INTEGER,
                     primaryKey: true,
                     autoIncrement: true
                 },
-                payload: Sequelize.STRING(256),
-                lastActivity: Sequelize.INTEGER
+                name: {
+                    type: Sequelize.STRING(64)
+                },
+                description: {
+                    type: Sequelize.STRING(512)
+                },
+                img: {
+                    type: Sequelize.STRING(255)
+                }
             },
             {
-                engine: 'InnoDB',
+                engine: 'MYISAM', // default: 'InnoDB'
                 charset: 'utf8',
                 collate: 'utf8_general_ci'
             }

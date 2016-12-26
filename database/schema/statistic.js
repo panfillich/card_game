@@ -1,3 +1,10 @@
-/**
- * Created by panfil on 25.12.16.
- */
+module.exports = {
+    up: function (queryInterface, Sequelize) {
+
+    },
+
+    down: function (queryInterface, Sequelize) {
+
+    }
+};
+

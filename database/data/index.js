@@ -28,21 +28,21 @@ let add_data = function (queryInterface, Sequelize) {
         list_articles.push({
             title: get_fish_text(1),
             keywords: get_fish_text(10), //10 слов
-            description: get_fish_text(15),
+            description: get_fish_text(10),
             language: 'en',
             robots: 'index',
-            article: get_fish_text(250),
-            comment: 1,
+            articleText: get_fish_text(250),
+            commentStatus: 1,
             type: 1,
-            status: 1,
+            publishStatus: 1,
             publishAt: new Date(3000, 1, 1, 0, 0, 0, 0)
     });
         cur_num_articles++;
     }
-    queryInterface.bulkInsert('articles', list_articles);
-
-
-
+    queryInterface.bulkInsert('articles', list_articles, {returning: true})
+        .then(function(response){
+            //console.log(response)
+        });
 }
 
 module.exports = {

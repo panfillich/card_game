@@ -1,8 +1,10 @@
 // http://www.seoded.ru/beginner/html/metategs.html#4
+let table_name = 'articles';
+
 module.exports = {
     up: function (queryInterface, Sequelize) {
         queryInterface.createTable(
-            'articles',
+            table_name,
             {
                 articlesId: {
                     type: Sequelize.INTEGER,
@@ -19,7 +21,8 @@ module.exports = {
 
                 robots: {
                     type:Sequelize.STRING(8),
-                    defaultValue: 'index'
+                    defaultValue: 'index',
+                    comment: "мета-тег, который отвечает за настройки индексирования страницы"
                 },
                 //robots — мета-тег, который отвечает за настройки индексирования страницы.
                 // У мета-тега «robots» могут быть следующие значения:
@@ -29,15 +32,16 @@ module.exports = {
                 //nofollow — гиперссылки на странице не учитываются
                 //all — заменяет «index» и «follow», т.е. страница индексируется и гиперссылки на ней учитываются (действует по умолчанию);
                 //none — заменяет «noindex» и «nofollow», т.е. страница не индексируется и гиперссылки на ней не учитываются.
-                article: {
+                articleText: {
                     type:Sequelize.TEXT('medium')
                 },
-                comment: {
+                commentStatus: {
                     type: Sequelize.INTEGER(2),
-                    defaultValue: 0
-                    // 0 - без комментариев
-                    // 1 - комментарии включены
-                    // 2 - комментарии видны, но добавление новых запрещено
+                    defaultValue: 0,
+                    comment:
+                        '0 - без комментариев; ' +
+                        '1 - комментарии включены; ' +
+                        '2 - комментарии видны, но добавление новых запрещено; '
                 },
                 type: {
                     type: Sequelize.INTEGER(2),
@@ -47,7 +51,7 @@ module.exports = {
                     // 2 - гайды
                     // 3 - тех. моменты
                 },
-                status: {
+                publishStatus: {
                     type: Sequelize.INTEGER(2),
                     defaultValue: 0
                     // 0 - не опубликован
@@ -66,14 +70,17 @@ module.exports = {
                 }
             },
             {
-                engine: 'MYISAM',                     // default: 'InnoDB'
+                engine: 'MYISAM', // default: 'InnoDB'
                 charset: 'utf8',
                 collate: 'utf8_general_ci'
             }
         );
+
+        console.log('Table "'+table_name+'" is created.');
     },
 
     down: function (queryInterface, Sequelize) {
-        return queryInterface.dropTable('articles');
+        queryInterface.dropTable(table_name);
+        console.log('Table "'+table_name+'" is deleted.');
     }
 };

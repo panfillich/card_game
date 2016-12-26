@@ -14,12 +14,14 @@ module.exports = {
     up: function (queryInterface, Sequelize) {
         schemas.forEach(schema =>{
             require('./'+schema).up(queryInterface, Sequelize);
+            // console.log(schema);
         });
     },
 
     down: function (queryInterface, Sequelize) {
         schemas.forEach(schema => {
             require('./' + schema).down(queryInterface, Sequelize);
+            // console.log(schema);
         });
     }
 }
