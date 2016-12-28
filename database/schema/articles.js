@@ -1,6 +1,9 @@
 // http://www.seoded.ru/beginner/html/metategs.html#4
 let table_name = 'articles';
 
+let Alerts = require('../lib/alerts');
+let alerts = new Alerts(table_name);
+
 module.exports = {
     up: function (queryInterface, Sequelize) {
         queryInterface.createTable(
@@ -74,13 +77,20 @@ module.exports = {
                 charset: 'utf8',
                 collate: 'utf8_general_ci'
             }
-        );
-
-        console.log('Table "'+table_name+'" is created.');
+        ).then(function () {
+            alerts.table_created();
+        }).catch(function (error) {
+            alerts.table_not_created(error);
+        });
     },
 
     down: function (queryInterface, Sequelize) {
-        queryInterface.dropTable(table_name);
-        console.log('Table "'+table_name+'" is deleted.');
+        queryInterface.dropTable(table_name)
+            .then(function () {
+                alerts.table_deleted()
+            })
+            .catch(function (error) {
+                alerts.table_not_deleted(error)
+            });
     }
 };

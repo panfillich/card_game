@@ -4,9 +4,6 @@ let express = require('express');
 let app = express();
 let log = require('./logger')(module);
 
-let orm = require("../models");
-
-
 let initialisers = [
     require('./config'),
     require('./controllers')
@@ -59,6 +56,7 @@ initialisers.forEach(function(initializer) {
     initializer(config);
 });
 
+let orm = require("../models");
 orm.sequelize.sync().then(function () {
     app.listen(port, function() {
         console.log('api_public listening on port ' + 3003);
@@ -66,8 +64,12 @@ orm.sequelize.sync().then(function () {
 
     log.info('111');
 
+
+
     orm.users.findById(1).then(function(project) {
-        log.info(project.dataValues);
+        log.info(project);
+    }).catch(function (error) {
+        log.info(error);
     });
 
     app.on('error', function(){

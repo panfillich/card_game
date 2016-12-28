@@ -1,5 +1,8 @@
 let table_name = 'users';
 
+let Alerts = require('../lib/alerts');
+let alerts = new Alerts(table_name);
+
 module.exports = {
     up: function (queryInterface, Sequelize) {
         queryInterface.createTable(
@@ -17,6 +20,13 @@ module.exports = {
                 webTokenCreate: Sequelize.DATE,
                 gameToken: Sequelize.STRING(512),
                 gameTokenCreate: Sequelize.DATE,
+                status: {
+                    type: Sequelize.INTEGER(2),
+                    defaultValue: 0
+                    //0 - в ожидании подтверждения регистрации
+                    //1 - зарегестрирован
+                    //2 - забанен
+                },
                 createdAt: {
                     type: Sequelize.DATE,
                     defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
@@ -27,17 +37,31 @@ module.exports = {
                 }
             },
             {
+                indexes: [
+                    // Create a unique index on email
+                    {
+                        unique: true,
+                        fields: ['login']
+                    }
+                ],
                 engine: 'InnoDB',// default: 'InnoDB'
                 charset: 'utf8',
                 collate: 'utf8_general_ci'
             }
-        );
-
-        console.log('Table "'+table_name+'" is created.');
+        ).then(function () {
+            alerts.table_created();
+        }).catch(function (error) {
+            alerts.table_not_created(error);
+        });
     },
 
     down: function (queryInterface, Sequelize) {
-        queryInterface.dropTable(table_name);
-        console.log('Table "'+table_name+'" is deleted.');
+        queryInterface.dropTable(table_name)
+            .then(function () {
+                alerts.table_deleted()
+            })
+            .catch(function (error) {
+                alerts.table_not_deleted(error)
+            });
     }
 };

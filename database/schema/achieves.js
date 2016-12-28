@@ -1,4 +1,8 @@
 let table_name = 'achieves';
+let index_name = 'userId_createdAt';
+
+let Alerts = require('../lib/alerts');
+let alerts = new Alerts(table_name);
 
 module.exports = {
     up: function (queryInterface, Sequelize) {
@@ -26,22 +30,32 @@ module.exports = {
                 charset: 'utf8',
                 collate: 'utf8_general_ci'
             }
-        );
-
-        queryInterface.addIndex(
-            table_name,
-            ['userId', 'createdAt'],
-            {
-                indexName: 'userId_createdAt',
-                indicesType: 'UNIQUE'
-            }
-        );
-
-        console.log('Table "'+table_name+'" is created.');
+        ).then(function () {
+            alerts.table_created();
+            queryInterface.addIndex(
+                table_name,
+                ['userId', 'createdAt'],
+                {
+                    indexName: index_name,
+                    indicesType: 'INDEX'
+                }
+            ).then(function () {
+                alerts.index_created(index_name);
+            }).catch(function (error) {
+                alerts.index_not_created(index_name, error);
+            });
+        }).catch(function (error) {
+            alerts.table_not_created(error);
+        });
     },
 
     down: function (queryInterface, Sequelize) {
-        queryInterface.dropTable(table_name);
-        console.log('Table "'+table_name+'" is deleted.');
+        queryInterface.dropTable(table_name)
+            .then(function () {
+                alerts.table_deleted()
+            })
+            .catch(function (error) {
+                alerts.table_not_deleted(error)
+            });
     }
 };

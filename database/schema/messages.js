@@ -1,5 +1,8 @@
 let table_name = 'messages';
 
+let Alerts = require('../lib/alerts');
+let alerts = new Alerts(table_name);
+
 module.exports = {
     up: function (queryInterface, Sequelize) {
         queryInterface.createTable(
@@ -30,7 +33,9 @@ module.exports = {
                 collate: 'utf8_general_ci'
 
             }
-        ).then(() =>{
+        ).then(function(){
+            alerts.table_created();
+
             queryInterface.addIndex(
                 table_name,
                 ['userIdFrom', 'userIdTo', 'createdAt'],
@@ -38,7 +43,12 @@ module.exports = {
                     indexName: 'from_to_date',
                     indicesType: 'UNIQUE'
                 }
-            );
+            ).then(function () {
+                alerts.index_created('from_to_date');
+            }).catch(function (error) {
+                alerts.index_not_created('from_to_date', error);
+            });
+
             queryInterface.addIndex(
                 table_name,
                 ['userIdTo', 'userIdFrom', 'createdAt'],
@@ -46,14 +56,24 @@ module.exports = {
                     indexName: 'to_from_date',
                     indicesType: 'UNIQUE'
                 }
-            );
-        });
+            ).then(function () {
+                alerts.index_created('to_from_date');
+            }).catch(function (error) {
+                alerts.index_not_created('to_from_date', error);
+            });
 
-        console.log('Table "'+table_name+'" is created.');
+        }).catch(function (error) {
+            alerts.table_not_created(error);
+        });
     },
 
     down: function (queryInterface, Sequelize) {
-        queryInterface.dropTable(table_name);
-        console.log('Table "'+table_name+'" is deleted.');
+        queryInterface.dropTable(table_name)
+            .then(function () {
+                alerts.table_deleted()
+            })
+            .catch(function (error) {
+                alerts.table_not_deleted(error)
+            });
     }
 };

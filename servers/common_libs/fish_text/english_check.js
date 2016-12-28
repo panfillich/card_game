@@ -27,14 +27,14 @@ function run() {
     console.log(seq.next().value); // 5
 }
 
-run();
-
-while (i<2) {
+function run(){
     rl.question('What do you think of Node.js? ', (answer) => {
         // TODO: Log the answer in a database
         console.log(`Thank you for your valuable feedback: ${answer}`);
-
-        rl.close();
+        //rl.close();
+        run();
     });
-    i++;
 }
+
+
+run();
