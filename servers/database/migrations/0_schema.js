@@ -3,7 +3,7 @@ let log = console.log;
 
 module.exports = {
     up: function (queryInterface, DataTypes) {
-        let list_schemas = get_list_schemas(DataTypes);
+        let list_schemas = get_list_schemas(DataTypes, DataTypes);
         list_schemas.forEach(function (schema) {
             queryInterface.createTable(
                 schema.table_name,
@@ -31,7 +31,7 @@ module.exports = {
     },
 
     down: function (queryInterface, DataTypes) {
-        let list_schemas = get_list_schemas(DataTypes);
+        let list_schemas = get_list_schemas(DataTypes, DataTypes);
         list_schemas.forEach(function (schema) {
             queryInterface.dropTable(schema.table_name)
                 .then(function () {

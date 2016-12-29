@@ -1,4 +1,4 @@
-module.exports = function(DataTypes){
+module.exports = function(Sequelize, DataTypes){
     return {
         table_name : 'users',
         fields: {
@@ -23,11 +23,11 @@ module.exports = function(DataTypes){
             },
             createdAt: {
                 type: DataTypes.DATE,
-                defaultValue: DataTypes.literal('CURRENT_TIMESTAMP')
+                //defaultValue: DataTypes.literal('CURRENT_TIMESTAMP')
             },
             updatedAt: {
                 type: DataTypes.DATE,
-                defaultValue: DataTypes.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+                //defaultValue: DataTypes.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
             }
         },
         properties: {

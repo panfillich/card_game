@@ -20,6 +20,8 @@ CREATE DATABASE card_game
   DEFAULT CHARACTER SET utf8
   DEFAULT COLLATE utf8_general_ci;
 
+DROP DATABASE card_game
+
 SHOW DATABASES;
 
 

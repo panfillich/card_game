@@ -1,7 +1,6 @@
-let table_name = 'achieves';
-let index_name = 'userId_createdAt';
+let table_name = 'achievesType';
 
-let Alerts = require('../lib/alerts');
+let Alerts = require('../../../database/lib/alerts');
 let alerts = new Alerts(table_name);
 
 module.exports = {
@@ -9,20 +8,19 @@ module.exports = {
         queryInterface.createTable(
             table_name,
             {
-                achieveId: {
+                achieveTypeId: {
                     type: Sequelize.INTEGER,
                     primaryKey: true,
                     autoIncrement: true
                 },
-                achieveTypeId: {
-                    type: Sequelize.INTEGER
-                },
-                userId: {
+                name: {
                     type: Sequelize.STRING(64)
                 },
-                createdAt: {
-                    type: Sequelize.DATE,
-                    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+                description: {
+                    type: Sequelize.STRING(512)
+                },
+                img: {
+                    type: Sequelize.STRING(255)
                 }
             },
             {
@@ -30,21 +28,11 @@ module.exports = {
                 charset: 'utf8',
                 collate: 'utf8_general_ci'
             }
-        ).then(function () {
+        )
+        .then(function () {
             alerts.table_created();
-            queryInterface.addIndex(
-                table_name,
-                ['userId', 'createdAt'],
-                {
-                    indexName: index_name,
-                    indicesType: 'INDEX'
-                }
-            ).then(function () {
-                alerts.index_created(index_name);
-            }).catch(function (error) {
-                alerts.index_not_created(index_name, error);
-            });
-        }).catch(function (error) {
+        })
+        .catch(function (error) {
             alerts.table_not_created(error);
         });
     },

@@ -1,6 +1,6 @@
-let table_name = 'users';
+let table_name = 'feedbacks';
 
-let Alerts = require('../lib/alerts');
+let Alerts = require('../../../database/lib/alerts');
 let alerts = new Alerts(table_name);
 
 module.exports = {
@@ -8,25 +8,26 @@ module.exports = {
         queryInterface.createTable(
             table_name,
             {
-                userId: {
+                feedbackId: {
                     type: Sequelize.INTEGER,
                     primaryKey: true,
                     autoIncrement: true
                 },
-                login: Sequelize.STRING(256),
-                email: Sequelize.STRING(256),
-                password: Sequelize.STRING(256),
-                webToken: Sequelize.STRING(512),
-                webTokenCreate: Sequelize.DATE,
-                gameToken: Sequelize.STRING(512),
-                gameTokenCreate: Sequelize.DATE,
-                status: {
+                userId: {
+                    type: Sequelize.INTEGER
+                },
+                typeQuestionId: {
+                    type: Sequelize.INTEGER
+                },
+                type: {
                     type: Sequelize.INTEGER(2),
                     defaultValue: 0
-                    //0 - в ожидании подтверждения регистрации
-                    //1 - зарегестрирован
-                    //2 - забанен
+                    //0 - вопрос пользователя
+                    //1 - ответ администрации
                 },
+
+                //ДОДУМАТЬ + ДОДЕЛАТЬ
+
                 createdAt: {
                     type: Sequelize.DATE,
                     defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
@@ -37,14 +38,7 @@ module.exports = {
                 }
             },
             {
-                indexes: [
-                    // Create a unique index on email
-                    {
-                        unique: true,
-                        fields: ['login']
-                    }
-                ],
-                engine: 'InnoDB',// default: 'InnoDB'
+                engine: 'MYISAM',                     // default: 'InnoDB'
                 charset: 'utf8',
                 collate: 'utf8_general_ci'
             }

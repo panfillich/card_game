@@ -1,6 +1,7 @@
-let table_name = 'messages';
+let table_name = 'achieves';
+let index_name = 'userId_createdAt';
 
-let Alerts = require('../lib/alerts');
+let Alerts = require('../../../database/lib/alerts');
 let alerts = new Alerts(table_name);
 
 module.exports = {
@@ -8,19 +9,16 @@ module.exports = {
         queryInterface.createTable(
             table_name,
             {
-                messageId: {
+                achieveId: {
                     type: Sequelize.INTEGER,
                     primaryKey: true,
                     autoIncrement: true
                 },
-                userIdFrom: {
+                achieveTypeId: {
                     type: Sequelize.INTEGER
                 },
-                userIdTo: {
-                    type: Sequelize.INTEGER
-                },
-                message: {
-                    type: Sequelize.STRING(512)
+                userId: {
+                    type: Sequelize.STRING(64)
                 },
                 createdAt: {
                     type: Sequelize.DATE,
@@ -31,37 +29,21 @@ module.exports = {
                 engine: 'MYISAM', // default: 'InnoDB'
                 charset: 'utf8',
                 collate: 'utf8_general_ci'
-
             }
-        ).then(function(){
+        ).then(function () {
             alerts.table_created();
-
             queryInterface.addIndex(
                 table_name,
-                ['userIdFrom', 'userIdTo', 'createdAt'],
+                ['userId', 'createdAt'],
                 {
-                    indexName: 'from_to_date',
-                    indicesType: 'UNIQUE'
+                    indexName: index_name,
+                    indicesType: 'INDEX'
                 }
             ).then(function () {
-                alerts.index_created('from_to_date');
+                alerts.index_created(index_name);
             }).catch(function (error) {
-                alerts.index_not_created('from_to_date', error);
+                alerts.index_not_created(index_name, error);
             });
-
-            queryInterface.addIndex(
-                table_name,
-                ['userIdTo', 'userIdFrom', 'createdAt'],
-                {
-                    indexName: 'to_from_date',
-                    indicesType: 'UNIQUE'
-                }
-            ).then(function () {
-                alerts.index_created('to_from_date');
-            }).catch(function (error) {
-                alerts.index_not_created('to_from_date', error);
-            });
-
         }).catch(function (error) {
             alerts.table_not_created(error);
         });

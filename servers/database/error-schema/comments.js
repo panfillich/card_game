@@ -1,6 +1,6 @@
-let table_name = 'sessions';
+let table_name = 'comments';
 
-let Alerts = require('../lib/alerts');
+let Alerts = require('../../../database/lib/alerts');
 let alerts = new Alerts(table_name);
 
 module.exports = {
@@ -8,16 +8,31 @@ module.exports = {
         queryInterface.createTable(
             table_name,
             {
-                id: {
+                commentId: {
                     type: Sequelize.INTEGER,
                     primaryKey: true,
                     autoIncrement: true
                 },
-                payload: Sequelize.STRING(256),
-                lastActivity: Sequelize.INTEGER
+                articleId: {
+                    type: Sequelize.INTEGER
+                },
+                userId: {
+                    type: Sequelize.INTEGER
+                },
+                comment: {
+                    type:Sequelize.TEXT('tiny')
+                },
+                createdAt: {
+                    type: Sequelize.DATE,
+                    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+                },
+                updatedAt: {
+                    type: Sequelize.DATE,
+                    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+                }
             },
             {
-                engine: 'InnoDB',
+                engine: 'MYISAM',                     // default: 'InnoDB'
                 charset: 'utf8',
                 collate: 'utf8_general_ci'
             }

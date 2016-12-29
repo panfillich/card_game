@@ -1,0 +1,14 @@
+{
+    "data": [
+        "common",
+        "test"
+    ],
+
+    "test" : {
+        "users": 20,
+        "messages": 30,
+        "comments": 5,
+        "language": ["en", "ru"],
+        "news": 60
+    }
+}

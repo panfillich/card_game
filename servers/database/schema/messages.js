@@ -1,4 +1,4 @@
-module.exports = function(DataTypes){
+module.exports = function(Sequelize, DataTypes){
     return {
         table_name: 'messages',
         fields: {
@@ -18,7 +18,7 @@ module.exports = function(DataTypes){
             },
             createdAt: {
                 type: DataTypes.DATE,
-                defaultValue: DataTypes.literal('CURRENT_TIMESTAMP')
+                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
             }
         },
         properties: {
@@ -31,6 +31,13 @@ module.exports = function(DataTypes){
                 fields: ['userIdFrom', 'userIdTo', 'createdAt'],
                 properties: {
                     indexName: 'from_to_date',
+                    indicesType: 'UNIQUE'
+                }
+            },
+            {
+                fields: ['userIdTo', 'userIdFrom', 'createdAt'],
+                properties:{
+                    indexName: 'to_from_date',
                     indicesType: 'UNIQUE'
                 }
             }

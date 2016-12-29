@@ -1,7 +1,7 @@
 // http://www.seoded.ru/beginner/html/metategs.html#4
 let table_name = 'articles';
 
-let Alerts = require('../lib/alerts');
+let Alerts = require('../../../database/lib/alerts');
 let alerts = new Alerts(table_name);
 
 module.exports = {

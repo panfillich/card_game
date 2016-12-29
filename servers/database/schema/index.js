@@ -13,10 +13,10 @@ fs.readdirSync(current_folder).forEach(file => {
 
 let list_schemas = [];
 
-module.exports = function (DataTypes) {
+module.exports = function (Sequelize, DataTypes) {
     schemas.forEach(schema => {
         list_schemas.push(
-            require('./' + schema)(DataTypes)
+            require('./' + schema)(Sequelize, DataTypes)
         );
     });
     return list_schemas;

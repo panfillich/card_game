@@ -56,7 +56,7 @@ initialisers.forEach(function(initializer) {
     initializer(config);
 });
 
-let orm = require("../models");
+let orm = require("../database");
 orm.sequelize.sync().then(function () {
     app.listen(port, function() {
         console.log('api_public listening on port ' + 3003);
@@ -64,17 +64,18 @@ orm.sequelize.sync().then(function () {
 
     log.info('111');
 
+    orm.users.findById(1,{ include : [orm.comments] }).then(function(project) {
+        console.log(project);
+    });
 
 
-    orm.users.findById(1).then(function(project) {
+    /*orm.users.findById(1).then(function(project) {
         log.info(project);
-    }).catch(function (error) {
-        log.info(error);
     });
 
-    app.on('error', function(){
+    /*app.on('error', function(){
         console.log('Error to connect ' + port);
-    });
+    });*/
     app.on('listening', function(){
         console.log('api_public listening on port ' + port);
     });

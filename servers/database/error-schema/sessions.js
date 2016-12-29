@@ -1,6 +1,6 @@
-let table_name = 'achievesType';
+let table_name = 'sessions';
 
-let Alerts = require('../lib/alerts');
+let Alerts = require('../../../database/lib/alerts');
 let alerts = new Alerts(table_name);
 
 module.exports = {
@@ -8,31 +8,22 @@ module.exports = {
         queryInterface.createTable(
             table_name,
             {
-                achieveTypeId: {
+                id: {
                     type: Sequelize.INTEGER,
                     primaryKey: true,
                     autoIncrement: true
                 },
-                name: {
-                    type: Sequelize.STRING(64)
-                },
-                description: {
-                    type: Sequelize.STRING(512)
-                },
-                img: {
-                    type: Sequelize.STRING(255)
-                }
+                payload: Sequelize.STRING(256),
+                lastActivity: Sequelize.INTEGER
             },
             {
-                engine: 'MYISAM', // default: 'InnoDB'
+                engine: 'InnoDB',
                 charset: 'utf8',
                 collate: 'utf8_general_ci'
             }
-        )
-        .then(function () {
+        ).then(function () {
             alerts.table_created();
-        })
-        .catch(function (error) {
+        }).catch(function (error) {
             alerts.table_not_created(error);
         });
     },
