@@ -1,4 +1,4 @@
-module.exports = function(Sequelize, DataTypes){
+let get_schema = function(Sequelize, DataTypes){
     return {
         table_name: 'messages',
         fields: {
@@ -43,4 +43,9 @@ module.exports = function(Sequelize, DataTypes){
             }
         ]
     }
+}
+
+module.exports = {
+    constants: {},
+    get_schema: get_schema
 }

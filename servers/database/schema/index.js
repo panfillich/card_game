@@ -16,7 +16,7 @@ let list_schemas = [];
 module.exports = function (Sequelize, DataTypes) {
     schemas.forEach(schema => {
         list_schemas.push(
-            require('./' + schema)(Sequelize, DataTypes)
+            require('./' + schema).get_schema(Sequelize, DataTypes)
         );
     });
     return list_schemas;

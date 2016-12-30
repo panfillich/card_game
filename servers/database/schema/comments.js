@@ -1,13 +1,14 @@
 const constants = {
+    table_name: 'comments',
     status: {
         VISIBLE : 1,
         HIDDEN : 0
     }
 }
 
-module.exports = function(Sequelize, DataTypes){
+let get_schema = function(Sequelize, DataTypes){
     return {
-        table_name: 'comments',
+        table_name: constants.table_name,
         fields: {
             commentId: {
                 type: DataTypes.INTEGER,
@@ -47,11 +48,15 @@ module.exports = function(Sequelize, DataTypes){
             {
                 fields: ['status', 'articleId', 'createdAt'],
                 properties: {
-                    indexName: 'status_article_date',
-                    indicesType: 'UNIQUE'
+                    indexName: 'status_article_date'
                 }
             }
         ],
         const: constants
     }
+}
+
+module.exports = {
+    constants: constants,
+    get_schema: get_schema
 }

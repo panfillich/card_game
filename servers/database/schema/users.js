@@ -1,4 +1,4 @@
-module.exports = function(Sequelize, DataTypes){
+let get_schema = function(Sequelize, DataTypes){
     return {
         table_name : 'users',
         fields: {
@@ -38,3 +38,8 @@ module.exports = function(Sequelize, DataTypes){
         indexes:[]
     }
 };
+
+module.exports = {
+    constants: {},
+    get_schema: get_schema
+}

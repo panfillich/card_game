@@ -1,10 +1,7 @@
-// использование Math.round() даст неравномерное распределение!
-function getRandomInt(min, max)
-{
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
-module.exports = function (count, type = 'food', language='en') {
+let getRandomInt = require('../random/get_rand_int');
+
+module.exports = function (count, language='en', type = 'food') {
     let words = require('./'+type+'.json');
     let length = words.length;
     let randomWorlds = [];
