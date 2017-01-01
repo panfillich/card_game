@@ -65,16 +65,16 @@ orm.sequelize.sync().then(function () {
     log.info('111');
 
     orm.users.findById(1,{ include : [orm.comments] }).then(function(project) {
-        console.log(project);
+        console.log(project.dataValues);
     });
 
 
-    /*orm.users.findById(1).then(function(project) {
-        log.info(project);
+    orm.users.findById(1).then(function(project) {
+        log.info(project.dataValues);
     });
 
     /*app.on('error', function(){
-        console.log('Error to connect ' + port);
+        console.log('Error to connect ' + port);//
     });*/
     app.on('listening', function(){
         console.log('api_public listening on port ' + port);
