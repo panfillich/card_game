@@ -35,9 +35,9 @@ const constants = {
 
 let get_schema = function(Sequelize, DataTypes){
     return {
-        table_name: 'articles',
+        table_name: constants.table_name,
         fields: {
-            articlesId: {
+            articleId: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true
@@ -90,6 +90,13 @@ let get_schema = function(Sequelize, DataTypes){
                 fields: ['publishStatus', 'type', 'publishAt'],
                 properties: {
                     indexName: 'status_article_date'
+                }
+            },
+            {
+                fields: ['publishStatus', 'type', 'articleId'],
+                properties: {
+                    indexName: 'status_article',
+                    indicesType: 'UNIQUE'
                 }
             }
         ],

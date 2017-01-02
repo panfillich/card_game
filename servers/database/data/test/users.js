@@ -1,4 +1,5 @@
 let config = require('../config.json');
+let Token = require('../../../common_libs/token');
 
 let list_users = [];
 let cur_num_user = 0;
@@ -10,11 +11,12 @@ while (cur_num_user<count_user) {
     list_users.push({
         login: 'user' + cur_num_user,
         email: 'user' + cur_num_user + '@gmail.com',
-        password: '',
+        password: Token.createForUserPass(cur_num_user+'Qwerty123!').hash,
         webToken: '',
         webTokenCreate: new Date(),
         gameToken: '',
-        gameTokenCreate: new Date()
+        gameTokenCreate: new Date(),
+        status: 1
     });
     cur_num_user++;
 }

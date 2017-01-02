@@ -1,10 +1,11 @@
 const crypto = require('crypto');
 
-const secret = 'secret';
+const secret_for_token = 'secret';
+const secret_for_pass = 'pass_secret';
 
 class Token{
     static createForUser(string, date = new Date()){
-        const hash = crypto.createHmac('sha512', secret)
+        const hash = crypto.createHmac('sha512', secret_for_token)
             .update(date+string)
             .digest('hex');
         return {
@@ -20,6 +21,15 @@ class Token{
 
     static createForEmail(){
         return crypto.randomBytes(64).toString('hex');
+    }
+
+    static createForUserPass(string){
+        const hash = crypto.createHmac('sha512', secret_for_pass)
+            .update(string)
+            .digest('hex');
+        return {
+            hash: hash
+        };
     }
 }
 

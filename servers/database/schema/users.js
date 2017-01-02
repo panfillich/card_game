@@ -1,6 +1,10 @@
+const constants = {
+    table_name: "users",
+}
+
 let get_schema = function(Sequelize, DataTypes){
     return {
-        table_name : 'users',
+        table_name : constants.table_name,
         fields: {
             userId: {
                 type: DataTypes.INTEGER,
@@ -23,11 +27,11 @@ let get_schema = function(Sequelize, DataTypes){
             },
             createdAt: {
                 type: DataTypes.DATE,
-                //defaultValue: DataTypes.literal('CURRENT_TIMESTAMP')
+                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
             },
             updatedAt: {
                 type: DataTypes.DATE,
-                //defaultValue: DataTypes.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
             }
         },
         properties: {
@@ -40,6 +44,6 @@ let get_schema = function(Sequelize, DataTypes){
 };
 
 module.exports = {
-    constants: {},
+    constants: constants,
     get_schema: get_schema
 }

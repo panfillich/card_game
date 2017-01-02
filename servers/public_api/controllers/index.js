@@ -1,6 +1,7 @@
 module.exports = function (config) {
 
     let initialisers = [
+        require('./autentification'),
         require('./test'),
         require('./errors')
     ];
