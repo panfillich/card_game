@@ -2,10 +2,9 @@ let common_libs = '../../common_libs/';
 
 let Token = require(common_libs + 'token');
 
-class Users{
-    constructor(config){
-        this.db = config.db;
-        this.articles = config.db.articles;
+class Articles{
+    constructor(db){
+        this.articles = db.articles;
     }
 
     //Получаем информацию пользователя для авторизации
@@ -48,4 +47,4 @@ class Users{
     }
 }
 
-module.exports = Users;
+module.exports = Articles;

@@ -4,14 +4,13 @@ let Token = require(common_libs + 'token');
 
 
 class Users{
-    constructor(config){
-        this.db = config.db;
-        this.users = config.db.users;
+    constructor(db){
+        this.users = db.users;
     }
 
     //Получаем информацию пользователя для авторизации
     //param {
-    //  login,
+    //  email,
     //  password
     //}
     get_auth_info(param, callback){
@@ -20,8 +19,9 @@ class Users{
         this.users.findOne({
             attributes: ['userId', 'login', 'email', 'status'],
             where: {
-                login: param.login,
-                password: pass_hash
+                email: param.email,
+                password: pass_hash,
+                status: 1
             }
         }).then(function(project) {
             let result = null;
@@ -104,7 +104,12 @@ class Users{
             set,
             { where: { userId: param.userId}}
         ).then(function (project) {
-            callback(project, null);
+            if(project == 1) {
+                callback(token, null);
+            } else {
+                let error = new Error("User's token not update.")
+                callback(null, error);
+            }
         }).catch(function(error){
             callback(null, error);
         });

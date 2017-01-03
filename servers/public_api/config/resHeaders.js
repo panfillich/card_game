@@ -16,6 +16,9 @@ module.exports = function(config) {
         // to the API (e.g. in case you use sessions)
         res.setHeader('Access-Control-Allow-Credentials', false);
 
+        // Set Content Type
+        res.setHeader('Content-Type', 'application/json');
+
         // Pass to next layer of middleware
         next();
     });
