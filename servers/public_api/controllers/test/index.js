@@ -5,7 +5,13 @@ module.exports = function(config) {
     });
 
     app.get('/', function (req, res) {
-        console.log(3003);
+        var sess = req.session;
+        if (sess.views) {
+            sess.views++;
+        }else{
+            sess.views = 1;
+        }
+        console.log(sess);
         res.send("Hello World! It's public-API99999999!");
     });
 
