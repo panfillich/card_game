@@ -1,0 +1,186 @@
+https://www.8host.com/blog/ustanovka-i-nastrojka-redis-v-ubuntu-16-04/
+
+[УСТАНОВКА]
+
+В репозиториях Ubuntu можно найти метапакет build-essential,
+содержащий инструменты для компиляции. Для тестирования нужен tcl.
+Чтобы установить эти пакеты, введите:
+    sudo apt-get update
+    sudo apt-get install build-essential tcl
+
+Поскольку исходный код не нужно хранить (для обновления программы лучше
+скомпилировать код заново), его можно загрузить и собрать в каталоге /tmp.
+Откройте этот каталог:
+    cd /tmp
+
+Теперь загрузите последнюю стабильную версию Redis:
+    curl -O http://download.redis.io/redis-stable.tar.gz
+
+Распакуйте архив:
+    tar xzvf redis-stable.tar.gz
+
+Откройте каталог с исходным кодом Redis:
+    cd redis-stable
+
+Теперь можно скомпилировать бинарные файлы Redis:
+    make
+
+После этого можно использовать инструменты для тестирования, чтобы убедиться,
+что код собран правильно.
+    make test
+
+На выполнение команды уйдёт несколько минут. После тестирования можно установит бинарные файлы:
+    sudo make install
+
+Нужно после make install выполнить следующее (если возникает ошибка x5[INSTALL install]):
+    cd utils
+    sudo ./install_server.sh
+
+
+[НАСТРЙОКА]
+
+Для начала создайте каталог для хранения конфигурационных файлов, /etc/redis.
+    sudo mkdir /etc/redis
+
+Скопируйте образец конфигурационного файла Redis из исходного архива:
+    sudo cp /tmp/redis-stable/redis.conf /etc/redis
+
+Откройте файл, чтобы изменить в нём несколько параметров:
+    sudo nano /etc/redis/redis.conf
+
+В файле установить параметры:
+    supervised systemd
+    dir /var/lib/redis
+    bind 0.0.0.0
+
+
+[UNIT]
+
+Теперь нужно создать unit-файл systemd для Redis, чтобы система
+инициализации могла управлять процессом Redis.
+
+Создайте и откройте файл /etc/systemd/system/redis.service.
+    sudo nano /etc/systemd/system/redis.service
+
+Добавте в него данные
+    [Unit]
+    Description=Redis In-Memory Data Store
+    After=network.target
+    [Service]
+    User=redis
+    Group=redis
+    ExecStart=/usr/local/bin/redis-server /etc/redis/redis.conf
+    ExecStop=/usr/local/bin/redis-cli shutdown
+    Restart=always
+    [Install]
+    WantedBy=multi-user.target
+
+
+[USER FOR REDIS]
+
+Теперь нужно создать пользователя, группу и каталог, указанные в предыдущих настройках.
+
+Сначала создайте группу и пользователя redis. Для этого запустите команду:
+    sudo adduser --system --group --no-create-home redis
+
+Затем создайте каталог /var/lib/redis:
+    sudo mkdir /var/lib/redis
+
+Передайте пользователю и группе redis права на каталог:
+    sudo chown redis:redis /var/lib/redis
+
+Заблокируйте доступ к каталогу для остальных пользователей:
+    sudo chmod 770 /var/lib/redis
+
+
+[START AND TESTING]
+
+Запустите сервис systemd:
+    sudo systemctl start redis
+
+Проверьте состояние сервиса, чтобы убедиться, что он запустился без ошибок:
+    sudo systemctl status redis
+
+Команда вернёт:
+    redis.service - Redis Server
+    Loaded: loaded (/etc/systemd/system/redis.service; enabled; vendor preset: enabled)
+    Active: active (running) since Wed 2016-05-11 14:38:08 EDT; 1min 43s ago
+    Process: 3115 ExecStop=/usr/local/bin/redis-cli shutdown (code=exited, status=0/SUCCESS)
+    Main PID: 3124 (redis-server)
+    Tasks: 3 (limit: 512)
+    Memory: 864.0K
+    CPU: 179ms
+    CGroup: /system.slice/redis.service
+    └─3124 /usr/local/bin/redis-server 127.0.0.1:6379
+
+
+[TESTING]
+
+Чтобы убедиться в том, что Redis работает, подключитесь к серверу
+Redis при помощи клиента командной строки:
+    redis-cli
+
+Затем введите в появившуюся строку:
+    ping
+
+Команда должна вернуть:
+    PONG
+
+Убедитесь в том, что вы можете добавлять ключи:
+    set test "It's working!"
+    OK
+
+Попробуйте извлечь значение:
+    get test
+
+Команда должна вернуть:
+    "It's working!"
+
+Чтобы закрыть командную строку Redis, введите:
+    exit
+
+Попробуйте перезапустить Redis:
+    sudo systemctl restart redis
+
+Снова подключитесь при помощи клиента и убедитесь, что добавленное ранее значение доступно:
+    redis-cli
+    get test
+
+Команда должна вернуть:
+    "It's working!"
+
+Закройте командную строку:
+    exit
+
+
+[AUTO START]
+
+Убедившись, что Redis работает, настройте автозапуск сервиса.
+
+Для этого введите:
+    sudo systemctl enable redis
+    Created symlink from /etc/systemd/system/multi-user.target.wants/redis.service to /etc/systemd/system/redis.service.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
