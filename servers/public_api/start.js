@@ -18,15 +18,32 @@ let storage = {
 
 
 var session = require('express-session');
+var MySQLStore = require('express-mysql-session')(session);
 var bodyParser = require('body-parser');
+
+var options = {
+    host: 'localhost',
+    port: 3306,
+    user: 'root',
+    password: 'Qwerty123!',
+    database: 'card_game'
+};
+
+var sessionStore = new MySQLStore(options);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
 
-app.use(session({ resave: true, saveUninitialized: true,
-    secret: 'uwotm8' }));
+app.use(session({
+    secret: 'fjfgffk',
+    resave: true,
+    saveUninitialized: true,
+    store: sessionStore,
+    httpOnly: false,
+    headerName: 'token'
+}));
 
 
 
