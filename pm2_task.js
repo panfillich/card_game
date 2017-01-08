@@ -119,7 +119,9 @@ class Pm2_task{
         gulp.watch(
             [
                 __dirname+'/servers/'+fullName+'/**/*.*',
-                __dirname+'/servers/database/**/*.*'
+                __dirname+'/servers/database/**/*.*',
+                __dirname+'/servers/models/**/*.*',
+                __dirname+'/servers/redis/**/*.*'
             ],
             [
                 fullName + '_reload'

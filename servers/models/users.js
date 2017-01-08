@@ -1,4 +1,4 @@
-let common_libs = '../../common_libs/';
+let common_libs = '../common_libs/';
 
 let Token = require(common_libs + 'token');
 

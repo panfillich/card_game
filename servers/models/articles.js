@@ -1,6 +1,4 @@
-let common_libs = '../../common_libs/';
-
-let Token = require(common_libs + 'token');
+let common_libs = '../common_libs/';
 
 class Articles{
     constructor(db){

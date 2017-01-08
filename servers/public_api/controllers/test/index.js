@@ -15,7 +15,7 @@ module.exports = function(config) {
         res.send("Hello World! It's public-API99999999!");
     });
 
-    app.get('/ping', function (req, res) {
+    app.get('/tet', function (req, res) {
         //console.log(3002);
         res.json({
             pong: true

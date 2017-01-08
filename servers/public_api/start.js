@@ -11,44 +11,36 @@ let initialisers = [
 
 let port = 3003;
 
-let storage = {
+let storage = { //
     express: app,
     basePath: __dirname
 };
 
 
-var session = require('express-session');
-var MySQLStore = require('express-mysql-session')(session);
 var bodyParser = require('body-parser');
-
-var options = {
-    host: 'localhost',
-    port: 3306,
-    user: 'root',
-    password: 'Qwerty123!',
-    database: 'card_game'
-};
-
-var sessionStore = new MySQLStore(options);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
 
-app.use(session({
-    secret: 'fjfgffk',
-    resave: true,
-    saveUninitialized: true,
-    store: sessionStore,
-    httpOnly: false,
-    headerName: 'token'
-}));
-
-
-
 let orm = require("../database");
-let get_models_list = require("../database/models");
+let get_models_list = require("../models");
+let client = require("../redis/client")
+
+client.set("string key", "string val");
+client.hset("users:1", "name", "Andrew");
+client.hset("users:1", "email", "andrew@example.com");
+client.hgetall("users:1", function (err, res) {
+    console.log(res); //
+});
+
+app.get('/tet7', function (req, res) {
+    console.log(client.closing);
+    res.json({////////
+        pong: true
+    })
+});
 
 orm.sequelize.sync().then(function () {
 
@@ -58,9 +50,14 @@ orm.sequelize.sync().then(function () {
         initializer(storage);
     });
 
-    app.listen(port, function() {
+
+    let server = app.listen(port, function() {
         console.log('api_public listening on port %d', 3003);
     });
+
+    server.on('close', function () {
+        console.log(111);
+    })
 
     let user =  storage.models.users;
     user.get_auth_info({email:'user1@gmail.com',password:'1Qwerty123!'}, function (result, error) {
@@ -69,9 +66,12 @@ orm.sequelize.sync().then(function () {
        }
     });
 
+
     user.set_token({email:'user1@gmail.com', userId:2, type:'web'},function (result, error) {
         console.log(result);
     });
+
+    // server.close(function() { console.log('Doh :('); });
 });
 
 

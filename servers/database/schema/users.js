@@ -11,8 +11,8 @@ let get_schema = function(Sequelize, DataTypes){
                 primaryKey: true,
                 autoIncrement: true
             },
-            login: DataTypes.STRING(256),
-            email: DataTypes.STRING(256),
+            login: DataTypes.STRING(128),
+            email: DataTypes.STRING(128),
             password: DataTypes.STRING(256),
             webToken: DataTypes.STRING(512),
             webTokenCreate: DataTypes.DATE,

@@ -6,7 +6,7 @@ module.exports = function(storage) {
     //Аутентификация
     app.post('/auth', function(req, res, next) {
         //body = [login (email), password]
-
+        console.dir(req.connection.remoteAddress)
         if (!req.body.login || !req.body.password){
             return send_error(res, 400, 'Relevant fields not found');
         }
@@ -37,16 +37,13 @@ module.exports = function(storage) {
             };
             users.set_token(param_for_token, function (token, err) {
                 if(err) next(err);
-
                 res.send(JSON.stringify({
                     login: result.login,
                     token: token.hash,
                     date: token.date
                 }));
             });
-
-
-        })
+        });
     });
 }
 
