@@ -63,11 +63,31 @@ orm.sequelize.sync().then(function () {
     let user =  storage.models.users;
     let sessions = require('../models/sessions');
 
-    sessions.setSession('gdfgdg',{user:1, test: 2}, function (err, res) {
-        console.log(res);
-        sessions.getSession('gdfgdg', function (err, res) {
+
+    let value = {
+        user_id:1,
+        login: 'login',
+        email: 'date',
+        test: 'test',
+        lol_obj: {
+            lol1:1,
+            lol2:[
+                1,2,3
+            ]
+        }
+    }
+
+    sessions.setSessionFields('gdfgdg',value, function (err, res) {
+        console.log("setSessionFields: "+ res);
+        sessions.getSessionAll('gdfgdg', function (err, res) {
+            console.log('====');
             console.log(res);
         });
+
+        sessions.getSessionFields('gdfgdg', ["user_id", "login"], function (err, res) {
+            console.log("getSessionFields: "+res);
+        })
+
     });
 
     console.dir(sessions);

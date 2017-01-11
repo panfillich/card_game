@@ -1,5 +1,5 @@
 let send_error = require('../../../common_libs/errors_format');
-
+let session = require('../../../models/sessions');
 module.exports = function(storage) {
     let app = storage.express;
     let users = storage.models.users;

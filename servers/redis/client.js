@@ -23,29 +23,33 @@ let option = {
     // detect_buffers: true
 };
 
+function setEvents(client) {
+    client.on("error", function (err) {
+        console.log("Error " + err);
+    });
+
+    client.on("reconnecting", function () {
+        console.log("reconnecting");
+    });
+
+    client.on("connect", function () {
+        console.log("connect");
+    });
+
+    client.on("ready", function () {
+        console.log("ready");
+    });
+
+    client.on("end", function () {
+        console.log("end");
+        client.quit()
+        client = redis.createClient(option);
+        setEvents(client);
+    });
+}
+
 let client = redis.createClient(option);
-
-client.on("error", function (err) {
-    console.log("Error " + err);
-});
-
-client.on("reconnecting", function () {
-    console.log("reconnecting");
-});
-
-client.on("connect", function () {
-    console.log("connect");
-});
-
-client.on("ready", function () {
-    console.log("ready");
-});
-
-client.on("end", function () {
-    console.log("end");
-    client.quit()
-    client = redis.createClient(option);
-});
+setEvents(client);
 
 module.exports = client;
 
