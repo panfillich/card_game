@@ -7,17 +7,33 @@ let lifetime = 600;
 class Sessions{
     static getSession(token, callback){
         let full_key = prefix + ':' + token;
-        client.set("string key", "string val", redis.print);
+        client.multi([
+            ['hgetall', full_key],
+            ['expire', full_key, 60]
+        ]).exec(function (err, repl) {
+            if (err) {
+                callback(err, null)
+            }
+            callback(null, repl)
+        });
+
     }
 
     static setSession(token, value, callback){
         let full_key = prefix + ':' + token;
-        client.setex(full_key, lifetime, value, function (err, res) {
-            if(err){
-                callback(err, false);
+        let hmset = ['hmset', full_key]
+        for (let key in value) {
+            hmset.push(key);
+            hmset.push(value[key]);
+        }
+        client.multi([
+            hmset,
+            ['expire', full_key, 600]//
+        ]).exec(function (err, repl) {
+            if (err) {
+                callback(err, null)
             }
-            print()
-            callback(false, res);
+            callback(null, repl)
         });
     }
 

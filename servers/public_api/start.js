@@ -28,6 +28,8 @@ let orm = require("../database");
 let get_models_list = require("../models");
 let client = require("../redis/client")
 
+
+
 client.set("string key", "string val");
 client.hset("users:1", "name", "Andrew");
 client.hset("users:1", "email", "andrew@example.com");
@@ -50,7 +52,6 @@ orm.sequelize.sync().then(function () {
         initializer(storage);
     });
 
-
     let server = app.listen(port, function() {
         console.log('api_public listening on port %d', 3003);
     });
@@ -60,6 +61,17 @@ orm.sequelize.sync().then(function () {
     })
 
     let user =  storage.models.users;
+    let sessions = require('../models/sessions');
+
+    sessions.setSession('gdfgdg',{user:1, test: 2}, function (err, res) {
+        console.log(res);
+        sessions.getSession('gdfgdg', function (err, res) {
+            console.log(res);
+        });
+    });
+
+    console.dir(sessions);
+
     user.get_auth_info({email:'user1@gmail.com',password:'1Qwerty123!'}, function (result, error) {
        if(!error){
            console.log(result);
