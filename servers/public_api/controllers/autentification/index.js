@@ -1,5 +1,5 @@
 let send_error = require('../../../common_libs/errors_format');
-let session = require('../../../models/sessions');
+let Session = require('../../../models/sessions');
 module.exports = function(storage) {
     let app = storage.express;
     let users = storage.models.users;
@@ -31,18 +31,22 @@ module.exports = function(storage) {
             //Пользователь найден
             //Формируем токен
             let param_for_token = {
+                login: result.login,
                 userId: result.userId,
                 email: result.email,
                 type: 'web'
             };
-            users.set_token(param_for_token, function (token, err) {
-                if(err) next(err);
+
+            Session.createToken(param_for_token, function (err, token) {
+                if (err) next(err);
                 res.send(JSON.stringify({
                     login: result.login,
                     token: token.hash,
                     date: token.date
                 }));
             });
+
+
         });
     });
 }

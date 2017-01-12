@@ -8,11 +8,17 @@ class Sessions{
     // Установить токен / создать сессию
     static createToken(param, callback){
         let token = Token.createForUser(param.email);
-        Sessions.setSessionFields(token, param, function (err, res) {
+        Sessions.setSessionFields(token.hash, param, function (err, res) {
             if (err) {
                 callback(err, null)
             }
-            callback(null, token)
+
+            if (!res) {
+                let err_message = "Can't create token in REDIS"
+                callback(err, null)
+            }
+
+            callback(null, token);
         })
     }
 
@@ -23,11 +29,11 @@ class Sessions{
         client.multi([
             ['hgetall', full_key],
             ['expire', full_key, lifetime]
-        ]).exec(function (err, repl) {
+        ]).exec(function (err, res) {
             if (err) {
                 callback(err, null)
             }
-            callback(null, repl[0])
+            callback(null, res[0])
         });
     }
 
@@ -42,13 +48,13 @@ class Sessions{
         client.multi([
             hmget,
             ['expire', full_key, lifetime]//
-        ]).exec(function (err, repl) {
+        ]).exec(function (err, res) {
             if (err) {
                 callback(err, null)
             }
             let result = {};
             fields.forEach(function (field, key) {
-                result[field] = repl[key]
+                result[field] = res[key]
             });
             callback(null, result)
         });
@@ -66,11 +72,11 @@ class Sessions{
         client.multi([
             hmset,
             ['expire', full_key, lifetime]//
-        ]).exec(function (err, repl) {
+        ]).exec(function (err, res) {
             if (err) {
                 callback(err, null)
             }
-            callback(null, repl[0]=='OK')
+            callback(null, res[0]=='OK')
         });
     }
 
@@ -78,13 +84,13 @@ class Sessions{
     static clearSessionAll(token, callback){
         let full_key = [prefix, token].join(':');
         client.multi([
-            ['hgetall', full_key],
+            ['del', full_key],
             ['expire', full_key, lifetime]
-        ]).exec(function (err, repl){
+        ]).exec(function (err, res){
             if (err) {
                 callback(err, null)
             }
-            callback(null, repl)
+            callback(null, res)
         });
     }
 
@@ -96,22 +102,22 @@ class Sessions{
         fields.forEach(function (field) {
             operations.push(['hdel', full_key, field])
         });
-        client.multi(operations).exec(function (err, repl) {
+        client.multi(operations).exec(function (err, res) {
             if (err) {
                 callback(err, null)
             }
-            callback(null, repl)
+            callback(null, res)
         });
     }
 
     // Установить время жизни
     static setLifetime(token, callback){
         let full_key = [prefix, token].join(':');
-        client.expire(full_key, lifetime, function (err, repl) {
+        client.expire(full_key, lifetime, function (err, res) {
             if(err){
                 callback(err, false);
             }
-            callback(null, repl);
+            callback(null, res);
         });
     }
 
