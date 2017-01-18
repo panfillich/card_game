@@ -1,13 +1,10 @@
-module.exports = function (config) {
+const current_folder = __dirname;
+const current_file   = __filename;
+const fs = require('fs');
 
-    let initialisers = [
-        require('./bodyParser'),
-        require('./resHeaders'),
-        require('./helmet')
-    ];
-
-    initialisers.forEach(function (initializer) {
-        initializer(config);
-    });
-}
-
+fs.readdirSync(current_folder).forEach(file => {
+    if((current_folder+'/'+file) == current_file || (file.slice(-3) != '.js')){
+        return;
+    }
+    require('./' + file);
+});

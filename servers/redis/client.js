@@ -1,3 +1,5 @@
+let log = require('../common_libs/logger')(module);
+
 let redis = require("redis");
 
 let option = {
@@ -33,11 +35,11 @@ function setEvents(client) {
     });
 
     client.on("connect", function () {
-        console.log("connect");
+        // console.log("connect");
     });
 
     client.on("ready", function () {
-        console.log("ready");
+        log.info("Connect to Redis is ready");
     });
 
     client.on("end", function () {

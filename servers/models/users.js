@@ -1,22 +1,17 @@
-let common_libs = '../common_libs/';
-
-let Token = require(common_libs + 'token');
-
+let Token = require('../common_libs/token');
+let db = require('../database');
+let users = db.users;
 
 class Users{
-    constructor(db){
-        this.users = db.users;
-    }
-
     //Получаем информацию пользователя для авторизации
     //param {
     //  email,
     //  password
     //}
-    get_auth_info(param, callback){
+    static get_auth_info(param, callback){
         let pass_hash = Token.createForUserPass(param.password).hash;
 
-        this.users.findOne({
+        users.findOne({
             attributes: ['userId', 'login', 'email', 'status'],
             where: {
                 email: param.email,
@@ -41,7 +36,7 @@ class Users{
     //  token,
     //  tokenCreate
     //}
-    get_token(param, callback){
+    static get_token(param, callback){
         let where = {
             login: param.login
         }
@@ -60,7 +55,7 @@ class Users{
         where[attributes[1]] = param.token;
         where[attributes[2]] = param.tokenCreate;
 
-        this.users.findOne({
+        users.findOne({
             attributes: attributes,
             where: where
         }).then(function(project) {
@@ -85,7 +80,7 @@ class Users{
     //  email:  string,
     //  type:   string (['web', 'game'])
     //}
-    set_token(param, callback){
+    static set_token(param, callback){
         let token = Token.createForUser(param.email);
         let set = {};
 
@@ -100,7 +95,7 @@ class Users{
                 break;
         }
 
-        this.users.update(
+        users.update(
             set,
             { where: { userId: param.userId}}
         ).then(function (project) {

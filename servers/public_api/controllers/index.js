@@ -1,12 +1,17 @@
-module.exports = function (config) {
+/*const current_folder = __dirname;
+const current_file   = __filename;
+const fs = require('fs');
 
-    let initialisers = [
-        require('./autentification'),
-        require('./test'),
-        require('./errors')
-    ];
+fs.readdirSync(current_folder).forEach(file => {
+    if((current_folder+'/'+file) == current_file){
+        return;
+    }
+    require('./' + file);
+});*/
 
-    initialisers.forEach(function (initializer) {
-        initializer(config);
-    });
-}
+
+let app = require('../app');
+
+app.use('/test', require('./test'));
+app.use('/auth', require('./auth'));
+

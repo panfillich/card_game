@@ -1,5 +1,7 @@
 let common_libs = '../common_libs/';
 
+let users =
+
 class Articles{
     constructor(db){
         this.articles = db.articles;

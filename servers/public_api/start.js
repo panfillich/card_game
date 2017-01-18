@@ -1,9 +1,56 @@
-// https://habrahabr.ru/post/193458/#p1
-let express = require('express');
-
-let app = express();
 let log = require('../common_libs/logger')(module);
 
+//Проверяем соединение с Redis / создаем клиента
+require('../redis/client');
+
+//Определяем Express приложение
+require('./app');
+//Устанавливаем настройки
+require('./config');
+//Устанавливаем обработчики событий (контроллеры)
+require('./controllers');
+//Устанавливаем обработчики ошибок
+require('./errors');
+//Запускаем сервер
+require('./server');
+
+//Устанавливаем/проверяем соединение с БД
+let orm = require("../database");
+orm.sequelize.sync().then(function () {
+    log.info('Connect to DB is ready');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 let initialisers = [
     require('./config'),
     require('./controllers')
@@ -16,19 +63,9 @@ let storage = { //
     basePath: __dirname
 };
 
-
-var bodyParser = require('body-parser');
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-    extended: true
-}));
-
 let orm = require("../database");
 let get_models_list = require("../models");
 let client = require("../redis/client")
-
-
 
 client.set("string key", "string val");
 client.hset("users:1", "name", "Andrew");
@@ -60,7 +97,7 @@ orm.sequelize.sync().then(function () {
         console.log(111);
     })
 
-    let user =  storage.models.users;
+    /*let user =  storage.models.users;
     let sessions = require('../models/sessions');
 
 
@@ -104,7 +141,7 @@ orm.sequelize.sync().then(function () {
     });
 
     // server.close(function() { console.log('Doh :('); });
-});
+});*/
 
 
 
