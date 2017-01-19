@@ -43,7 +43,7 @@ router.post('/', function(req, res, next) {
             res.send(JSON.stringify({
                 login: result.login,
                 token: token.hash,
-                date: token.date
+                date:  token.date
             }));
         });
     });

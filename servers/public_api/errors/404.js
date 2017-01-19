@@ -5,6 +5,7 @@ app.use(function(req, res){
     res.status(status);
     res.send({
         status: status,
-        error: ('Not found URL: %s', req.url)
+        description: 'Not Found',
+        error: 'Not found URL: '+req.url
     });
 });

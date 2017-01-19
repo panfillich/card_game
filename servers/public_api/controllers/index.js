@@ -14,4 +14,5 @@ let app = require('../app');
 
 app.use('/test', require('./test'));
 app.use('/auth', require('./auth'));
+app.use('/reg', require('./reg'));
 

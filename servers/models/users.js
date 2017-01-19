@@ -1,6 +1,7 @@
 let Token = require('../common_libs/token');
 let db = require('../database');
 let users = db.users;
+let constants = require('../database/schema').constants;
 
 class Users{
     //Получаем информацию пользователя для авторизации
@@ -16,7 +17,7 @@ class Users{
             where: {
                 email: param.email,
                 password: pass_hash,
-                status: 1
+                status: constants.status.ACTIVATED
             }
         }).then(function(project) {
             let result = null;
@@ -27,6 +28,10 @@ class Users{
         }).catch(function(error){
             callback(null, error);
         });
+    }
+
+    static createNewUser(param, callback){
+
     }
 
     //получаем токен и дату
