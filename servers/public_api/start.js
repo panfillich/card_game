@@ -18,6 +18,11 @@ require('./server');
 let orm = require("../database");
 orm.sequelize.sync().then(function () {
     log.info('Connect to DB is ready');
+
+    let Users = require('../models/users');
+    Users.activateUser(100, function (err, result) {
+        console.log(result);
+    });
 });
 
 

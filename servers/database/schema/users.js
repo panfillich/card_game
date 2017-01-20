@@ -25,10 +25,7 @@ let get_schema = function(Sequelize, DataTypes){
             gameTokenCreate: DataTypes.DATE,
             status: {
                 type: DataTypes.INTEGER(2),
-                defaultValue: 0
-                //0 - в ожидании подтверждения регистрации
-                //1 - зарегестрирован
-                //2 - забанен
+                defaultValue: constants.status.INVITED
             },
             createdAt: {
                 type: DataTypes.DATE,

@@ -1,14 +1,11 @@
 let Token = require('../common_libs/token');
 let db = require('../database');
 let users = db.users;
-let constants = require('../database/schema').constants;
+let constants = require('../database/schema/users').constants;
 
 class Users{
     //Получаем информацию пользователя для авторизации
-    //param {
-    //  email,
-    //  password
-    //}
+    //param : [ email, password ]
     static get_auth_info(param, callback){
         let pass_hash = Token.createForUserPass(param.password).hash;
 
@@ -30,8 +27,39 @@ class Users{
         });
     }
 
-    static createNewUser(param, callback){
+    //Cоздаем нового пользователя
+    static createNewUser(params, callback){
+        //Получаем хэш пароля
+        let token = Token.createForUserPass(param.password);
+        users.create({
+            login: params.login,
+            email: params.email,
+            password: token,
+            status: constants.status.INVITED
+        }).then(function(project){
+            console.log(project);
+            callback(null, project);
+        }).catch(function(error){
+            callback(error, null);
+        });
+    }
 
+    //Активируем пользователя
+    static activateUser(user_id, callback){
+        users.update(
+            {
+                status: constants.status.ACTIVATED
+            },
+            {
+                where: {
+                    userId: user_id
+                }
+            }
+        ).then(function(project){
+            callback(null, project[0] == 1);
+        }).catch(function(error){
+            callback(null, error);
+        });
     }
 
     //получаем токен и дату
