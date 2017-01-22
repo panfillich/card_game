@@ -6,7 +6,6 @@ let option = {
     host: '127.0.0.1',
     port: 6379,
     retry_strategy: function (options) {
-        console.log(Math.min(options.attempt * 100, 3000));
         if (options.error && options.error.code === 'ECONNREFUSED') {
             // End reconnecting on a specific error and flush all commands with a individual error
             return new Error('The server refused the connection');

@@ -1,4 +1,4 @@
-module.exports = function(res, status, message) {
+module.exports = function(res, status, message, detail=null) {
     let description = '';
     switch (status) {
         case 400:
@@ -20,9 +20,15 @@ module.exports = function(res, status, message) {
             description = 'No description';
     }
 
-    res.status(status).send(JSON.stringify({
+    let json = {
         status: status,
         description: description,
         message: message
-    }));
+    };
+
+    if(detail){
+        json.detail = detail;
+    }
+
+    res.status(status).send(JSON.stringify(json));
 }

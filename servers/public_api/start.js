@@ -20,9 +20,16 @@ orm.sequelize.sync().then(function () {
     log.info('Connect to DB is ready');
 
     let Users = require('../models/users');
-    Users.activateUser(100, function (err, result) {
+    /*Users.activateUser(100, function (err, result) {
         console.log(result);
-    });
+    });*/
+
+    let Validate = require('../common_libs/validate');
+
+    Users.getAllEmailAndLogin(0,2,function (err, result) {
+        console.log(result);
+    })
+
 });
 
 

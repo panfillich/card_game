@@ -2,19 +2,38 @@ let express     = require('express');
 let router      = express.Router();
 
 let Users       = require('../../models/users');
+let Validate    = require('../../common_libs/validate');
 let sendError   = require('../../common_libs/errors_format');
 
 router.post('/', function(req, res, next) {
     // post : [email, login, password, confirm_password, person]
 
-    //Проверяем обязательные параметры:
-    if (!req.body.login ||
-        !req.body.password ||
-        !req.body.confirm_password ||
-        !req.body.email)
-    {
-        return sendError(res, 400, 'Relevant fields not found');
+    let fields = [
+        { name : 'email',            type : 'email',     required: true },
+        { name : 'login',            type : 'login',     required: true },
+        { name : 'password',         type : 'password',  required: true },
+        { name : 'confirm_password', type : 'password',  required: true },
+        { name : 'language',         type : 'language',  required: true }
+    ];
+
+    let result = Validate.checkFullValidate(req.body, fields);
+
+    // Проверяем валидацию полей
+    if(!result.is_valid){
+        return sendError(res, 400, 'Required fields not found or fields not valid', result.detail);
     }
+
+    // Проверяем совпадение паролей
+    if(req.body.password != req.body.confirm_password){
+        return sendError(res, 400, 'Passwords do not match', {invalid_fields:['password', 'confirm_password']});
+    }
+
+    // Проверяем уникальность логина и email, надежность пароля
+
+
+    // Отправляем email
+
+    return sendError(res, 200, 'OK' );
 
 
 });

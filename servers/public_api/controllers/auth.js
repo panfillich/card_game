@@ -19,7 +19,7 @@ router.post('/', function(req, res, next) {
     };
 
     //Ищем такого пользователя
-    Users.get_auth_info(param, function (result, err) {
+    Users.getAuthInfo(param, function (result, err) {
         //Ошибка при поиске
         if (err) return next(err);
 
