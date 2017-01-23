@@ -1,6 +1,6 @@
 let get_fish_text = require('../../../common_libs/fish_text/index');
 let config = require('../config.json');
-let constants = require('../../schema/articles').constants;
+let constants = require('../.././articles').constants;
 let get_rand_attr = require('../../../common_libs/random/get_rand_attr');
 
 let list_articles = [];

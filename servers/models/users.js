@@ -1,7 +1,7 @@
 let Token = require('../common_libs/token');
 let db = require('../database');
 let users = db.users;
-let constants = require('../database/schema/users').constants;
+let constants = require('./users').constants;
 
 class Users{
     //Получаем информацию пользователя для авторизации

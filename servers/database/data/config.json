@@ -5,10 +5,10 @@
     ],
 
     "test" : {
-        "users": 20,
-        "messages": 30,
+        "users": 60,
+        "messages": 70,
         "language": ["en", "ru"],
-        "articles": 60,
+        "articles": 6000,
         "min_comments" : 0,
         "max_comments": 200,
         "min_comments_length": 1,

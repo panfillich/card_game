@@ -1,5 +1,5 @@
 let config = require('../config.json');
-let constants = require('../../schema/comments').constants;
+let constants = require('../.././comments').constants;
 
 let get_rand_int = require('../../../common_libs/random/get_rand_int');
 let get_fish_text = require('../../../common_libs/fish_text/index');

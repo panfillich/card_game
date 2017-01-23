@@ -28,10 +28,20 @@ orm.sequelize.sync().then(function () {
 
     Users.getAllEmailAndLogin(0,2,function (err, result) {
         console.log(result);
-    })
 
+        let client = require('../redis/client');
+        client.multi([
+            ['sadd', 'test', 1,2,3]
+        ]).exec(function (err, repl) {
+            console.log(repl);
+        });
+    });
 });
 
+
+function getFirst() {
+    
+}
 
 
 
