@@ -1,0 +1,17 @@
+{
+    "data": [
+        "common",
+        "test"
+    ],
+
+    "test" : {
+        "users": 60,
+        "messages": 70,
+        "language": ["en", "ru"],
+        "articles": 6000,
+        "min_comments" : 0,
+        "max_comments": 200,
+        "min_comments_length": 1,
+        "max_comments_length": 30
+    }
+}

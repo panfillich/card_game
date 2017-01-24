@@ -11,9 +11,8 @@ fs.readdirSync(current_folder).forEach(file => {
     schemas.push(file);
 });
 
-let list_schemas = [];
-
 module.exports = function (Sequelize, DataTypes) {
+    let list_schemas = [];
     schemas.forEach(schema => {
         list_schemas.push(
             require('./' + schema).get_schema(Sequelize, DataTypes)

@@ -45,12 +45,12 @@ let get_schema = function(Sequelize, DataTypes){
             collate: 'utf8_general_ci'
         },
         indexes: [
-            {
+            /*{
                 fields: ['status', 'articleId', 'createdAt'],
                 properties: {
                     indexName: 'status_article_date'
-                }
-            }
+              }
+            }*/
         ],
         const: constants
     }

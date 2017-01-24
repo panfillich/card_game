@@ -1,27 +1,20 @@
-'use strict';
-
-var fs        = require('fs');
-var path      = require('path');
-var Sequelize = require('sequelize');
-var basename  = path.basename(module.filename);
-var config    = require('./config.json').development;
-var db        = {};
+let path      = require('path');
+let Sequelize = require('sequelize');
+let config    = require('./config.json').development;
+let db        = {};
 
 
-config.logging = console.log;
+// config.logging = console.log;
 
-var sequelize = new Sequelize(config.database, config.username, config.password, config);
-fs
-    .readdirSync(__dirname)
-    .filter(function(file) {
-        return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-    })
-    .forEach(function(file) {
-        var models = sequelize['import'](path.join(__dirname, file));
-        models.forEach(function (model) {
-            db[model.name] = model;
-        });
-    });
+let sequelize = new Sequelize(config.database, config.username, config.password, config);
+
+let file = 'addiction.js';
+
+let models = sequelize['import'](path.join(__dirname, file));
+
+models.forEach(function (model) {
+    db[model.name] = model;
+});
 
 Object.keys(db).forEach(function(modelName) {
     if (db[modelName].associate) {

@@ -93,5 +93,46 @@ gulp.task('webpack-dev-server', function (callback) {
 });
 
 gulp.task('default', ['start_servers', 'check_servers', 'webpack-dev-server']);
+//---------------------------------------------------------//
 
 
+//-------------| Работа с данными / кэшем |----------------//
+
+// REDIS:
+
+// Кэшируем необходимые
+gulp.task('redis:create', function () {
+
+});
+// Очищаем все данные
+gulp.task('redis:clear', function () {
+
+});
+// Очищаем все данные и перезаписываем все
+gulp.task('redis:reload', function () {
+
+});
+
+
+// DB:
+
+// Cоздаем структуру таблиц
+gulp.task('db:create', function () {
+
+});
+// Удаляем таблицы
+gulp.task('db:drop', function () {
+
+});
+// Удаляем все таблицы и создаем новые
+gulp.task('db:reload', function () {
+
+});
+// Записываем тестовые данные
+gulp.task('db:data-test:create', function () {
+
+});
+// Записываем тестовые данные
+gulp.task('db:data-test:reload', function () {
+
+});
