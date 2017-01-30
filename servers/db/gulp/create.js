@@ -14,7 +14,9 @@ let create = function (callback) {
 
     let finalAction = function () {
         cLog('completed successfully');
-        callback();
+        if(callback){
+            callback();
+        }
     }
 
     let list_schemas = get_list_schemas(DataTypes, DataTypes);

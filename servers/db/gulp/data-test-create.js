@@ -2,9 +2,13 @@ let DataTypes           = require('./connect').DataTypes;
 let queryInterface      = require('./connect').queryInterface;
 let get_list_schemas    = require('../schema');
 
+const config = require('../data/config');
+const folder = __dirname + '/../data/test';
+const fs = require('fs');
+
 let log   = console.log;
 let cLog  = function (message) {
-    log('\x1b[33m%s\x1b[0m: ', 'Creating tables', message);  //yellow
+    log('\x1b[33m%s\x1b[0m: ', 'Creating test data', message);  //yellow
 }
 
 let create = function (callback) {
@@ -13,53 +17,36 @@ let create = function (callback) {
 
     let finalAction = function () {
         cLog('completed successfully');
-        callback();
+        if(callback) {
+            callback();
+        }
     }
 
-    let list_schemas = get_list_schemas(DataTypes, DataTypes);
+    let data_func = [];
 
-    let all_async_actions = 0;
-    list_schemas.forEach(function (schema) {
-        all_async_actions++;
-        schema.indexes.forEach(function () {
-            all_async_actions++;
-        });
+    fs.readdirSync(folder).forEach(file => {
+        data_func.push(require('../data/test/' + file));
     });
 
-    let current_async_actions = 0;
-    list_schemas.forEach(function (schema) {
-        queryInterface.createTable(
-            schema.table_name,
-            schema.fields,
-            schema.properties
-        ).then(function () {
-            log(`[${schema.table_name}]: table created`);
-            current_async_actions++;
-            if(current_async_actions == all_async_actions){
-                finalAction();
+    let current_iterate = 0;
+
+    let callbackIterate = function () {
+        current_iterate++;
+        if(data_func.length == (current_iterate+1)){
+            if(callback){
+                callback();
             }
-            schema.indexes.forEach(function (index) {
-                queryInterface.addIndex(
-                    schema.table_name,
-                    index.fields,
-                    index.properties
-                ).then(function () {
-                    log(`[${schema.table_name}]: index [${index.properties.indexName}] created`);
-                    current_async_actions++;
-                    if(current_async_actions == all_async_actions){
-                        finalAction();
-                    }
-                }).catch(function (error) {
-                    log(`[${schema.table_name}]: index wasn't create`);
-                    log(`[${schema.table_name}]: '${error}'`);
-                });
-            });
-        }).catch(function (error) {
-            log(`[${schema.table_name}]: table wasn't create`);
-            log(`[${schema.table_name}]: '${error}'`);
-        });
-    });
+        } else {
+            data_func[current_iterate](queryInterface, DataTypes, callbackIterate);
+        }
+    }
+
+    data_func[0](queryInterface, DataTypes, callbackIterate);
 };
+
+
+create()
+
 
 module.exports = create;
 

@@ -6,7 +6,7 @@ let reload = function (callback) {
         create(callback);
     });
 };
-
+reload()
 module.exports = reload;
 
 
