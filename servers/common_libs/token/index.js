@@ -24,7 +24,6 @@ class Token{
     }
 
     static createForUserPass(string){
-        console.log(string);
         const hash = crypto.createHmac('sha512', secret_for_pass)
             .update(string)
             .digest('hex');

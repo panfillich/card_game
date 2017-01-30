@@ -6,7 +6,7 @@ module.exports = {
     test : {
         users: {
             //количество пользователей
-            count: 5000000,
+            count: 20000,
             //шаблоны (%(id)s - порядковый номер)
             email: 'email-%(id)s@gmail.com',
             login: 'login-%(id)s',
@@ -19,12 +19,12 @@ module.exports = {
                 //Число комментариев к статье
                 count: {
                     min: 0,
-                    max: 200
+                    max: 20
                 },
                 //Cлов в 1м комментарии
                 words: {
                     min: 1,
-                    max: 30
+                    max: 16
                 }
             }
         },

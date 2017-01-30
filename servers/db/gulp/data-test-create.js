@@ -32,10 +32,8 @@ let create = function (callback) {
 
     let callbackIterate = function () {
         current_iterate++;
-        if(data_func.length == (current_iterate+1)){
-            if(callback){
-                callback();
-            }
+        if(data_func.length == current_iterate){
+            finalAction();
         } else {
             data_func[current_iterate](queryInterface, DataTypes, callbackIterate);
         }
@@ -43,10 +41,6 @@ let create = function (callback) {
 
     data_func[0](queryInterface, DataTypes, callbackIterate);
 };
-
-
-create()
-
 
 module.exports = create;
 
