@@ -1,5 +1,5 @@
 //Устанавливаем/проверяем соединение с БД
-let orm = require("../db");
+let orm = require("../../db");
 
 module.exports = function (callback) {
     orm.sequelize.sync().then(function () {
@@ -7,4 +7,3 @@ module.exports = function (callback) {
         callback();
     });
 };
-

@@ -1,5 +1,5 @@
 let Token = require('../common_libs/token');
-let db = require('../database');
+let db = require('../db');
 let users = db.users;
 let constants = require('./users').constants;
 
@@ -21,9 +21,9 @@ class Users{
             if (project){
                 result = project.dataValues;
             }
-            callback(result, null);
+            callback(null, result);
         }).catch(function(error){
-            callback(null, error);
+            callback(error, null);
         });
     }
 
@@ -69,11 +69,33 @@ class Users{
             limit: limit,
             offset: offset
         }).then(function (result) {
-            callback(null, result);
+            let final_result = [];
+            result.forEach(function (instance) {
+                final_result.push(instance.dataValues)
+            });
+            callback(null, final_result);
         }).catch(function(error){
             callback(null, error);
         });
     }
 }
 
-module.exports = Users;
+//  Прослойка для кэширования, счетчиков и т.д.
+//+ методы для работы только с кэшем
+class UsersCache extends Users{
+
+    //Создание нового пользователя
+    static createNewUser(params, callback){
+        let cacheFunction = function (error, result) {
+            if(error) {
+                //Ничего не делаем
+                callback(null, error);
+            } else {
+                callback(result, null)
+            }
+        };
+        super.createNewUser(params, cacheFunction);
+    }
+}
+
+module.exports = UsersCache;
