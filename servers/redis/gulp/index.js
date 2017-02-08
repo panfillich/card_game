@@ -1,28 +1,36 @@
-const dbConnect = require('./db_connect');
-
-let clear   = require('./clear');
-let create  = require('./create');
+let client    = require('../client');
+let clear     = require('./clear');
+let create    = require('./create');
 
 class callAction{
     static create(callback){
-        dbConnect(function () {
-            create(callback);
+        create(function () {
+            client.end(true);
+            if(callback) {
+                callback();
+            }
         });
     }
 
     static clear(callback){
-        clear(callback);
+        clear(function () {
+            client.end(true);
+            if(callback) {
+                callback();
+            }
+        });
     }
 
     static reload(callback){
-        callAction.clear(function () {
-            callAction.create(callback);
+        clear(function () {
+            create(function () {
+                client.end(true);
+                if(callback) {
+                    callback();
+                }
+            });
         });
     }
 }
 
-callAction.reload(function () {
-    console.log('Final');
-});
-
-// /module.exports = callAction;
+module.exports = callAction;

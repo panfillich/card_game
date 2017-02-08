@@ -1,7 +1,10 @@
-let Token = require('../common_libs/token');
-let db = require('../db');
-let users = db.users;
-let constants = require('./users').constants;
+let Token       = require('../common_libs/token');
+let client      = require('../redis/client');
+let KEY         = require('../redis/key');
+
+let db          = require('../db');
+let users       = db.users;
+let constants   = require('./users').constants;
 
 class Users{
     //Получаем информацию пользователя для авторизации
@@ -35,10 +38,9 @@ class Users{
             login: params.login,
             email: params.email,
             password: token,
-            status: constants.status.INVITED
+            status: 1//constants.status.INVITED
         }).then(function(project){
-            console.log(project);
-            callback(null, project);
+            callback(null, project.dataValues);
         }).catch(function(error){
             callback(error, null);
         });
@@ -83,18 +85,58 @@ class Users{
 //  Прослойка для кэширования, счетчиков и т.д.
 //+ методы для работы только с кэшем
 class UsersCache extends Users{
-
     //Создание нового пользователя
     static createNewUser(params, callback){
         let cacheFunction = function (error, result) {
             if(error) {
-                //Ничего не делаем
-                callback(null, error);
+                //Ничего не делаем, при создании юзера возникли ошибки
+                callback(error, null);
             } else {
-                callback(result, null)
+                //Увеличиваем счетчик, записываем email, login в список
+                client.multi([
+                    ['sadd', KEY.USERS.EMAILS, result.email],
+                    ['sadd', KEY.USERS.LOGINS, result.login],
+                    ['incr', KEY.USERS.COUNT]
+                ]).exec(function (error, repl) {
+                    if (!error) {
+                        callback(null, result);
+                    } else {
+                        callback(error, null);
+                    }
+                });
             }
         };
         super.createNewUser(params, cacheFunction);
+    }
+
+    //Проверяем уникальность email
+    static checkUnicEmail(email, callback){
+        client.sismember(KEY.USERS.EMAILS, email, function (err, res) {
+            if(!err){
+                let is_unic = false;
+                if(res == 0){
+                    is_unic = true;
+                }
+                callback(null, is_unic);
+            } else {
+                callback(err);
+            }
+        });
+    }
+
+    //Проверяем уникальность login
+    static checkUnicLogin(login, callback){
+        client.sismember(KEY.USERS.LOGINS, login, function (err, res) {
+            if(!err){
+                let is_unic = false;
+                if(res == 0){
+                    is_unic = true;
+                }
+                callback(null, is_unic);
+            } else {
+                callback(err);
+            }
+        });
     }
 }
 

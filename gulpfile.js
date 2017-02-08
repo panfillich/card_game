@@ -99,40 +99,45 @@ gulp.task('default', ['start_servers', 'check_servers', 'webpack-dev-server']);
 //-------------| Работа с данными / кэшем |----------------//
 
 // REDIS:
+let redis = require('./servers/redis/gulp');
 
 // Кэшируем необходимые
-gulp.task('redis:create', function () {
-
+gulp.task('redis:create', function (callback) {
+    redis.create(callback);
 });
-// Очищаем все данные
-gulp.task('redis:clear', function () {
-
+// Очищаем весь кэш
+gulp.task('redis:clear',  function (callback) {
+    redis.clear(callback);
 });
 // Очищаем все данные и перезаписываем все
-gulp.task('redis:reload', function () {
-
+gulp.task('redis:reload', function (callback) {
+    redis.reload(callback);
 });
+
+// gulp.start('redis:clear');
+// });
 
 
 // DB:
+// let db = require('./servers/db/gulp');
 
 // Cоздаем структуру таблиц
-gulp.task('db:create', function () {
+gulp.task('db:create', function (callback) {
 
 });
 // Удаляем таблицы
-gulp.task('db:drop', function () {
-
+gulp.task('db:drop', function (callback) {
+    // db.clear(callback);
 });
 // Удаляем все таблицы и создаем новые
-gulp.task('db:reload', function () {
+gulp.task('db:reload', function (callback) {
 
 });
 // Записываем тестовые данные
-gulp.task('db:data-test:create', function () {
+gulp.task('db:data-test:create', function (callback) {
 
 });
-// Записываем тестовые данные
-gulp.task('db:data-test:reload', function () {
+// Удаляем таблицы и перезаписываем тестовые данные
+gulp.task('db:data-test:reload', function (callback) {
 
 });

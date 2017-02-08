@@ -3,7 +3,7 @@ let router      = express.Router();
 
 let Users       = require('../../models/users');
 let Validate    = require('../../common_libs/validate');
-let sendError   = require('../../common_libs/errors_format');
+let ResFormat   = require('../../common_libs/res_format');
 
 router.post('/', function(req, res, next) {
     // post : [email, login, password, confirm_password, person]
@@ -20,22 +20,53 @@ router.post('/', function(req, res, next) {
 
     // Проверяем валидацию полей
     if(!result.is_valid){
-        return sendError(res, 400, 'Required fields not found or fields not valid', result.detail);
+        let status = 400;
+        let json = ResFormat(status, 'Required fields not found or fields not valid', result.detail);
+        return res.status(status).send(JSON.stringify(json));
     }
 
     // Проверяем совпадение паролей
     if(req.body.password != req.body.confirm_password){
-        return sendError(res, 400, 'Passwords do not match', {invalid_fields:['password', 'confirm_password']});
+        let status = 400;
+        let json = ResFormat(status, 'Passwords do not match', {invalid_fields:['password', 'confirm_password']});
+        return res.status(status).send(JSON.stringify(json));
     }
 
     // Проверяем уникальность логина и email, надежность пароля
+    Users.checkUnicEmail(req.body.email, function (err, is_unic) {
+        if(err) return next(err);
+        if(!is_unic) {
+            let status = 400;
+            let json = ResFormat(status, "Email is't unique", {non_unique_field:['email']});
+            return res.status(status).send(JSON.stringify(json));
+        }
 
+        Users.checkUnicLogin(req.body.login, function (err, is_unic) {
+            if(err) return next(err);
+            if(!is_unic) {
+                let status = 400;
+                let json = ResFormat(status, "Login is't unique", {non_unique_field:['login']});
+                return res.status(status).send(JSON.stringify(json));
+            }
 
-    // Отправляем email
+            // Создаем нового пользователя
+            // Если логин и email уникальны и валидны
+            const params = {
+                login: req.body.login,
+                email: req.body.email,
+                password: req.body.password};
+            Users.createNewUser(params, function (err, result) {
+                if(err) return next(err);
 
-    return sendError(res, 200, 'OK' );
-
-
+                let status = 200;
+                let json = ResFormat(status, "User was created", {
+                    login: result.login,
+                    email: result.email
+                });
+                return res.status(status).send(JSON.stringify(json));
+            });
+        });
+    });
 });
 
 router.get('/confirmation/:token([a-z0-9]{64})', function (req, res) {

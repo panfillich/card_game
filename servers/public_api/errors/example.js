@@ -1,6 +1,8 @@
 let app = require('../app');
-let send_error = require('../../common_libs/errors_format');
+let ResFormat = require('../../common_libs/res_format');
 app.get('/error-example', function(req, res, next){
-    return send_error(res, 400, 'Example error in Public API...');
+    let status = 400;
+    let json = ResFormat(status, 'Example error in Public API...');
+    return res.status(status).send(JSON.stringify(json));
 });
 
