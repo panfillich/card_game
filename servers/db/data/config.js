@@ -6,7 +6,7 @@ module.exports = {
     test : {
         users: {
             //количество пользователей
-            count: 20000,
+            count: 5000000,
             //шаблоны (%(id)s - порядковый номер)
             email: 'email-%(id)s@gmail.com',
             login: 'login-%(id)s',

@@ -28,14 +28,15 @@ class CreatingCash{
         let client = this.client;
         let db = this.db;
 
-        let pack_size = 20000;
-        let all_users = 0;
+        let all_users = 5000000;
+        let pack_size = 25000;
+        let count_users = 0;
 
         let finishFunction = function () {
-            log('multiply emails added (' + all_users + ')');
-            log('multiply logins added (' + all_users + ')');
+            log('multiply emails added (' + count_users + ')');
+            log('multiply logins added (' + count_users + ')');
             client.multi([
-                ['set', KEY.USERS.COUNT, all_users],
+                ['set', KEY.USERS.COUNT, count_users],
                 ['set', KEY.USERS.IN_GAME, 0]
             ]).exec(function (err, repl) {
                 if (!err) {
@@ -55,7 +56,7 @@ class CreatingCash{
                     let pack_emails = [];
                     let pack_logins = [];
 
-                    all_users += result.length;
+                    count_users += result.length;
 
                     result.forEach(function (user) {
                         pack_emails.push(user.email)
@@ -65,11 +66,26 @@ class CreatingCash{
                     if(pack_emails.length == 0 || pack_logins.length == 0){
                         finishFunction();
                     } else {
-                        client.multi([
-                            ['sadd', KEY.USERS.EMAILS, pack_emails],
+
+                        client.sadd(
+
+                            KEY.USERS.LOGINS, pack_logins, function (err, res) {
+                            if (!err) {
+                                log('[users]: ' + (count_users*100/all_users) + '%') ;
+                                if (result.length == pack_size) {
+                                    setNewPack(count_users, pack_size, callback);
+                                } else {
+                                    finishFunction();
+                                }
+                            } else {
+                                log(err);
+                            }
+                        });
+                        /*    ['sadd', KEY.USERS.EMAILS, pack_emails],
                             ['sadd', KEY.USERS.LOGINS, pack_logins]
                         ]).exec(function (err, repl) {
                             if (!err) {
+                                console.log(all_users + '   ' + pack_emails.length);
                                 if (result.length == pack_size) {
                                     setNewPack(all_users, pack_size, callback);
                                 } else {
@@ -79,6 +95,22 @@ class CreatingCash{
                                 log(err);
                             }
                         });
+
+                        client.multi([
+                            ['sadd', KEY.USERS.EMAILS, pack_emails],
+                            ['sadd', KEY.USERS.LOGINS, pack_logins]
+                        ]).exec(function (err, repl) {
+                            if (!err) {
+                                console.log(all_users + '   ' + pack_emails.length);
+                                if (result.length == pack_size) {
+                                    setNewPack(all_users, pack_size, callback);
+                                } else {
+                                    finishFunction();
+                                }
+                            } else {
+                                log(err);
+                            }
+                        });*/
                     }
                 }
             });
