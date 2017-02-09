@@ -1,5 +1,3 @@
-let Users   = require('../../models/users');
-let client  = require('../client');
 const KEY   = require('../key');
 
 let log   = console.log;
@@ -8,26 +6,34 @@ let hLog  = function (message) {
 }
 
 class CreatingCash{
+    start(client, db, callback){
+        this.client = client;
+        this.db     = db;
 
-    static start(callback){
+        hLog('start');
+
         //users:emails  - список всех email
         //users:logins  - список всех login
         //users:count   - список всех пользователей
         //users:in_game - список всех пользователей в игре
-        CreatingCash._users(callback);
+        this._users(function () {
+            hLog('created successfully');
+            callback();
+        });
     }
-
 
     //Множества: все login, email
     //Счетчики:  все пользователи
-    static _users(callback){
+    _users(callback){
+        let client = this.client;
+        let db = this.db;
+
         let pack_size = 20000;
         let all_users = 0;
 
         let finishFunction = function () {
             log('multiply emails added (' + all_users + ')');
             log('multiply logins added (' + all_users + ')');
-
             client.multi([
                 ['set', KEY.USERS.COUNT, all_users],
                 ['set', KEY.USERS.IN_GAME, 0]
@@ -44,7 +50,7 @@ class CreatingCash{
         };
 
         let setNewPack = function (offset, limit, callback) {
-            Users.getAllEmailAndLogin(offset,limit,function (err, result) {
+            CreatingCash._getAllEmailAndLogin(db, offset, limit, function (err, result) {
                 if(!err){
                     let pack_emails = [];
                     let pack_logins = [];
@@ -79,17 +85,22 @@ class CreatingCash{
         };
         setNewPack(0, pack_size, callback);
     }
+
+    static _getAllEmailAndLogin(db, offset, limit, callback){
+        db.users.findAll({
+            attributes: ['userId', 'login', 'email'],
+            limit: limit,
+            offset: offset
+        }).then(function (result) {
+            let final_result = [];
+            result.forEach(function (instance) {
+                final_result.push(instance.dataValues)
+            });
+            callback(null, final_result);
+        }).catch(function(error){
+            callback(null, error);
+        });
+    }
 }
 
-let create = function (callback) {
-    hLog('start');
-    CreatingCash.start(function () {
-        hLog('finish');
-        if(callback){
-            callback();
-        }
-    });
-};
-
-
-module.exports = create;
+module.exports = new CreatingCash();

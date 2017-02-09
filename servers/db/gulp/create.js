@@ -1,5 +1,3 @@
-let DataTypes           = require('./connect').DataTypes;
-let queryInterface      = require('./connect').queryInterface;
 let get_list_schemas    = require('../schema');
 
 let log   = console.log;
@@ -8,7 +6,9 @@ let cLog  = function (message) {
 }
 
 
-let create = function (callback) {
+let create = function (db, callback) {
+    let queryInterface  = db.sequelize.queryInterface;
+    let DataTypes       = db.sequelize.Sequelize;
 
     cLog('start');  //yellow
 

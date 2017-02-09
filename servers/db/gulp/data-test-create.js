@@ -1,7 +1,3 @@
-let DataTypes           = require('./connect').DataTypes;
-let queryInterface      = require('./connect').queryInterface;
-let get_list_schemas    = require('../schema');
-
 const config = require('../data/config');
 const folder = __dirname + '/../data/test';
 const fs = require('fs');
@@ -11,7 +7,9 @@ let cLog  = function (message) {
     log('\x1b[33m%s\x1b[0m: ', 'Creating test data', message);  //yellow
 }
 
-let create = function (callback) {
+let create = function (db, callback) {
+    let queryInterface  = db.sequelize.queryInterface;
+    let DataTypes       = db.sequelize.Sequelize;
 
     cLog('start');  //yellow
 

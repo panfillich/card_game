@@ -97,47 +97,75 @@ gulp.task('default', ['start_servers', 'check_servers', 'webpack-dev-server']);
 
 
 //-------------| Работа с данными / кэшем |----------------//
+let data = require('./data');
 
 // REDIS:
-let redis = require('./servers/redis/gulp');
 
-// Кэшируем необходимые
-gulp.task('redis:create', function (callback) {
-    redis.create(callback);
+// Подключаемся к redis
+gulp.task('redis:connect', function (callback) {
+    data.redisConnect();
+    callback();
 });
+
 // Очищаем весь кэш
-gulp.task('redis:clear',  function (callback) {
-    redis.clear(callback);
-});
-// Очищаем все данные и перезаписываем все
-gulp.task('redis:reload', function (callback) {
-    redis.reload(callback);
+gulp.task('redis:clear', ['redis:connect'], function (callback) {
+    data.redisClear(callback);
 });
 
-// gulp.start('redis:clear');
-// });
+// Кэшируем, создаем списки + очереди
+gulp.task('redis:create',  ['redis:connect', 'db:connect'], function (callback) {
+    data.redisCreate(callback);
+});
+
+// Перезаписываем кэш
+gulp.task('redis:reload', ['redis:connect', 'db:connect'], function (callback) {
+    data.redisReload(callback);
+});
+
+
 
 
 // DB:
-// let db = require('./servers/db/gulp');
+
+// Подключаемся к базе
+gulp.task('db:connect', function (callback) {
+    data.dbConnect();
+    callback();
+});
 
 // Cоздаем структуру таблиц
-gulp.task('db:create', function (callback) {
-
+gulp.task('db:create', ['db:connect'], function (callback) {
+    data.dbCreate(callback);
 });
+
 // Удаляем таблицы
-gulp.task('db:drop', function (callback) {
-    // db.clear(callback);
+gulp.task('db:drop', ['db:connect'], function (callback) {
+    data.dbDrop(callback);
 });
+
 // Удаляем все таблицы и создаем новые
-gulp.task('db:reload', function (callback) {
-
+gulp.task('db:reload', ['db:connect'],function (callback) {
+    data.dbReload(callback);
 });
+
 // Записываем тестовые данные
-gulp.task('db:data-test:create', function (callback) {
-
+gulp.task('db:data-test:create', ['db:connect'], function (callback) {
+    data.dbTestDateCreate(callback);
 });
+
 // Удаляем таблицы и перезаписываем тестовые данные
-gulp.task('db:data-test:reload', function (callback) {
-
+gulp.task('db:data-test:reload', ['db:connect'], function (callback) {
+    data.dbTestDateReload(callback);
 });
+
+
+
+//Перезаписываем вообще все + тестовые данные
+gulp.task('retest', ['redis:connect', 'db:connect'], function (callback) {
+    data.dbTestDateReload(function () {
+        data.redisReload(callback);
+    });
+});
+
+
+

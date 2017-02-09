@@ -1,5 +1,3 @@
-let DataTypes           = require('./connect').DataTypes;
-let queryInterface      = require('./connect').queryInterface;
 let get_list_schemas    = require('../schema');
 
 let log =  console.log;
@@ -7,7 +5,9 @@ let cLog  = function (message) {
     log('\x1b[33m%s\x1b[0m: ', 'Deleting tables', message);  //yellow
 }
 
-let drop = function (callback) {
+let drop = function (db, callback) {
+    let queryInterface  = db.sequelize.queryInterface;
+    let DataTypes       = db.sequelize.Sequelize;
 
     cLog('start');
 
@@ -38,6 +38,5 @@ let drop = function (callback) {
             });
     });
 };
-
 module.exports = drop;
 
