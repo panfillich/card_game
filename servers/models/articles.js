@@ -1,10 +1,14 @@
 let common_libs = '../common_libs/';
 
-let users =
-
 class Articles{
-    constructor(db){
-        this.articles = db.articles;
+    //Подключаемся к базе
+    switchToDB(db){
+        if(db){
+            this.db = db;
+            this.users = this.db.users;
+            return true;
+        }
+        return false;
     }
 
     //Получаем информацию пользователя для авторизации
@@ -47,4 +51,4 @@ class Articles{
     }
 }
 
-module.exports = Articles;
+module.exports = new Articles();

@@ -5,10 +5,20 @@ let prefix = 'token';
 let lifetime = 600;
 
 class Sessions{
+    switchToRedis(client){
+        if(client){
+            this.client = client;
+            return true;
+        }
+        return false;
+    }
+
     // Установить токен / создать сессию
-    static createToken(param, callback){
+    createToken(param, callback){
+
         let token = Token.createForUser(param.email);
-        Sessions.setSessionFields(token.hash, param, function (err, res) {
+
+        this.setSessionFields(token.hash, param, function (err, res) {
             if (err) {
                 callback(err, null)
             }
@@ -23,7 +33,9 @@ class Sessions{
     }
 
     // Получить всю сессию
-    static getSessionAll(token, callback){
+    getSessionAll(token, callback){
+        let client = this.client;
+
         let full_key = [prefix, token].join(':');
 
         client.multi([
@@ -39,7 +51,8 @@ class Sessions{
 
     // Получть часть данных
     // fields - массив
-    static getSessionFields(token, fields, callback){
+    getSessionFields(token, fields, callback){
+        let client = this.client;
         let full_key = [prefix, token].join(':');
         let hmget = ['hmget', full_key];
         fields.forEach(function (field) {
@@ -62,7 +75,8 @@ class Sessions{
 
     // Установить часть данных/все данные в сессию
     // fields - обьект
-    static setSessionFields(token, fields, callback){
+    setSessionFields(token, fields, callback){
+        let client = this.client;
         let full_key = [prefix, token].join(':');
         let hmset = ['hmset', full_key];
         for (let key in fields) {
@@ -81,7 +95,8 @@ class Sessions{
     }
 
     // Полностью удалить сессию
-    static clearSessionAll(token, callback){
+    clearSessionAll(token, callback){
+        let client = this.client;
         let full_key = [prefix, token].join(':');
         client.multi([
             ['del', full_key],
@@ -96,7 +111,8 @@ class Sessions{
 
     // Удалить часть полей
     // fields - массив
-    static clearSessionFields(token, fields, callback){
+    clearSessionFields(token, fields, callback){
+        let client = this.client;
         let full_key = [prefix, token].join(':');
         let operations = [];
         fields.forEach(function (field) {
@@ -111,7 +127,8 @@ class Sessions{
     }
 
     // Установить время жизни
-    static setLifetime(token, callback){
+    setLifetime(token, callback){
+        let client = this.client;
         let full_key = [prefix, token].join(':');
         client.expire(full_key, lifetime, function (err, res) {
             if(err){
@@ -120,8 +137,6 @@ class Sessions{
             callback(null, res);
         });
     }
-
-
 }
 
-module.exports = Sessions;
+module.exports = new Sessions();

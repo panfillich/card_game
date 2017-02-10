@@ -123,8 +123,6 @@ gulp.task('redis:reload', ['redis:connect', 'db:connect'], function (callback) {
 });
 
 
-
-
 // DB:
 
 // Подключаемся к базе

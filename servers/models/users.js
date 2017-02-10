@@ -1,15 +1,27 @@
 let Token       = require('../common_libs/token');
-let client      = require('../redis/client');
+// let client      = require('../redis/client');
 let KEY         = require('../redis/key');
 
-let db          = require('../db');
-let users       = db.users;
+// let db          = require('../db');
+// let users       = db.users;
 let constants   = require('./users').constants;
 
 class Users{
+    //Подключаемся к базе
+    switchToDB(db){
+        if(db){
+            this.db = db;
+            this.users = this.db.users;
+            return true;
+        }
+        return false;
+    }
+
     //Получаем информацию пользователя для авторизации
     //param : [ email, password ]
-    static getAuthInfo(param, callback){
+    getAuthInfo(param, callback){
+        let users = this.users;
+
         let pass_hash = Token.createForUserPass(param.password).hash;
 
         users.findOne({
@@ -31,9 +43,12 @@ class Users{
     }
 
     //Cоздаем нового пользователя
-    static createNewUser(params, callback){
+    createNewUser(params, callback){
+        let users = this.users;
+
         //Получаем хэш пароля
         let token = Token.createForUserPass(params.password).hash;
+
         users.create({
             login: params.login,
             email: params.email,
@@ -47,7 +62,8 @@ class Users{
     }
 
     //Активируем пользователя
-    static activateUser(user_id, callback){
+    activateUser(user_id, callback){
+        let users = this.users;
         users.update(
             {
                 status: constants.status.ACTIVATED
@@ -65,7 +81,8 @@ class Users{
     }
 
     //Получаем все емейлы и логины с шагом в n
-    static getAllEmailAndLogin(offset, limit, callback){
+    getAllEmailAndLogin(offset, limit, callback){
+        let users = this.users;
         users.findAll({
             attributes: ['userId', 'login', 'email'],
             limit: limit,
@@ -85,8 +102,19 @@ class Users{
 //  Прослойка для кэширования, счетчиков и т.д.
 //+ методы для работы только с кэшем
 class UsersCache extends Users{
+
+    switchToRedis(client){
+        if(client){
+            this.client = client;
+            return true;
+        }
+        return false;
+    }
+
     //Создание нового пользователя
-    static createNewUser(params, callback){
+    createNewUser(params, callback){
+        let client = this.client;
+
         let cacheFunction = function (error, result) {
             if(error) {
                 //Ничего не делаем, при создании юзера возникли ошибки
@@ -110,7 +138,9 @@ class UsersCache extends Users{
     }
 
     //Проверяем уникальность email
-    static checkUnicEmail(email, callback){
+    checkUnicEmail(email, callback){
+        let client = this.client;
+
         client.sismember(KEY.USERS.EMAILS, email, function (err, res) {
             if(!err){
                 let is_unic = false;
@@ -125,7 +155,9 @@ class UsersCache extends Users{
     }
 
     //Проверяем уникальность login
-    static checkUnicLogin(login, callback){
+    checkUnicLogin(login, callback){
+        let client = this.client;
+
         client.sismember(KEY.USERS.LOGINS, login, function (err, res) {
             if(!err){
                 let is_unic = false;
@@ -140,4 +172,4 @@ class UsersCache extends Users{
     }
 }
 
-module.exports = UsersCache;
+module.exports = new UsersCache();

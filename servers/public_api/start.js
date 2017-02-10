@@ -1,7 +1,7 @@
 let log = require('../common_libs/logger')(module);
 
 //Проверяем соединение с Redis / создаем клиента
-require('../redis/client');
+let client = require('../redis/client');
 
 //Определяем Express приложение
 require('./app');
@@ -15,8 +15,13 @@ require('./errors');
 require('./server');
 
 //Устанавливаем/проверяем соединение с БД
-let orm = require("../db");
-orm.sequelize.sync().then(function () {
+let bd = require("../db");
+
+//Связываем модели с базой, redis
+require('../models')(bd, client);
+
+bd.sequelize.sync().then(function () {
+
     log.info('Connect to DB is ready');
 
     let Users = require('../models/users');
@@ -34,12 +39,6 @@ orm.sequelize.sync().then(function () {
         });
     });
 });
-
-
-function getFirst() {
-    
-}
-
 
 
 

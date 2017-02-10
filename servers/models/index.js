@@ -11,13 +11,18 @@ fs.readdirSync(current_folder).forEach(file => {
     models.push(file);
 });
 
-let list_models = {};
 
-module.exports = function (db) {
+module.exports = function (db, client) {
     models.forEach(file => {
         let Model = require('./' + file);
-        list_models[file.substring(0, file.length - 3)] = new Model(db);
+
+        if(typeof Model.switchToRedis != 'undefined'){
+            Model.switchToRedis(client);
+        }
+
+        if(typeof Model.switchToDB != 'undefined'){
+            Model.switchToDB(db);
+        }
     });
-    return list_models;
-}
+};
 

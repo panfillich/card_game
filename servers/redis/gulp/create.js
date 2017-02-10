@@ -5,10 +5,14 @@ let hLog  = function (message) {
     log('\x1b[33m%s\x1b[0m: ', 'Creating cash', message);  //yellow
 }
 
+let Users = require('../../models/users');
+
 class CreatingCash{
     start(client, db, callback){
+        //Переключаем модель на базу
+        Users.switchToRedis(client);
+        Users.switchToDB(db);
         this.client = client;
-        this.db     = db;
 
         hLog('start');
 
@@ -26,7 +30,6 @@ class CreatingCash{
     //Счетчики:  все пользователи
     _users(callback){
         let client = this.client;
-        let db = this.db;
 
         let all_users = 5000000;
         let pack_size = 25000;
@@ -51,7 +54,7 @@ class CreatingCash{
         };
 
         let setNewPack = function (offset, limit, callback) {
-            CreatingCash._getAllEmailAndLogin(db, offset, limit, function (err, result) {
+            Users.getAllEmailAndLogin(offset, limit, function (err, result) {
                 if(!err){
                     let pack_emails = [];
                     let pack_logins = [];
@@ -68,70 +71,29 @@ class CreatingCash{
                     } else {
 
                         client.sadd(
-
                             KEY.USERS.LOGINS, pack_logins, function (err, res) {
                             if (!err) {
-                                log('[users]: ' + (count_users*100/all_users) + '%') ;
-                                if (result.length == pack_size) {
-                                    setNewPack(count_users, pack_size, callback);
-                                } else {
-                                    finishFunction();
-                                }
+                                client.sadd(  KEY.USERS.LOGINS, pack_logins, function (err, res) {
+                                    if (!err) {
+                                        log('[users cash]: ' + (count_users * 100 / all_users).toFixed(2) + '%');
+                                        if (result.length == pack_size) {
+                                            setNewPack(count_users, pack_size, callback);
+                                        } else {
+                                            finishFunction();
+                                        }
+                                    } else {
+                                        log(err);
+                                    }
+                                });
                             } else {
                                 log(err);
                             }
                         });
-                        /*    ['sadd', KEY.USERS.EMAILS, pack_emails],
-                            ['sadd', KEY.USERS.LOGINS, pack_logins]
-                        ]).exec(function (err, repl) {
-                            if (!err) {
-                                console.log(all_users + '   ' + pack_emails.length);
-                                if (result.length == pack_size) {
-                                    setNewPack(all_users, pack_size, callback);
-                                } else {
-                                    finishFunction();
-                                }
-                            } else {
-                                log(err);
-                            }
-                        });
-
-                        client.multi([
-                            ['sadd', KEY.USERS.EMAILS, pack_emails],
-                            ['sadd', KEY.USERS.LOGINS, pack_logins]
-                        ]).exec(function (err, repl) {
-                            if (!err) {
-                                console.log(all_users + '   ' + pack_emails.length);
-                                if (result.length == pack_size) {
-                                    setNewPack(all_users, pack_size, callback);
-                                } else {
-                                    finishFunction();
-                                }
-                            } else {
-                                log(err);
-                            }
-                        });*/
-                    }
+                     }
                 }
             });
         };
         setNewPack(0, pack_size, callback);
-    }
-
-    static _getAllEmailAndLogin(db, offset, limit, callback){
-        db.users.findAll({
-            attributes: ['userId', 'login', 'email'],
-            limit: limit,
-            offset: offset
-        }).then(function (result) {
-            let final_result = [];
-            result.forEach(function (instance) {
-                final_result.push(instance.dataValues)
-            });
-            callback(null, final_result);
-        }).catch(function(error){
-            callback(null, error);
-        });
     }
 }
 
