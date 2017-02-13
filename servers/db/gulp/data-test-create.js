@@ -26,6 +26,10 @@ let create = function (db, callback) {
         data_func.push(require('../data/test/' + file));
     });
 
+    fs.readdirSync(__dirname + '/../data/required').forEach(file => {
+        data_func.push(require('../data/required/' + file));
+    });
+
     let current_iterate = 0;
 
     let callbackIterate = function () {

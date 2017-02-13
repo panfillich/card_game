@@ -2,13 +2,19 @@ const constants = {
     table_name: 'cards',
     type: {
         COMMON: 0,
-        HERO1: 1,
-        HERO2: 2,
-        HERO3: 3,
-        GOD1: 101,
-        GOD2: 102
+        HERO_1: 1,
+        HERO_2: 2,
+        HERO_3: 3,
+        GOD_1: 101,
+        GOD_2: 102
+    },
+    rarity: {
+        NO_RATING:  0,
+        COMMON:     1,
+        RARE:       2,
+        MYSTICAL:   3,
+        LEGEND:     4
     }
-
 }
 
 let get_schema = function(Sequelize, DataTypes){
@@ -20,11 +26,6 @@ let get_schema = function(Sequelize, DataTypes){
                 primaryKey: true,
                 autoIncrement: true
             },
-            // Название карты
-            title: DataTypes.STRING(50),
-
-            // Описание карты
-            description: DataTypes.STRING(140),
 
             // Тип карты
             type: {
@@ -35,7 +36,7 @@ let get_schema = function(Sequelize, DataTypes){
             // Редкость карты
             rarity: {
                 type:DataTypes.INTEGER,
-                defaultValue: 1
+                defaultValue: constants.rarity.COMMON,
             },
 
             // Обычная стоимость карты
@@ -56,6 +57,12 @@ let get_schema = function(Sequelize, DataTypes){
                 defaultValue: 1
             },
 
+            //Атака
+            attack: {
+                type:DataTypes.INTEGER,
+                defaultValue: 1
+            },
+
             createdAt: {
                 type: DataTypes.DATE,
                 defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
@@ -72,16 +79,9 @@ let get_schema = function(Sequelize, DataTypes){
         },
         indexes: [
             {
-                fields: ['publishStatus', 'type', 'publishAt'],
+                fields: ['type'],
                 properties: {
-                    indexName: 'status_article_date'
-                }
-            },
-            {
-                fields: ['publishStatus', 'type', 'articleId'],
-                properties: {
-                    indexName: 'status_article',
-                    indicesType: 'UNIQUE'
+                    indexName: 'type'
                 }
             }
         ],

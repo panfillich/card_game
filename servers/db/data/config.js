@@ -1,17 +1,14 @@
 module.exports = {
-    data: [
-        "common",
-        "test"
-    ],
     test : {
         users: {
             //количество пользователей
-            count: 5000000,
+            count: 150000,
             //шаблоны (%(id)s - порядковый номер)
             email: 'email-%(id)s@gmail.com',
             login: 'login-%(id)s',
             password: 'Qwerty123!'
         },
+
         articles: {
             //количество статей
             count: 6000,
@@ -28,9 +25,26 @@ module.exports = {
                 }
             }
         },
+
         messages: {
             count: 70
         },
-        language: ["en", "ru"]
+
+        language: ["en", "ru"],
+
+        collection: {
+            //Сколько раз продублировать все карты каждому игроку
+            count: 3
+        },
+
+        decks: {
+            //Число колод
+            count: {
+                min: 1,
+                max: 9
+            },
+            //Число карт в колоде
+            count_cards: 30
+        }
     }
 }
