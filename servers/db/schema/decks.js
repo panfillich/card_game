@@ -20,12 +20,6 @@ let get_schema = function(Sequelize, DataTypes){
                 type:DataTypes.INTEGER
             },
 
-            // Тип колоды (выбранная по умолчанию или нет)
-            type: {
-                type:DataTypes.INTEGER,
-                defaultValue: constants.type.DEFAULT
-            },
-
             // Номер колоды
             number: {
                 type: DataTypes.INTEGER
@@ -33,6 +27,11 @@ let get_schema = function(Sequelize, DataTypes){
 
             // Карта
             cardId: {
+                type: DataTypes.INTEGER
+            },
+
+            // Колличество конкретной карты в колоде
+            count: {
                 type: DataTypes.INTEGER
             },
 
@@ -51,12 +50,6 @@ let get_schema = function(Sequelize, DataTypes){
             collate: 'utf8_general_ci'
         },
         indexes: [
-            {
-                fields: ['userId', 'type'],
-                properties: {
-                    indexName: 'userId_type'
-                }
-            },
             {
                 fields: ['userId', 'number'],
                 properties: {

@@ -80,7 +80,7 @@ class Users{
         });
     }
 
-    //Получаем все емейлы и логины с шагом в n
+    // Получаем все емейлы и логины с шагом в n
     getAllEmailAndLogin(offset, limit, callback){
         let users = this.users;
         users.findAll({
@@ -96,6 +96,17 @@ class Users{
         }).catch(function(error){
             callback(null, error);
         });
+    }
+
+    // Получить кол-во всех пользователей
+    getCountAllUsers(callback){
+        let users = this.users;
+        users.count()
+            .then(function (count) {
+                callback(null, count);
+            }).catch(function(error){
+                callback(error, null);
+            });
     }
 }
 

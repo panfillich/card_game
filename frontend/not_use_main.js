@@ -31,7 +31,7 @@ require.ensure(['stats.js'], function(require) {
 });
 
 
-let data = require('./old/contact_list/data');
+let data = require('./old/contact_list/data'); //
 
 // console.dir(data);
 

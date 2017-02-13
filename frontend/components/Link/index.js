@@ -5,6 +5,9 @@ export default class List extends Component {
     render() {
         return (
             <div>
+                <div>
+
+                </div>
                 <div className='row'>
                     <div className='col-md-12'>
                         <h3> Список жанров </h3>

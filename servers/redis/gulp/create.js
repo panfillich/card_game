@@ -31,7 +31,11 @@ class CreatingCash{
     _users(callback){
         let client = this.client;
 
-        let all_users = 5000000;
+        let all_users = 0;
+        Users.getCountAllUsers(function (err, count) {
+            all_users = count;
+        });
+
         let pack_size = 25000;
         let count_users = 0;
 
