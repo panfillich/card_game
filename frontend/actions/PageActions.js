@@ -17,4 +17,3 @@ export function getPhotos(year) {
         }, 1000)
     }
 }
-

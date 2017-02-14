@@ -7,7 +7,7 @@ export default class App extends Component {
     render() {
         return <div>
             <Nav />
-            <Content>{this.props.children}</Content>
+            <Content>{this.props.children}</Content> 
             <Footer/>
         </div>
     }

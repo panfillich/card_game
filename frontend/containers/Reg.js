@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 
-export default class Auth extends Component {
+import Helmet from "react-helmet"
+
+export default class Reg extends Component {
     render() {
         return (
             <div>

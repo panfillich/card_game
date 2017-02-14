@@ -11,8 +11,8 @@ import 'jquery'
 import 'bootstrap/dist/js/bootstrap.js'
 import 'bootstrap/scss/bootstrap.scss'
 
-const store = configureStore(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
+const store = configureStore(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 render(
     <Provider store={store}>
         <Router history={browserHistory} routes={routes} />

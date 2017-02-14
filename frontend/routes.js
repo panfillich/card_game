@@ -8,7 +8,7 @@ import Home from './components/Home'
 import Link from './components/Link'
 
 import Auth from './containers/Auth'
-import Reg from './containers/Nav'
+import Reg from './containers/Reg'
 import Main from './containers/Main'
 
 import Nav from './containers/Nav'

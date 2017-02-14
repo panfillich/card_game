@@ -1,5 +1,9 @@
+const lang = require('../lang/en');
+
 const initialState = {
-    name: 'Аноним'
+    is_auth:    false,
+    login:      lang.user.def_login,
+    language:   'en'
 }
 
 export default function user(state = initialState) {
