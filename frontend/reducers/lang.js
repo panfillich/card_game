@@ -26,7 +26,7 @@ export default function lang(state = initialState, action) {
 
         case 'ru':
             result_lang = {state};
-            setLanguage(result_lang, en_lang);
+            setLanguage(result_lang, ru_lang);
             return result_lang;
 
         default:

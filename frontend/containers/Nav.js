@@ -1,20 +1,33 @@
 import React, { Component } from 'react'
 import NavLink from '../components/NavLink'
+import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
 
-import * as changeLanguage from '../actions/LangAction'
+import * as LangAction from '../actions/LangAction'
 
 class Nav extends React.Component {
 
-    constructor(props) { super(props) }
+    //componentDidMount
 
-    onMyClick(test){
-        console.log(test);
+    constructor(props) {
+        super(props);
+        this.changeLanguage = this.changeLanguage.bind(this);
+    }
+
+    changeLanguage() {
+        let { changeLanguage } = this.props;
         changeLanguage('ru');
+        // Injected by react-redux:
+        // console.log(1);
+        // let { dispatch } = this.props
+        // let action = LangAction.changeLanguage('ru')
+        // dispatch(action)
+
     }
 
     render(){
         const { user, lang } = this.props;
+
 
         return(
             <nav className="navbar navbar-light bg-faded">
@@ -48,7 +61,7 @@ class Nav extends React.Component {
                             </div>
                         </div>
                         <div className="col-sm-2 col-md-2">
-                            <button onClick={() => changeLanguage('en')}>test</button>
+                            <button onClick={this.changeLanguage}>test</button>
                             <span>{user.login}</span>
                         </div>
                     </div>
@@ -75,4 +88,10 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(Nav);
+function mapDispatchToProps(dispatch) {
+    return {
+        changeLanguage: bindActionCreators(LangAction.changeLanguage, dispatch)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Nav);

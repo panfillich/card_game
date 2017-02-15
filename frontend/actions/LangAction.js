@@ -1,9 +1,5 @@
 export function changeLanguage(lang) {
-    return (dispatch) => {
-        setTimeout(() => {
-            dispatch({
-                type: lang
-            })
-        }, 1000)
+    return {
+        type: lang,
     }
 }
