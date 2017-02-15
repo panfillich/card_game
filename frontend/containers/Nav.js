@@ -2,9 +2,7 @@ import React, { Component } from 'react'
 import NavLink from '../components/NavLink'
 import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
-
 import * as LangAction from '../actions/LangAction'
-
 class Nav extends React.Component {
 
     //componentDidMount
@@ -14,9 +12,11 @@ class Nav extends React.Component {
         this.changeLanguage = this.changeLanguage.bind(this);
     }
 
-    changeLanguage() {
+    changeLanguage(obj) {
+        let language = obj.target.getAttribute('value');
         let { changeLanguage } = this.props;
-        changeLanguage('ru');
+        changeLanguage(language);
+
         // Injected by react-redux:
         // console.log(1);
         // let { dispatch } = this.props
@@ -26,47 +26,81 @@ class Nav extends React.Component {
     }
 
     render(){
-        const { user, lang } = this.props;
+        const { lang, user } = this.props;
+            let auth_block = '';
+            let reg_block  = '';
+            let user_block = '';
 
+            // Если пользователь не авторизирован
+            if(!user.is_auth){
+                // Авторизация
+                auth_block =(
+                    <li className="nav-item">
+                        <NavLink to='/auth' className="nav-link">{lang.nav.menu.auth}</NavLink>
+                    </li>
+                );
+
+                // Регистрация
+                reg_block =(
+                    <li className="nav-item">
+                        <NavLink to='/reg' className="nav-link">{lang.nav.menu.reg}</NavLink>
+                    </li>
+                );
+            } else {
+                // Блок зарегестрированного пользователя
+                user_block = (
+                    <li className="nav-item">
+                        <NavLink to='/user' className="nav-link">{user.login}</NavLink>
+                    </li>
+                );
+            }
 
         return(
-            <nav className="navbar navbar-light bg-faded">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-sm-8 col-md-8">
-                            <button className="navbar-toggler hidden-sm-up"
-                                    type="button"
-                                    data-toggle="collapse"
-                                    data-target=".nav-content">
-                                ☰
-                            </button>
-                            <div className="collapse navbar-toggleable-xs nav-content" >
-                                <a className="navbar-brand" href="#">Logo</a>
+        <nav className="navbar navbar-light bg-faded">
+        <div className="container">
+        <div className="row ">
+            <button type="button"
+                    className="navbar-toggle hidden-sm-up "
+                    data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1"
+                   >
+                <span className="sr-only">Toggle navigation</span>
+                ☰
+            </button>
 
-                                <ul className="nav navbar-nav">
-                                    <li className="nav-item">
-                                        <NavLink to='/' onlyActiveOnIndex={true} className="nav-link">{lang.nav.menu.main}</NavLink>
-                                    </li>
+            <div className="collapse navbar-toggleable-xs" id="bs-example-navbar-collapse-1">
+                <a className="navbar-brand hidden-sm-down" href="#">Logo</a>
+                <ul className="nav navbar-nav">
+                    <li className="nav-item">
+                        <NavLink to='/' onlyActiveOnIndex={true} className="nav-link">{lang.nav.menu.main}</NavLink>
+                    </li>
 
-                                    <li className="nav-item">
-                                        <NavLink to='/auth' className="nav-link">{lang.nav.menu.auth}</NavLink>
-                                    </li>
-                                    <li className="nav-item">
-                                        <NavLink to='/reg' className="nav-link">{lang.nav.menu.reg}</NavLink>
-                                    </li>
-                                    <li className="nav-item">
-                                        <NavLink to='/link' className="nav-link">link</NavLink>
-                                    </li>
-                                </ul>
-                            </div>
+                    <li className="nav-item">
+                        <NavLink to='/link' className="nav-link">link</NavLink>
+                    </li>
+                </ul>
+
+                <ul className="nav navbar-nav float-xs-left float-sm-right">
+                    {auth_block}
+                    {reg_block}
+                    {user_block}
+                    <li className="nav-item dropdown">
+                        <a className="nav-link dropdown-toggle"
+                           href="http://example.com"
+                           id="dropdown01"
+                           data-toggle="dropdown"
+                           aria-haspopup="true"
+                           aria-expanded="false">{lang.nav.menu.lang} ({lang.lang})</a>
+                        <div className="dropdown-menu float-left" aria-labelledby="dropdown01">
+                            <a className="dropdown-item" onClick={this.changeLanguage} value="en" href="#">English (en)</a>
+                            <a className="dropdown-item" onClick={this.changeLanguage} value="ru" href="#">Русский (ru)</a>
                         </div>
-                        <div className="col-sm-2 col-md-2">
-                            <button onClick={this.changeLanguage}>test</button>
-                            <span>{user.login}</span>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        </div>
+        </nav>
         )
     }
 }
