@@ -4,9 +4,7 @@ import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
 import * as LangAction from '../actions/LangAction'
 class Nav extends React.Component {
-
     //componentDidMount
-
     constructor(props) {
         super(props);
         this.changeLanguage = this.changeLanguage.bind(this);

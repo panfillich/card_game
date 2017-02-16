@@ -8,9 +8,11 @@ import configureStore from './store/configureStore'
 
 import 'tether/dist/js/tether.js'
 import 'jquery'
+
 import 'bootstrap/dist/js/bootstrap.js'
 import 'bootstrap/scss/bootstrap.scss'
 
+import './style.scss'
 
 const store = configureStore(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 render(

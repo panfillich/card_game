@@ -21,7 +21,18 @@ module.exports = {
         header: 'Авторизация',
         tagline: 'Просто сделай это!',
         form:{
-            elem:{},
+            email:{
+                label:'Email адрес:',
+                placeholder: 'Введите Email',
+                text: 'Мы не передаем личные данные третьим лицам.'
+            },
+            password:{
+                label:'Пароль:',
+                placeholder: 'Введите пароль'
+            },
+            button:{
+                name: 'Автризироваться'
+            },
             error:{}
         }
     },
@@ -29,9 +40,12 @@ module.exports = {
     reg: {
         title: 'Регистрация',
         header: 'Регистрация',
-        tagline: "Let's do it!",
+        tagline: 'Просто сделай это!',
         form:{
-            elem:{},
+            label:{
+                email: 'Email address:',
+                password: 'Password:'
+            },
             error:{}
         }
     }

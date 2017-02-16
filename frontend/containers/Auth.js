@@ -1,11 +1,36 @@
 import React, { Component } from 'react'
 import Helmet from "react-helmet"
-import Content from '../containers/Content'
 import { connect } from 'react-redux'
 
+import Content from '../containers/Content'
+
 class Auth extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state ={
+            email: {
+                is_error: false,
+                error: ''
+            },
+            password: {
+                is_error: false,
+                error: ''
+            }
+        }
+        this.handleElemChange = this.handleElemChange.bind(this);
+    }
+
+    handleElemChange(e){
+        //Узнаем id элемента
+        let id = e.target.id;
+
+        this.setState({email: e.target.value});
+    }
+
     render() {
         const { lang } = this.props;
+        console.log(this.state.email)
         return (
             <div>
                 <Helmet
@@ -15,77 +40,24 @@ class Auth extends Component {
                     <h2>
                         {lang.auth.header}
                     </h2>
-                    <p class="text-muted">{lang.auth.tagline}</p>
-
+                    <p className="text-muted">{lang.auth.tagline}</p>
                     <form>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Email address</label>
-                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"/>
-                                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                        <div className="form-group">
+                            <label for="auth-email">{lang.auth.form.email.label}</label>
+                            <input type="email" className="form-control" id="auth-email" aria-describedby="emailHelp"
+                                   placeholder={lang.auth.form.email.placeholder}
+                                   onBlur={this.handleElemChange}
+                            />
+                            {/*onChange={this.handleEmailChange}*/}
+                            <small id="emailHelp" className="form-text text-muted">{lang.auth.form.email.text}</small>
                         </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Password</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"/>
+                        <div className="form-group">
+                            <label for="exampleInputPassword1">{lang.auth.form.password.label}</label>
+                            <input type="password" className="form-control"
+                                   id="exampleInputPassword1" placeholder={lang.auth.form.password.placeholder}/>
                         </div>
-                        <div class="form-group">
-                            <label for="exampleSelect1">Example select</label>
-                            <select class="form-control" id="exampleSelect1">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleSelect2">Example multiple select</label>
-                            <select multiple class="form-control" id="exampleSelect2">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleTextarea">Example textarea</label>
-                            <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputFile">File input</label>
-                            <input type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp"/>
-                                <small id="fileHelp" class="form-text text-muted">This is some placeholder block-level help text for the above input. It's a bit lighter and easily wraps to a new line.</small>
-                        </div>
-                        <fieldset class="form-group">
-                            <legend>Radio buttons</legend>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="option1" checked />
-                                        Option one is this and that&mdash;be sure to include why it's great
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="option2" />
-                                        Option two can be something else and selecting it will deselect option one
-                                </label>
-                            </div>
-                            <div class="form-check disabled">
-                                <label class="form-check-label">
-                                    <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios3" value="option3" disabled/>
-                                        Option three is disabled
-                                </label>
-                            </div>
-                        </fieldset>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input"/>
-                                    Check me out
-                            </label>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" className="btn btn-primary">{lang.auth.form.button.name}</button>
                     </form>
-
                 </Content>
             </div>
         );
@@ -94,7 +66,6 @@ class Auth extends Component {
 
 function mapStateToProps(state) {
     return {
-        user: state.user,
         lang: state.lang
     }
 }

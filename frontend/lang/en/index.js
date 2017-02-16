@@ -20,7 +20,18 @@ module.exports = {
         header: 'Authorization',
         tagline: "Let's do it!",
         form:{
-            elem:{},
+            email:{
+                label:'Email address:',
+                placeholder: 'Enter email',
+                text: 'We\'ll never share your email with anyone else.',
+            },
+            password:{
+                label:'Password',
+                placeholder: 'Enter password'
+            },
+            button:{
+                name: 'Authorize'
+            },
             error:{}
         }
     },
@@ -30,7 +41,10 @@ module.exports = {
         header: 'Registration',
         tagline: "Let's do it!",
         form:{
-            elem:{},
+            label:{
+                email: 'Email address:',
+                password: 'Password:'
+            },
             error:{}
         }
     }
