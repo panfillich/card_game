@@ -47,5 +47,14 @@ module.exports = {
             },
             error:{}
         }
+    },
+
+    validate: {
+        is_valid: '',
+        required : 'Field is required!',
+        invalid: {
+            email: 'Invalid Email address (You must to use only these mail services: yandex, google)!',
+            password: 'Invalid password (Password must be no less than 8 and no more than 25 characters.)!'
+        }
     }
 }
