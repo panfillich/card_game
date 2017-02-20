@@ -3,6 +3,8 @@ import Helmet from "react-helmet"
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 import Content from '../containers/Content'
+import ReactDOM from 'react-dom';
+import Form, {FormGroup, Label, Message, Small, InputText} from '../components/Form'
 
 let Validate = require('../../servers/common_libs/validate');
 
@@ -12,21 +14,43 @@ class Auth extends Component {
         super(props);
         this.state ={
             email: {
-                is_success: false,
-                is_danger: false,
-                res_valid: null
+                type: 'error',
+                messages: []
             },
             pass: {
-                is_success: false,
-                is_danger: false,
-                res_valid:  null
+                type: 'normal',
+                messages: []
+            }
+        };
+
+        this.form = {
+            email: {
+                id: "auth-email",
+                type: "email",
             }
         };
         this.handleElemChange = this.handleElemChange.bind(this);
+        // this.getChildContext = this.getChildContext.bind(this);
     }
 
-    handleElemChange(e){
-        console.log(e.target.id);
+    getChildContext() {
+        return {name: 'hhh'};
+    }
+
+    // param = {
+    //    name
+    //    type,
+    //    value
+    // }
+    handleElemChange(param){
+
+    }
+
+    handleElemChange1(e){
+        // console.log(this.refs['auth-email'])
+
+        console.log(this.input.getValue());
+
 
         //Узнаем id элемента
         let id = e.target.id;
@@ -51,7 +75,7 @@ class Auth extends Component {
         }
 
         const states = this._parseValidate(result);
-        this.setState(states[0]);
+        // this.setState(states[0]);
     }
 
     _parseValidate(result){
@@ -86,8 +110,12 @@ class Auth extends Component {
             "form-group": true
         };
 
-        let email_class_value = def_class_value,
-            pass_class_value  = def_class_value;
+        let email_class_value = {
+            "form-group": true
+        };;
+        let pass_class_value  = {
+            "form-group": true
+        };;
 
         console.log(this.state.email);
         email_class_value["has-danger"]  = this.state.email.is_danger;
@@ -102,11 +130,15 @@ class Auth extends Component {
              }
         }
 
-        pass_class_value["has-success"] = this.state.pass.is_success;
-        pass_class_value["has-success"] = this.state.pass.is_danger;
+        console.log(email_class_value);
 
-        const auth_email_div_class  = classNames(email_class_value),
-              auth_pass_div_class   = classNames(pass_class_value);
+        pass_class_value["has-success"] = this.state.pass.is_success;
+        pass_class_value["has-danger"] = this.state.pass.is_danger;
+
+        console.log(email_class_value);
+
+        let auth_email_div_class  = classNames(email_class_value);
+        let auth_pass_div_class   = classNames(pass_class_value);
 
         return (
             <div>
@@ -118,25 +150,32 @@ class Auth extends Component {
                         {lang.auth.header}
                     </h2>
                     <p className="text-muted">{lang.auth.tagline}</p>
-                    <form>
+                    <form id="auth-form">
+
+                    <FormGroup type={this.state.email.type}>
+                        <Label for="auth-email" text={lang.auth.form.email.label}/>
+                        <InputText
+                            ref={(input) => {this.form.email.InputText = input}}
+                            id="auth-email" typeField="email"
+                            handleElemChange={this.handleElemChange}
+                            placeholder={lang.auth.form.email.placeholder}
+                        />
+                        {/*<input type="text" className="form-control" id="auth-email" aria-describedby="emailHelp"*/}
+                               {/*placeholder={lang.auth.form.email.placeholder}*/}
+                               {/*onBlur={this.handleElemChange}*/}
+                        {/*/>*/}
+                        <Message text={this.state.email.message}/>
+                        <Small text={lang.auth.form.email.text}/>
+                    </FormGroup>
 
 
-                        <div className={auth_email_div_class}>
-                            <label className="form-control-label" htmlFor="auth-email">{lang.auth.form.email.label}</label>
-                            <input type="text" className="form-control" id="auth-email" aria-describedby="emailHelp"
-                                   placeholder={lang.auth.form.email.placeholder}
-                                   onBlur={this.handleElemChange}
-                            />
-                            <div className="form-control-feedback">{email_alert}</div>
-                            <small id="emailHelp" className="form-text text-muted">{lang.auth.form.email.text}</small>
-                        </div>
                         <div className={auth_pass_div_class}>
-                            <label for="auth-pass">{lang.auth.form.password.label}</label>
+                            <label className="form-control-label" for="auth-pass">{lang.auth.form.password.label}</label>
                             <input type="text" className="form-control"
                                    id="auth-pass" placeholder={lang.auth.form.password.placeholder}
                                    onBlur={this.handleElemChange}
                             />
-                            <div className="form-control-feedback">{email_alert}</div>
+                            {/*<div className="form-control-feedback">{email_alert}</div>*/}
                         </div>
                         <button type="submit" className="btn btn-primary">{lang.auth.form.button.name}</button>
                     </form>
@@ -145,6 +184,11 @@ class Auth extends Component {
         );
     }
 }
+
+Auth.childContextTypes = {
+    name: React.PropTypes.string.isRequired
+};
+
 
 function mapStateToProps(state) {
     return {
