@@ -8,7 +8,7 @@ class FormGroup extends Component {
             "has-success": false,
             "has-danger":  false
         }
-        switch(this.props.type){
+        switch(this.props.type_visual){
             case 'success':
                 classes['has-success'] = true;
                 classes['has-danger']  = false;
@@ -34,32 +34,41 @@ class FormGroup extends Component {
 
 class InputText extends Component {
 
-    constructor(props, context) {
-        super(props, context);
-        console.log(context)
+    constructor(props) {
+        super(props);
         this.state ={
             onChange: new Function,
             onBlur: this.onBlur.bind(this)
         };
         this.onChange = this.onChange.bind(this);
-        this.getValue = this.getValue.bind(this);
+        this.getInfo  = this.getInfo.bind(this);
     }
 
-    onBlur(e){
+    onBlur(){
         this.setState({
             onChange: this.onChange,
             onBlur:   new Function,
         });
-        this.props.handleElemChange(e);
+        this.props.handleElemChange(this.getInfo());
     }
 
-    onChange(e){
-        console.log(this.context);
-        this.props.handleElemChange(e);
+    onChange(){
+        this.props.handleElemChange(this.getInfo());
     }
 
-    getValue(){
-        return this.input.value;
+    getInfo(){
+        let info = {
+            value: this.input.value,
+            type:  this.props.type_field,
+            name:  this.props.name_field,
+            required: false
+        };
+
+        if(this.props.required){
+            info.required = true;
+        }
+
+        return info;
     }
 
     render()
@@ -75,10 +84,6 @@ class InputText extends Component {
          );
     }
 }
-
-InputText.contextTypes = {
-    name: React.PropTypes.string
-};
 
 class Label extends Component {
     render() {

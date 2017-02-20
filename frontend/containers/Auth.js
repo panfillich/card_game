@@ -3,142 +3,70 @@ import Helmet from "react-helmet"
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 import Content from '../containers/Content'
-import ReactDOM from 'react-dom';
 import Form, {FormGroup, Label, Message, Small, InputText} from '../components/Form'
+import Validate from '../actions/Validate'
+import API from '../actions/API/public'
 
-let Validate = require('../../servers/common_libs/validate');
+// let Validate = require('../../servers/common_libs/validate');
 
 class Auth extends Component {
-
     constructor(props) {
         super(props);
-        this.state ={
-            email: {
-                type: 'error',
-                messages: []
-            },
-            pass: {
-                type: 'normal',
-                messages: []
-            }
-        };
-
         this.form = {
             email: {
-                id: "auth-email",
-                type: "email",
+                name: "email",
+                id: 'auth_email',
+                type: 'email',
+                required: true,
+                message: ''
+            },
+            pass: {
+                name: "pass",
+                id: 'auth_pass',
+                type: 'password',
+                message: ''
             }
         };
-        this.handleElemChange = this.handleElemChange.bind(this);
-        // this.getChildContext = this.getChildContext.bind(this);
-    }
 
-    getChildContext() {
-        return {name: 'hhh'};
-    }
-
-    // param = {
-    //    name
-    //    type,
-    //    value
-    // }
-    handleElemChange(param){
-
-    }
-
-    handleElemChange1(e){
-        // console.log(this.refs['auth-email'])
-
-        console.log(this.input.getValue());
-
-
-        //Узнаем id элемента
-        let id = e.target.id;
-        //Значение элемента
-        let value = e.target.value;
-
-        let result;
-        switch (id) {
-            case 'auth-email':
-                result = Validate.checkFullValidate(
-                    { email: value},
-                    [{ name : 'email', type : 'email', required: true }]
-                );
-
-                break;
-            case 'auth-pass':
-                result = Validate.checkFullValidate(
-                    { pass: value},
-                    [{ name : 'pass', type : 'password', required: true }]
-                );
-                break;
-        }
-
-        const states = this._parseValidate(result);
-        // this.setState(states[0]);
-    }
-
-    _parseValidate(result){
-        let states = [];
-        const all_fields = result.detail.all_fields;
-        for (const field in all_fields){
-            let state = {};
-            const result = all_fields[field].result;
-            if (result == 'valid'){
-                state[field] = {
-                    is_success : true,
-                    is_danger  : false,
-                };
-            } else {
-                state[field] = {
-                    is_success : false,
-                    is_danger  : true,
-                };
+        this.state = {};
+        for (const field in this.form) {
+            this.state[field] = {
+                type_visual: 'normal',
+                type_message: ''
             }
-            state[field]['res_valid'] = result;
-            states.push(state);
-
-            console.log(state);
         }
-        return states;
+
+        this.handleElemChange = this.handleElemChange.bind(this);
+        this.sendForm = this.sendForm.bind(this);
+    }
+
+    // Срабатывает при изменении поля
+    handleElemChange(param){
+        // param = this.form.email.field.getInfo()
+        const result = Validate.checkField(param);
+        const state  = Validate.createStates(result)[0];
+        this.setState(state);
+    }
+
+    // Отправка формы
+    sendForm(){
+        //Запускаеи ожидание
+        API.checkApi(function (req) {
+           console.log(req.json());
+        });
+        console.log('Отправка формы');
+        return true;
     }
 
     render() {
         const { lang } = this.props;
 
-        let def_class_value = {
-            "form-group": true
-        };
-
-        let email_class_value = {
-            "form-group": true
-        };;
-        let pass_class_value  = {
-            "form-group": true
-        };;
-
-        console.log(this.state.email);
-        email_class_value["has-danger"]  = this.state.email.is_danger;
-        email_class_value["has-success"] = this.state.email.is_success;
-
-        let email_alert = '';
-        if(this.state.email.res_valid){
-             if(this.state.email.res_valid == 'invalid'){
-                 email_alert = lang.validate.invalid.email;
-             } else {
-                 email_alert = lang.validate[this.state.email.res_valid];
-             }
+        //Меняем язык сообщений
+        for (const field in this.form) {
+            const type_message = this.state[field].type_message;
+            const message = Validate.createMessage(type_message, this.form[field].type, lang);
+            this.form[field].message = message;
         }
-
-        console.log(email_class_value);
-
-        pass_class_value["has-success"] = this.state.pass.is_success;
-        pass_class_value["has-danger"] = this.state.pass.is_danger;
-
-        console.log(email_class_value);
-
-        let auth_email_div_class  = classNames(email_class_value);
-        let auth_pass_div_class   = classNames(pass_class_value);
 
         return (
             <div>
@@ -150,34 +78,39 @@ class Auth extends Component {
                         {lang.auth.header}
                     </h2>
                     <p className="text-muted">{lang.auth.tagline}</p>
+
                     <form id="auth-form">
-
-                    <FormGroup type={this.state.email.type}>
-                        <Label for="auth-email" text={lang.auth.form.email.label}/>
-                        <InputText
-                            ref={(input) => {this.form.email.InputText = input}}
-                            id="auth-email" typeField="email"
-                            handleElemChange={this.handleElemChange}
-                            placeholder={lang.auth.form.email.placeholder}
-                        />
-                        {/*<input type="text" className="form-control" id="auth-email" aria-describedby="emailHelp"*/}
-                               {/*placeholder={lang.auth.form.email.placeholder}*/}
-                               {/*onBlur={this.handleElemChange}*/}
-                        {/*/>*/}
-                        <Message text={this.state.email.message}/>
-                        <Small text={lang.auth.form.email.text}/>
-                    </FormGroup>
-
-
-                        <div className={auth_pass_div_class}>
-                            <label className="form-control-label" for="auth-pass">{lang.auth.form.password.label}</label>
-                            <input type="text" className="form-control"
-                                   id="auth-pass" placeholder={lang.auth.form.password.placeholder}
-                                   onBlur={this.handleElemChange}
+                        <FormGroup type_visual={this.state.email.type_visual}>
+                            <Label for={this.form.email.id} text={lang.auth.form.email.label}/>
+                            <InputText
+                                ref={(input) => {this.form.email.field = input}}
+                                name_field={this.form.email.name} type_field={this.form.email.type}
+                                id={this.form.email.id} required={true}
+                                handleElemChange={this.handleElemChange}
+                                placeholder={lang.auth.form.email.placeholder}
                             />
-                            {/*<div className="form-control-feedback">{email_alert}</div>*/}
-                        </div>
-                        <button type="submit" className="btn btn-primary">{lang.auth.form.button.name}</button>
+                            <Message text={this.form.email.message}/>
+                            <Small text={lang.auth.form.email.text}/>
+                        </FormGroup>
+
+                        <FormGroup type_visual={this.state.pass.type_visual}>
+                            <Label for={this.form.pass.id} text={lang.auth.form.pass.label}/>
+                            <InputText
+                                ref={(input) => {this.form.pass.field = input}}
+                                name_field={this.form.pass.name} type_field={this.form.pass.type}
+                                id={this.form.pass.id} required={true}
+                                handleElemChange={this.handleElemChange}
+                                placeholder={lang.auth.form.pass.placeholder}
+                            />
+                            <Message text={this.form.pass.message}/>
+                            <Small text={lang.auth.form.pass.text}/>
+                        </FormGroup>
+                        <button
+                            type="submit" className="btn btn-primary"
+                            onClick={this.sendForm}
+                        >
+                            {lang.auth.form.button.name}
+                        </button>
                     </form>
                 </Content>
             </div>

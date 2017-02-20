@@ -26,7 +26,7 @@ module.exports = {
                 placeholder: 'Введите Email',
                 text: 'Мы не передаем личные данные третьим лицам.'
             },
-            password:{
+            pass:{
                 label:'Пароль:',
                 placeholder: 'Введите пароль'
             },
@@ -51,7 +51,7 @@ module.exports = {
     },
 
     validate: {
-        is_valid: '',
+        valid: '',
         required : 'Обязательное поле',
         invalid: {
             email: 'Невалидный Email (Вы можете использовать только следующие сервисы: yandex, google)!',

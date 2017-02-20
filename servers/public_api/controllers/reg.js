@@ -7,16 +7,15 @@ let ResFormat   = require('../../common_libs/res_format');
 
 router.post('/', function(req, res, next) {
     // post : [email, login, password, confirm_password, person]
-
     let fields = [
-        { name : 'email',            type : 'email',     required: true },
-        { name : 'login',            type : 'login',     required: true },
-        { name : 'password',         type : 'password',  required: true },
-        { name : 'confirm_password', type : 'password',  required: true },
-        { name : 'language',         type : 'language',  required: true }
+        { name : 'email',            type : 'email',     required: true, value: req.body.email},
+        { name : 'login',            type : 'login',     required: true, value: req.body.login},
+        { name : 'password',         type : 'password',  required: true, value: req.body.password},
+        { name : 'confirm_password', type : 'password',  required: true, value: req.body.confirm_password},
+        { name : 'language',         type : 'language',  required: true, value: req.body.language}
     ];
 
-    let result = Validate.checkFullValidate(req.body, fields);
+    let result = Validate.checkFullValidate(fields);
 
     // Проверяем валидацию полей
     if(!result.is_valid){
@@ -74,7 +73,10 @@ router.get('/confirmation/:token([a-z0-9]{64})', function (req, res) {
 });
 
 router.get('/', function (req, res) {
-    return sendError(res, 200, '1111' );
+    let status = 400;
+    let json = ResFormat(status, 'test', 'fs');
+    // return sendError(res, 200, '1111' );
+    return res.status(status).send(JSON.stringify(json));
 });
 
 module.exports = router;

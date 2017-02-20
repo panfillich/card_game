@@ -25,7 +25,7 @@ module.exports = {
                 placeholder: 'Enter email',
                 text: 'We\'ll never share your email with anyone else.',
             },
-            password:{
+            pass:{
                 label:'Password',
                 placeholder: 'Enter password'
             },
@@ -50,7 +50,7 @@ module.exports = {
     },
 
     validate: {
-        is_valid: '',
+        valid: '',
         required : 'Field is required!',
         invalid: {
             email: 'Invalid Email address (You must to use only these mail services: yandex, google)!',

@@ -14,48 +14,43 @@ class Validate{
         return true;
     };
 
-
-    static _checkGetValueField(obj, field_name){
-        let value = obj[field_name];
-        return {
-            is_value: ([undefined, null, ''].indexOf(value) != -1),
-            value: value
-        };
-    }
-
     //fields = [
-    //   {type: 'email', name:'some_email', required: true},
-    //   {type: 'password', name:'some_password', required: true}
+    //   {value: 'str', type: 'email', name:'some_email', required: true},
+    //   {value: 'str', type: 'password', name:'some_password', required: true}
     //];
-    static checkFullValidate(obj, fields){
+    static checkFullValidate(fields=[]){
 
         let empty_fields = [];
         let invalid_fields = [];
-        let all_fields = {};
+        let res_fields = {};
 
         fields.forEach(function (field) {
-            all_fields[field.name] = {
-                type: field.type
+            res_fields[field.name] = {
+                type:  field.type,
+                value: field.value
             };
 
-            let result = Validate._checkGetValueField(obj, field.name);
-            let is_value = result.is_value;
+            // Проверка на пустоту
+            let is_empty = ([undefined, null, ''].indexOf(field.value) != -1);
 
-            if(field.required && is_value){
+            // Обязательное ли поле для ввода
+            if(field.required && is_empty){
                 empty_fields.push(field.name);
-                all_fields[field.name]['result'] = 'required';
+                res_fields[field.name]['result'] = 'required';
                 return;
             }
 
-            field.value = result.value;
-            let is_valid = Validate._checkValidField(field);
-            if(!is_valid){
-                invalid_fields.push(field.name);
-                all_fields[field.name]['result'] = 'invalid';
-                return;
+            // Если поле не пустое
+            if(!is_empty) {
+                let is_valid = Validate._checkValidField(field);
+                if (!is_valid) {
+                    invalid_fields.push(field.name);
+                    res_fields[field.name]['result'] = 'invalid';
+                    return;
+                }
             }
 
-            all_fields[field.name]['result'] = 'valid';
+            res_fields[field.name]['result'] = 'valid';
         });
 
         if(invalid_fields.length != 0 || empty_fields.length != 0){
@@ -64,7 +59,7 @@ class Validate{
                 detail: {
                     empty_fields: empty_fields,
                     invalid_fields: invalid_fields,
-                    all_fields : all_fields
+                    fields : res_fields
                 }
             }
         }
@@ -72,7 +67,7 @@ class Validate{
         return {
             is_valid : true,
             detail: {
-                all_fields : all_fields
+                fields : res_fields
             }
         }
     }

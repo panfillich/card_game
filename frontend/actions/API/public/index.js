@@ -5,14 +5,20 @@ function get() {
 }
 
 class Public{
-
-    static checkAPI(){
-
+    static checkApi(callback) {
+    fetch('http://localhost:3000/pub-api/reg')
+        .then(function(req){
+            callback(req);
+        });
     }
 }
 
-export function checkApi() {
-    let text = '';
-    text = fetch('http://localhost:3000/pub-api/').then(req => req)
-    console.log(text)
-}
+export default Public;
+
+// export function checkApi(callback) {
+//     let text = '';
+//     text = fetch('http://localhost:3000/pub-api/reg')
+//         .then(function(req){
+//             callback(req);
+//         });
+// }

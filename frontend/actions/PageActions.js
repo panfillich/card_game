@@ -14,6 +14,6 @@ export function getPhotos(year) {
                 type: GET_PHOTOS_SUCCESS,
                 payload: [1,2,3,4,5]
             })
-        }, 1000)
+        }, 1000);
     }
 }
