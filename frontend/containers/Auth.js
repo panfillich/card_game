@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import Helmet from "react-helmet"
 import { connect } from 'react-redux'
-import classNames from 'classnames'
+import {bindActionCreators} from 'redux'
 import Content from '../containers/Content'
 import Form, {FormGroup, Label, Message, Small, InputText} from '../components/Form'
 import Validate from '../actions/Validate'
+import Loader from '../actions/LoaderAction'
 import API from '../actions/API/public'
 
-// let Validate = require('../../servers/common_libs/validate');
+
 
 class Auth extends Component {
     constructor(props) {
@@ -50,12 +51,13 @@ class Auth extends Component {
 
     // Отправка формы
     sendForm(){
+        const { lang, startLoading, finishLoading} = this.props;
         //Запускаеи ожидание
-        API.checkApi(function (req) {
-           console.log(req.json());
+        startLoading(lang.auth.loading_message);
+        API.checkApi((req) => {
+            console.log(req.json());
+            finishLoading();
         });
-        console.log('Отправка формы');
-        return true;
     }
 
     render() {
@@ -129,4 +131,10 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(Auth);
+function mapDispatchToProps(dispatch) {
+    return {
+        startLoading:  bindActionCreators(Loader.startLoading, dispatch),
+        finishLoading: bindActionCreators(Loader.finishLoading, dispatch)
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

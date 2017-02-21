@@ -1,5 +1,10 @@
 module.exports = {
     lang: 'en',
+
+    loader: {
+        text: 'Loading...'
+    },
+
     nav:{
         user_greeting: 'Hello, ',
         menu: {
@@ -19,6 +24,7 @@ module.exports = {
         title: 'Authorization',
         header: 'Authorization',
         tagline: "Let's do it!",
+        loading_message: "Find a user on the server",
         form:{
             email:{
                 label:'Email address:',

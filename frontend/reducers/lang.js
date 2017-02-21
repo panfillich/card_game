@@ -12,10 +12,6 @@ function setLanguage(result={}, lang) {
     return result;
 }
 
-/*export default function page(state = initialState) {
- return state
- }*/
-
 export default function lang(state = initialState, action) {
     let result_lang;
     switch (action.type) {

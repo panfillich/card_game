@@ -12,7 +12,7 @@ import 'jquery'
 import 'bootstrap/dist/js/bootstrap.js'
 import 'bootstrap/scss/bootstrap.scss'
 
-import './style.scss'
+import './scss/style.scss'
 
 const store = configureStore(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 render(

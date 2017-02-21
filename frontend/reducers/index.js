@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux'
-import page from './page'
+import loader from './loader'
 import user from './user'
 import lang from './lang'
 
 export default combineReducers({
-    page,
+    loader,
     user,
     lang
 })

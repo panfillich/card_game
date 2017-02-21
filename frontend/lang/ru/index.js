@@ -1,5 +1,10 @@
 module.exports = {
     lang: 'ru',
+
+    loader: {
+        text: 'Загрузка...'
+    },
+
     nav:{
         user_greeting: 'Привет, ',
         menu: {
@@ -20,6 +25,7 @@ module.exports = {
         title: 'Авторизация',
         header: 'Авторизация',
         tagline: 'Просто сделай это!',
+        loading_message: "Поиск пользователя на сервере",
         form:{
             email:{
                 label:'Email адрес:',
