@@ -1,18 +1,20 @@
 import React, { Component } from 'react'
 import Helmet from "react-helmet"
+import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import {bindActionCreators} from 'redux'
 import Content from '../containers/Content'
 import Form, {FormGroup, Label, Message, Small, InputText} from '../components/Form'
 import Validate from '../actions/Validate'
 import Loader from '../actions/LoaderAction'
-import API from '../actions/API/public'
+import API from '../actions/API'
+
 
 class Auth extends Component {
     constructor(props) {
         super(props);
 
-        // Cостояние формы
+        // Cостояние формы по умолчанию
         this.form = {
             email: {
                 name: "email",
@@ -22,7 +24,7 @@ class Auth extends Component {
                 type_message: '',
                 message: '',
                 type_visual: 'normal',
-                validate: 'invalid',
+                is_valid: false,
                 value: ''
             },
             pass: {
@@ -33,14 +35,13 @@ class Auth extends Component {
                 type_message: '',
                 message: '',
                 type_visual: 'normal',
-                validate: 'invalid',
+                is_valid: false,
                 value: ''
             }
         };
 
         // текущий язык
         this.current_language = props.lang.lang;
-
 
         this.handleElemChange = this.handleElemChange.bind(this);
         this.sendForm = this.sendForm.bind(this);
@@ -66,22 +67,38 @@ class Auth extends Component {
         this.setState();
     }
 
+    setForm(){
+
+    }
 
     // Отправка формы
     sendForm(){
-        //Запускаем глобальную валидацию
-        // console.dir(this.form);
+        // Валидируем форму еще раз
+        const is_valid = Validate.validForm(this.form);
 
-        Validate.ckeckFieldsByForm(this.form);
+        if(is_valid) {
+            // Запускаем отображение процесса загрузки + блокируем экран
+            const {lang, startLoading, finishLoading} = this.props;
 
-        const { lang, startLoading, finishLoading} = this.props;
-        //Запускаем отображение процесса загрузки + блокируем экран
-        startLoading(lang.auth.loading_message);
-        API.checkApi((req) => {
-            console.log(req.json());
-            finishLoading();
-        });
+            startLoading(lang.auth.loading_message);
+            API.public.auth({
+                    'login' : this.form.email.value,
+                    'password'  : this.form.pass.value
+                }, (err, res) => {
+                    if(!err){
+                        browserHistory.push('/link');
+                    }else {
+                        browserHistory.push('/auth');
+                    }
+                    finishLoading();
+                }
+            );
+        } else {
+            // Отображаем ошибки валидации (применяем изменения)
+            this.setState();
+        }
     }
+
 
     render() {
         const lang = this.props.lang.auth;
@@ -93,7 +110,7 @@ class Auth extends Component {
         //Проверяем изменился ли язык
         if(this.current_language != this.props.lang.lang){
             //Если изменился, то меняем сообщения валидации
-            Validate.createMessage(form, this.props.lang.validate);
+            Validate.createMessage(form);
             this.current_language = this.props.lang.lang;
         }
 
@@ -108,16 +125,21 @@ class Auth extends Component {
                     </h2>
                     <p className="text-muted">{lang.tagline}</p>
 
-                    <form id="auth-form">
+                    <div className="alert alert-success" role="alert">
+                         <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                         </button>
+                         <strong>Holy guacamole!</strong> 111
+                    </div>
+
+                    <form action="#" id="auth-form">
                         <FormGroup type_visual = {email.type_visual}>
-                            <Label
-                                for  = {email.id}
-                                text = {lang.form.email.label}
-                            />
+                            <Label for  = {email.id} text = {lang.form.email.label} />
                             <InputText id={email.id}
                                 ref={(input) => {email.field = input}}
                                 name_field = {email.name}
                                 type_field = {email.type}
+                                type_visual= {email.type_visual}
                                 required   = {email.required}
                                 placeholder= {lang.form.email.placeholder}
                                 handleElemChange={this.handleElemChange}
@@ -132,6 +154,7 @@ class Auth extends Component {
                                 ref={(input) => {pass.field = input}}
                                 name_field = {pass.name}
                                 type_field = {pass.type}
+                                type_visual= {email.type_visual}
                                 required   = {pass.required}
                                 placeholder= {lang.form.pass.placeholder}
                                 handleElemChange={this.handleElemChange}

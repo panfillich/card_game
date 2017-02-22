@@ -7,8 +7,8 @@ let ResFormat   = require('../../common_libs/res_format');
 
 //Аутентификация
 router.post('/', function(req, res, next) {
-    //body = [login (email), password]
-    console.dir(req.connection.remoteAddress)
+    // body = [login (email), password]
+    // console.dir(req.connection.remoteAddress)
     if (!req.body.login || !req.body.password){
         let status = 400;
         let json = ResFormat(status, 'Relevant fields not found');
@@ -21,7 +21,7 @@ router.post('/', function(req, res, next) {
     };
 
     // Ищем такого пользователя
-    Users.getAuthInfo(param, function (result, err) {
+    Users.getAuthInfo(param, function (err, result) {
         // Ошибка при поиске
         if (err) return next(err);
 

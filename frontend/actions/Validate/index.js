@@ -20,31 +20,42 @@ class Validate{
     }
 
     // Валидируем форму и меняем состояние
+    // Возвращает true, если форма валидна
     static validForm(form){
-        //Массив с настройками всех полей
-        let fields_props = [];
+        let is_valid = true;
 
-        //Убираем лишнее
+        // Мы не делеаем валидацию аналогично валидации поля
+        // т.к. она скорее всего УЖЕ была проведена, смотрим на результат
         for (let field in form) {
-            fields_props.push({
-                value: form[field].value,
-                name : form[field].name,
-                type : form[field].type,
-                required: form[field].required
-            });
-        }
+            // Есть ошибки или поле обязательно для заполнения, но не заполненно
+            if(!form[field].is_valid){
+                is_valid = false;
 
-        const result = CommonValidate.checkFullValidate(fields_props);
-        return result;
+                if(form[field].type_visual != 'error'){
+                    //Меняем состояние поля
+                    form[field].type_visual = 'error';
+                    form[field].type_message = 'required';
+
+                    let fake_form = {};
+                    fake_form[field.name] = form[field];
+                    Validate.createMessage(fake_form);
+                }
+            }
+        }
+        return is_valid;
     }
 
     // Изменяем состояние формы
     static changeState(form, result){
+        // Устанавливаем/меняем типы сообщений
+        // и заменяем предыдущий результат валидации
         const fields = result.detail.fields;
         for (const field in form){
+            form[field].is_valid = false;
             const result = fields[field].result;
             const value  = fields[field].value;
             if (result == 'valid'){
+                form[field].is_valid = true;
                 // Поле необязательное
                 // ошибки нет
                 // подтверждения валидности нет
@@ -60,10 +71,13 @@ class Validate{
                 form[field].type_message = result;
             }
         }
+        // Устанавливаем/меняем сообщения на текущем языке
+        Validate.createMessage(form);
     }
 
-    static createMessage(form, lang){
+    static createMessage(form){
         let current_state_store = store.getState();
+        const lang = current_state_store.lang.validate;
         for (const field in form) {
             const type_message = form[field].type_message;
             const type = form[field].type;

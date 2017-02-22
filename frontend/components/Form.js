@@ -36,23 +36,15 @@ class InputText extends Component {
 
     constructor(props) {
         super(props);
-        this.state ={
+        this.action ={
             onChange: new Function,
-            onBlur: this.onBlur.bind(this)
+            onBlur: new Function
         };
-        this.onChange = this.onChange.bind(this);
+        this.callTransFunc = this.callTransFunc.bind(this);
         this.getInfo  = this.getInfo.bind(this);
     }
 
-    onBlur(){
-        this.setState({
-            onChange: this.onChange,
-            onBlur:   new Function,
-        });
-        this.props.handleElemChange(this.getInfo());
-    }
-
-    onChange(){
+    callTransFunc(){
         this.props.handleElemChange(this.getInfo());
     }
 
@@ -71,14 +63,19 @@ class InputText extends Component {
         return info;
     }
 
-    render()
-    {
+    render(){
+        if(this.props.type_visual != 'normal'){
+            this.action.onBlur   = new Function;
+            this.action.onChange = this.callTransFunc;
+        } else {
+            this.action.onBlur   = this.callTransFunc;
+            this.action.onChange = new Function;
+        }
         return (
             <input  type="text" className="form-control" id={this.props.id}
                     placeholder={this.props.placeholder}
-                    value={this.state.value}
-                    onBlur={this.state.onBlur}
-                    onChange={this.state.onChange}
+                    onBlur={this.action.onBlur}
+                    onChange={this.action.onChange}
                     ref={(input) => {this.input = input}}
             />
          );

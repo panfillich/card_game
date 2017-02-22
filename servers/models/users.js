@@ -1,10 +1,6 @@
 let Token       = require('../common_libs/token');
-// let client      = require('../redis/client');
 let KEY         = require('../redis/key');
-
-// let db          = require('../db');
-// let users       = db.users;
-let constants   = require('./users').constants;
+let constants   = require('../db/schema/users').constants;
 
 class Users{
     //Подключаемся к базе
