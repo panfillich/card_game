@@ -38,6 +38,10 @@ class Auth extends Component {
             }
         };
 
+        // текущий язык
+        this.current_language = props.lang.lang;
+
+
         this.handleElemChange = this.handleElemChange.bind(this);
         this.sendForm = this.sendForm.bind(this);
     }
@@ -82,14 +86,16 @@ class Auth extends Component {
     render() {
         const lang = this.props.lang.auth;
         
-        let form = this.form;
+        let form  = this.form;
         let email = form.email;
-        let pass = form.pass;
+        let pass  = form.pass;
 
-        // создаем сообщения
-        Validate.createMessage(form, this.props.lang.validate);
-
-        console.log(form);
+        //Проверяем изменился ли язык
+        if(this.current_language != this.props.lang.lang){
+            //Если изменился, то меняем сообщения валидации
+            Validate.createMessage(form, this.props.lang.validate);
+            this.current_language = this.props.lang.lang;
+        }
 
         return (
             <div>

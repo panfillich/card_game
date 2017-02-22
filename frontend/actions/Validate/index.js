@@ -1,7 +1,7 @@
 let CommonValidate = require('../../../servers/common_libs/validate');
+import store from '../../store';
 
 class Validate{
-
     // Валидируем и меняем состояние
     static validField(field){
         // Валидируем
@@ -63,6 +63,7 @@ class Validate{
     }
 
     static createMessage(form, lang){
+        let current_state_store = store.getState();
         for (const field in form) {
             const type_message = form[field].type_message;
             const type = form[field].type;
