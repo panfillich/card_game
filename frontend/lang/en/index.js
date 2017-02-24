@@ -1,5 +1,5 @@
 module.exports = {
-    lang: 'en',
+    cur_lang: 'en',
 
     loader: {
         text: 'Loading...'
