@@ -4,7 +4,10 @@ import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import {bindActionCreators} from 'redux'
 import Content from '../containers/Content'
-import Form, {FormGroup, Label, Message, Small, InputText} from '../components/Form'
+
+import FieldMessage from '../components/Form/FieldMessage'
+import Button from '../components/Form/Button'
+
 import Validate from '../actions/Validate'
 import Loader from '../actions/LoaderAction'
 import API from '../actions/API'
@@ -114,16 +117,9 @@ class Auth extends Component {
     render() {
         const lang = this.props.lang.auth;
 
-        let form  = this.form;
-        let email = form.email;
-        let pass  = form.pass;
-
-        //Проверяем изменился ли язык
-        if(this.current_language != this.props.lang.lang){
-            //Если изменился, то меняем сообщения валидации
-            Validate.createMessage(form);
-            this.current_language = this.props.lang.lang;
-        }
+        let tet = function () {
+            console.log(1111);
+        };
 
         return (
             <div>
@@ -135,6 +131,26 @@ class Auth extends Component {
                         {lang.header}
                     </h2>
 
+                    <FieldMessage
+                        type_message="invalid"
+                        type_field="email"
+                    />
+
+                    <FieldMessage
+                        type_message="invalid"
+                        type_field="password"
+                    />
+
+                    <Button
+                        text = "sdfsdfsd"
+                        action = {tet}
+                    />
+
+                    <Button
+                        text = "sdfsdfsd"
+                        action = {tet}
+                        disabled = {true}
+                    />
 
                 </Content>
             </div>
