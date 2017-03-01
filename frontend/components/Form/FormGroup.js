@@ -12,7 +12,7 @@ class FormGroup extends Component {
 
     setNewState(state){
         if(state != this.state){
-            switch(this.props.type_visual){
+            switch(state){
                 case 'success':
                     this.has_success = true;
                     this.has_danger  = false;
