@@ -11,9 +11,10 @@ class Button extends Component {
             this.disabled = true;
         }
 
-        this.setDisabled = this.setDisabled.bind(this);
-        this.unSetDisabled = this.unSetDisabled.bind(this);
-        this.callActive = this.callActive.bind(this);
+        this.setDisabled    = this.setDisabled.bind(this);
+        this.unSetDisabled  = this.unSetDisabled.bind(this);
+        this.callAction     = this.callAction.bind(this);
+        this.setAction      = this.setAction.bind(this);
     }
 
     // Включить кнопку
@@ -28,10 +29,15 @@ class Button extends Component {
         this.setState();
     }
 
-    // Действие
-    callActive(){
+    // Установить действие
+    setAction(action){
+        this.action = action;
+    }
+
+    // Вызвать действие
+    callAction(){
         if(!this.disabled) {
-            this.props.action();
+            action();
         }
     }
 
@@ -45,7 +51,7 @@ class Button extends Component {
             <button
                 type={this.props.type || ''}
                 className={class_name}
-                onClick={this.callActive}
+                onClick={this.callAction}
             >
                 {this.props.text}
             </button>

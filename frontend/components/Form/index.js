@@ -1,10 +1,8 @@
 class Form{
     constructor(form){
         this.components = {};
-
         this.form = fields;
     }
-
 
     checkValid(){
 
@@ -18,16 +16,14 @@ class Form{
         this.components.FormMessage = FormMessage;
     }
 
-    sendForm(){
+    setComponents(components){
+        if(components.Message) {
+            this.components.Message = components.Message;
+        }
 
-    }
-
-    sendButton(){
-
-    }
-
-    clearForm(){
-
+        if(components.FormGroup) {
+            this.components.FormGroup = components.FormGroup;
+        }
     }
 
 }
@@ -41,13 +37,14 @@ class Field{
 
     }
 
-    setInputComponent(Input){
-        this.components.Input = Input;
-    }
+    setComponents(components){
+        if(components.Input) {
+            this.components.Input = components.Input;
+        }
 
-    setFormGroupComponent(FormGroup){
-        this.components.FormGroup = FormGroup;
+        if(components.FormGroup) {
+            this.components.FormGroup = components.FormGroup;
+        }
     }
-
 }
 
