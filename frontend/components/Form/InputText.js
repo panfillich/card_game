@@ -11,17 +11,19 @@ class InputText extends Component {
 
         this._onChange      = this._onChange.bind(this);
         this._onBlur        = this._onBlur.bind(this);
+        this._fieldChange   = this._fieldChange.bind(this);
 
-        this.fieldChange    = this.fieldChange.bind(this);
         this.getValue       = this.getValue.bind(this);
         this.setValue       = this.setValue.bind(this);
         this.clearValue     = this.clearValue.bind(this);
+
+        this.setOnAction    = this.setOnAction.bind(this);
         this.resetOnAction  = this.resetOnAction.bind(this);
     }
 
     _onChange(){
         if(this.action.onChange){
-            this.fieldChange();
+            this._fieldChange();
         }
     }
 
@@ -29,13 +31,8 @@ class InputText extends Component {
         if(this.action.onBlur){
             this.action.onBlur = false;
             this.action.onChange = true;
-            this.fieldChange();
+            this._fieldChange();
         }
-    }
-
-    fieldChange(){
-        let field = this.props.onChange();
-        field.onChange();
     }
 
     // Получить значение поля
@@ -51,6 +48,13 @@ class InputText extends Component {
     // Очистить поле
     clearValue(){
         this.input.value = '';
+    }
+
+    //Установить событие которое будет вызываться при изменении поля
+    setOnAction(action){
+        this._fieldChange = function () {
+            action(this);
+        };
     }
 
     // Убрать проверку после каждого изменения поля,

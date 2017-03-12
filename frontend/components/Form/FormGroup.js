@@ -4,7 +4,7 @@ class FormGroup extends Component {
     constructor(props){
         super(props);
         this.state = 'normal';
-        this.success = false;
+        this.has_success = false;
         this.has_danger  = false;
 
         this.setNewState  = this.setNewState.bind(this);
@@ -26,13 +26,10 @@ class FormGroup extends Component {
                     this.has_danger  = false;
             }
             this.state = state;
-            this.setState();
         }
 
         this.has_success = false;
         this.has_danger  = false;
-
-        this.setState();
     }
 
     render() {

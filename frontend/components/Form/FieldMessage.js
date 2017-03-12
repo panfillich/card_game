@@ -5,16 +5,21 @@ class FieldMessage extends Component {
     constructor(props){
         super(props);
         // Язык сообщения
-        this.lang =  props.lang.cur_lang;
+        this.lang =  '';
         // Само сообщение
         this.message = '';
         // Тип сообщения
         this.type_message = '';
         // Тип поля
         this.type_field = '';
+
+        this.getMessage
+
         this.createMessageOnCurrentLanguage = this.createMessageOnCurrentLanguage.bind(this);
         this.check = this.check.bind(this);
     }
+
+
 
     createMessageOnCurrentLanguage(){
         let lang = this.props.lang.validate;
@@ -49,7 +54,7 @@ class FieldMessage extends Component {
         this.check();
         return (
             <div className="form-control-feedback">
-                {this.message}
+                {this.getMessage()}
             </div>
         );
     }
