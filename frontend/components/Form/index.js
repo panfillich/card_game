@@ -36,14 +36,17 @@ class Validate{
             type_message = res_param.result;
         }
 
+
+
         if (field_param.result != is_valid || field_param.type_message != type_message) {
+            console.log(111);
 
             field_param.is_valid     = is_valid;
             field_param.type_visual  = type_visual;
             field_param.type_message = type_message;
 
-            if(!field_param.is_reload) {
-                field_param.is_reload = true;
+            if(!field.is_reload) {
+                field.is_reload = true;
             }
         }
     }
@@ -64,10 +67,10 @@ class Form{
         this.components = {};
         this.fields = {};
 
-
         for (let field in form.fields) {
+            form.fields[field]['name'] = field;
             this.fields[field] = new Field({
-                fields: form.fields[field],
+                field: form.fields[field],
                 form: this
             });
         }
@@ -110,13 +113,18 @@ class Field{
     }
 
     setComponents(components){
-        if(components.Input) {
+        if(components.Input && !this.components.Input) {
             this.components.Input = components.Input;
             this.components.Input.setOnAction(this.changeValue)
         }
 
-        if(components.FormGroup) {
+        if(components.FormGroup && !this.components.FormGroup) {
             this.components.FormGroup = components.FormGroup;
+        }
+
+        if(components.FieldMessage && !this.components.FieldMessage) {
+            this.components.FieldMessage = components.FieldMessage.refs.wrappedInstance;
+            this.components.FieldMessage.setFieldType(this.param.field_type);
         }
     }
 
@@ -126,8 +134,13 @@ class Field{
         this.validate();
         // Специальная валидация с участием нескольких полей
         this.callCustomValidate();
+
+        console.log(this.is_reload);
         // Обновить форму
         this.update();
+        console.log(this.is_reload);
+
+
     }
 
     validate(){
@@ -144,9 +157,23 @@ class Field{
 
     update(){
         if(this.is_reload) {
-            for (let component in this.components) {
-                this.components[component].setState();
+            // for (let component in this.components) {
+            //     this.components[component].setState();
+            // }
+
+            console.log(this.components.FieldMessage);
+
+            if(this.components.FieldMessage){
+                if(this.components.FieldMessage.getMessageType() != this.param.type_message){
+                    console.log(this.param.type_message);
+                    this.components.FieldMessage.setMessageType(this.param.type_message);
+                    this.components.FieldMessage.setState();
+                }
             }
+
+            console.log(111);
+
+            this.is_reload = false;
         }
     }
 }

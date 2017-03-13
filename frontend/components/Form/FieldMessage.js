@@ -4,54 +4,58 @@ import { connect } from 'react-redux'
 class FieldMessage extends Component {
     constructor(props){
         super(props);
-        // Язык сообщения
-        this.lang =  '';
-        // Само сообщение
-        this.message = '';
-        // Тип сообщения
-        this.type_message = '';
         // Тип поля
-        this.type_field = '';
+        this._type_field = '';
+        this._type_message = '';
 
-        this.getMessage
+        this.setFieldType = this.setFieldType.bind(this);
 
-        this.createMessageOnCurrentLanguage = this.createMessageOnCurrentLanguage.bind(this);
-        this.check = this.check.bind(this);
+        // Сообщение
+        this._messageFunc   = function () {return '';}
+        this.getMessage     = this.getMessage.bind(this);
+        this.setMessageType = this.setMessageType.bind(this);
+        this.getMessageType = this.getMessageType.bind(this);
     }
 
+    getMessage(){
+        return this._messageFunc();
+    }
 
+    setMessageType(type_message){
 
-    createMessageOnCurrentLanguage(){
-        let lang = this.props.lang.validate;
-        let type_field = this.type_field;
-        let type_message = this.type_message;
+        console.log('setMessageType')
+
+        let type_field = this._type_field;
 
         if(['valid', 'required'].indexOf(type_message) != -1){
-            this.message = lang[type_message];
+            this._messageFunc = function () {
+                return this.props.lang.validate[type_message];
+            };
         } else if(type_message == 'invalid'){
-            this.message = lang[type_message][type_field];
+            this._messageFunc = function () {
+                return this.props.lang.validate[type_message][type_field];
+            };
+        } else {
+            this._messageFunc = function () {
+                return function () {return '';}
+            };
         }
     }
 
-    //Срабатывает перед рендерингом
-    check(){
-        // Текущий язык приложения
-        let cur_lang = this.props.lang.cur_lang;
+    getMessageType(){
+        return this._type_message;
+    }
 
-        // Проверяем изменился ли язык или тип сообщения
-        // если нет, то берем из состояния, если да, то заново генерируем сообщение
-        if(this.type_message != this.props.type_message || this.type_field != this.props.type_field) {
-            this.type_message = this.props.type_message;
-            this.type_field   = this.props.type_field;
-            this.createMessageOnCurrentLanguage();
-        } else if(this.lang != cur_lang){
-            this.lang =  cur_lang;
-            this.createMessageOnCurrentLanguage();
+    setFieldType(new_type_field){
+        if(typeof new_type_field == "string") {
+            this._type_field = new_type_field;
+            return true;
         }
+        return false;
     }
 
     render() {
-        this.check();
+        console.log('render');
         return (
             <div className="form-control-feedback">
                 {this.getMessage()}
@@ -66,4 +70,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(FieldMessage);
+export default connect(mapStateToProps, null, null, { withRef: true })(FieldMessage);

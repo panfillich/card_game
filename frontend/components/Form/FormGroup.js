@@ -1,18 +1,19 @@
 import React, { Component } from 'react'
+import classNames from 'classnames'
 
 class FormGroup extends Component {
     constructor(props){
         super(props);
-        this.state = 'normal';
+        this.state_form = 'normal';
         this.has_success = false;
         this.has_danger  = false;
 
         this.setNewState  = this.setNewState.bind(this);
     }
 
-    setNewState(state){
-        if(state != this.state){
-            switch(state){
+    setNewState(state_form){
+        if(state_form != this.state_form){
+            switch(state_form){
                 case 'success':
                     this.has_success = true;
                     this.has_danger  = false;
@@ -25,11 +26,8 @@ class FormGroup extends Component {
                     this.has_success = false;
                     this.has_danger  = false;
             }
-            this.state = state;
+            this.state_form = state_form;
         }
-
-        this.has_success = false;
-        this.has_danger  = false;
     }
 
     render() {

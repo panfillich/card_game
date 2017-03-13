@@ -9,9 +9,10 @@ class InputText extends Component {
             onBlur   : true
         };
 
+        this._fieldChange   = new Function;
+
         this._onChange      = this._onChange.bind(this);
         this._onBlur        = this._onBlur.bind(this);
-        this._fieldChange   = this._fieldChange.bind(this);
 
         this.getValue       = this.getValue.bind(this);
         this.setValue       = this.setValue.bind(this);

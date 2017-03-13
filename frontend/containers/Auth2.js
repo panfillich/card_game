@@ -5,10 +5,15 @@ import { connect } from 'react-redux'
 import {bindActionCreators} from 'redux'
 import Content from '../containers/Content'
 
-import FieldMessage from '../components/Form/FieldMessage'
-import Button from '../components/Form/Button'
+import Form from  '../components/Form/'
 
-import Validate from '../actions/Validate'
+import FieldMessage from '../components/Form/FieldMessage'
+import FormGroup    from '../components/Form/FormGroup'
+import InputText    from '../components/Form/InputText'
+import Label        from '../components/Form/Label'
+import Small        from '../components/Form/Small'
+import Button       from '../components/Form/Button'
+
 import Loader from '../actions/LoaderAction'
 import API from '../actions/API'
 
@@ -17,13 +22,15 @@ class Auth extends Component {
     constructor(props) {
         super(props);
 
+        // Внутренние переменные, в которые передаем компоненты
+        this._email = {};
+
         // Cостояние формы по умолчанию
         let form = {
             type: "auth",
             message: '',
-            fields: [
-                {
-                    name: "email",
+            fields: {
+                email: {                    
                     id: 'auth_email',
                     type: 'email',
                     required: true,
@@ -32,94 +39,25 @@ class Auth extends Component {
                     is_valid: false,
                     value: ''
                 },
-                {
-                    name: "pass",
+                pass: {
                     id: 'auth_pass',
                     type: 'password',
                     required: true,
                     type_message: '',
-                    message: '',
                     type_visual: 'normal',
                     is_valid: false,
                     value: ''
-                }]
+                }                
+            }
         };
 
-        // Поля формы
-        let fields = {
-
-        }
-
-        // Порядок полей
-
-        this.form = form;
-
-        // текущий язык
-        this.current_language = props.lang.lang;
-
-        this.handleElemChange = this.handleElemChange.bind(this);
-        this.sendForm = this.sendForm.bind(this);
+        this.form = new Form(form);
     }
-
-
-    // Срабатывает при изменении поля
-    //
-    // Можем получить параметры и так
-    // param = this.form.email.field.getInfo()
-    handleElemChange(param){
-        // Поле формы, где произошло изменение
-        let form = this.form;
-        let field = form[param.name];
-
-        // Записываем значение поля в форме в this.form (состояние)
-        field.value = param.value;
-
-        // Изменяет поле (this.form.field) и меняет состояние
-        Validate.validField(field);
-
-        // Применяем изменения
-        this.setState();
-    }
-
-    setForm(){
-
-    }
-
-    // Отправка формы
-    sendForm(){
-        // Валидируем форму еще раз
-        const is_valid = Validate.validForm(this.form);
-
-        if(is_valid) {
-            // Запускаем отображение процесса загрузки + блокируем экран
-            const {lang, startLoading, finishLoading} = this.props;
-
-            startLoading(lang.auth.loading_message);
-            API.public.auth({
-                    'login' : this.form.email.value,
-                    'password'  : this.form.pass.value
-                }, (err, res) => {
-                    if(!err){
-                        browserHistory.push('/link');
-                    }else {
-                        browserHistory.push('/auth');
-                    }
-                    finishLoading();
-                }
-            );
-        } else {
-            // Отображаем ошибки валидации (применяем изменения)
-            this.setState();
-        }
-    }
-
 
     render() {
         const lang = this.props.lang.auth;
 
-        let tet = function () {
-            console.log(1111);
-        };
+        let email = this.form.fields.email;
 
         return (
             <div>
@@ -131,26 +69,62 @@ class Auth extends Component {
                         {lang.header}
                     </h2>
 
-                    <FieldMessage
-                        type_message="invalid"
-                        type_field="email"
-                    />
+                    <form action="#" id="auth-form">
+                        <FormGroup ref = {(formGroup) => {email.setComponents({FormGroup : formGroup})}}>
+                            <Label for  = {email.param.id}
+                                   text = {lang.form.email.label}
+                            />
+                            <InputText ref  = {(input) => {email.setComponents({Input : input})}}
+                                id          = {email.param.id}
+                                name_field  = {email.param.name}
+                                type_field  = {email.param.type}
+                                type_visual = {email.param.type_visual}
+                                required    = {email.param.required}
+                                placeholder = {lang.form.email.placeholder}
+                            />
+                            <FieldMessage ref  = {(fieldMessage) => {email.setComponents({FieldMessage : fieldMessage})}}/>
+                            <Small text={lang.form.email.text}/>
+                        </FormGroup>
 
-                    <FieldMessage
-                        type_message="invalid"
-                        type_field="password"
-                    />
 
-                    <Button
-                        text = "sdfsdfsd"
-                        action = {tet}
-                    />
+                    </form>
 
-                    <Button
-                        text = "sdfsdfsd"
-                        action = {tet}
-                        disabled = {true}
-                    />
+                    {/*<form action="#" id="auth-form">*/}
+                        {/*<FormGroup ref={(input) => {email.field = input}}>*/}
+                            {/*<Label for  = {email.id} text = {lang.form.email.label} />*/}
+                            {/*<InputText id={email.id}*/}
+                                       {/*ref={(input) => {email.field = input}}*/}
+                                       {/*name_field = {email.name}*/}
+                                       {/*type_field = {email.type}*/}
+                                       {/*type_visual= {email.type_visual}*/}
+                                       {/*required   = {email.required}*/}
+                                       {/*placeholder= {lang.form.email.placeholder}*/}
+                                       {/*handleElemChange={this.handleElemChange}*/}
+                            {/*/>*/}
+                            {/*<Message text={email.message}/>*/}
+                            {/*<Small text={lang.form.email.text}/>*/}
+                        {/*</FormGroup>*/}
+                        {/**/}
+                        {/*<FormGroup type_visual={pass.type_visual}>*/}
+                            {/*<Label for={pass.id} text={lang.form.pass.label}/>*/}
+                            {/*<InputText id={pass.id}*/}
+                                       {/*ref={(input) => {pass.field = input}}*/}
+                                       {/*name_field = {pass.name}*/}
+                                       {/*type_field = {pass.type}*/}
+                                       {/*type_visual= {email.type_visual}*/}
+                                       {/*required   = {pass.required}*/}
+                                       {/*placeholder= {lang.form.pass.placeholder}*/}
+                            {/*/>*/}
+                            {/*<Message text={pass.message}/>*/}
+                            {/*<Small text={lang.form.pass.text}/>*/}
+                        {/*</FormGroup>*/}
+                        {/*<button*/}
+                            {/*type="submit" className="btn btn-primary"*/}
+                            {/*onClick={this.sendForm}*/}
+                        {/*>*/}
+                            {/*{lang.form.button.name}*/}
+                        {/*</button>*/}
+                    {/*</form>*/}
 
                 </Content>
             </div>
