@@ -6,11 +6,14 @@ class FieldMessage extends Component {
         super(props);
         // Тип поля
         this._type_field = '';
+        if(props['type_field']){
+            this._type_field = props['type_field'];
+        }
+
+        // Тип сообщения
         this._type_message = '';
 
-        this.setFieldType = this.setFieldType.bind(this);
-
-        // Сообщение
+        // Действия с сообщением
         this._messageFunc   = function () {return '';}
         this.getMessage     = this.getMessage.bind(this);
         this.setMessageType = this.setMessageType.bind(this);
@@ -22,10 +25,8 @@ class FieldMessage extends Component {
     }
 
     setMessageType(type_message){
-
-        console.log('setMessageType')
-
         let type_field = this._type_field;
+        this._type_message = type_message;
 
         if(['valid', 'required'].indexOf(type_message) != -1){
             this._messageFunc = function () {
@@ -46,16 +47,7 @@ class FieldMessage extends Component {
         return this._type_message;
     }
 
-    setFieldType(new_type_field){
-        if(typeof new_type_field == "string") {
-            this._type_field = new_type_field;
-            return true;
-        }
-        return false;
-    }
-
     render() {
-        console.log('render');
         return (
             <div className="form-control-feedback">
                 {this.getMessage()}

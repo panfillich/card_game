@@ -37,7 +37,8 @@ module.exports = {
                 placeholder: 'Введите пароль'
             },
             button:{
-                name: 'Автризироваться'
+                send_form: 'Автризироваться',
+                clear_form: 'Очистить'
             },
             error:{}
         }

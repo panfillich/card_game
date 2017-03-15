@@ -13,7 +13,6 @@ class Validate{
                 required  : param.required
             }]
         );
-
         Validate.changeFieldState(field, result);
     }
 
@@ -28,7 +27,7 @@ class Validate{
         if (res_param.result == 'valid'){
             is_valid = true;
             type_visual = 'normal';
-            type_message = '';
+            type_message = 'valid';
 
         } else {
             is_valid = false;
@@ -37,9 +36,7 @@ class Validate{
         }
 
 
-
-        if (field_param.result != is_valid || field_param.type_message != type_message) {
-            console.log(111);
+        if (field_param.is_valid != is_valid || field_param.type_message != type_message) {
 
             field_param.is_valid     = is_valid;
             field_param.type_visual  = type_visual;
@@ -55,8 +52,6 @@ class Validate{
     // Возвращает true, если форма валидна
     static validForm(form){
         let is_valid = true;
-
-
 
         return is_valid;
     }
@@ -107,9 +102,11 @@ class Field{
     }
 
     clearField(){
-        if(this.components.Input) {
-            this.components.Input.clearValue();
-        }
+        this.is_reload            = true;
+        this.param.value          = this.param.def_value;
+        this.param.type_visual    = 'normal';
+        this.param.type_message   = '';
+        this.update();
     }
 
     setComponents(components){
@@ -118,13 +115,19 @@ class Field{
             this.components.Input.setOnAction(this.changeValue)
         }
 
+        // Вид(цвет) валидируемого поля
         if(components.FormGroup && !this.components.FormGroup) {
             this.components.FormGroup = components.FormGroup;
         }
 
+        // Сообщение валидатора
         if(components.FieldMessage && !this.components.FieldMessage) {
             this.components.FieldMessage = components.FieldMessage.refs.wrappedInstance;
-            this.components.FieldMessage.setFieldType(this.param.field_type);
+        }
+
+        // Кнопка отправки формы
+        if(components.SendFormButton && !this.components.SendFormButton) {
+            this.components.SendFormButton = components.SendFormButton;
         }
     }
 
@@ -135,12 +138,8 @@ class Field{
         // Специальная валидация с участием нескольких полей
         this.callCustomValidate();
 
-        console.log(this.is_reload);
         // Обновить форму
         this.update();
-        console.log(this.is_reload);
-
-
     }
 
     validate(){
@@ -157,21 +156,27 @@ class Field{
 
     update(){
         if(this.is_reload) {
-            // for (let component in this.components) {
-            //     this.components[component].setState();
-            // }
+            //Если значение изменилось при валидации
+            if(this.components.Input){
+                if(this.components.Input.getValue() != this.param.value){
+                    this.components.Input.setValue(this.param.value);
+                    this.components.Input.setState();
+                }
+            }
 
-            console.log(this.components.FieldMessage);
-
+            // Тип сообщения формы
             if(this.components.FieldMessage){
                 if(this.components.FieldMessage.getMessageType() != this.param.type_message){
-                    console.log(this.param.type_message);
                     this.components.FieldMessage.setMessageType(this.param.type_message);
                     this.components.FieldMessage.setState();
                 }
             }
 
-            console.log(111);
+            // Вид(цвет) поля формы
+            if(this.components.FormGroup.getFieldState() != this.param.type_visual){
+                this.components.FormGroup.setFieldState(this.param.type_visual);
+                this.components.FormGroup.setState();
+            }
 
             this.is_reload = false;
         }

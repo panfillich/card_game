@@ -37,7 +37,7 @@ class Auth extends Component {
                     type_message: '',
                     type_visual: 'normal',
                     is_valid: false,
-                    value: ''
+                    def_value: ''
                 },
                 pass: {
                     id: 'auth_pass',
@@ -46,7 +46,7 @@ class Auth extends Component {
                     type_message: '',
                     type_visual: 'normal',
                     is_valid: false,
-                    value: ''
+                    def_value: ''
                 }                
             }
         };
@@ -57,7 +57,8 @@ class Auth extends Component {
     render() {
         const lang = this.props.lang.auth;
 
-        let email = this.form.fields.email;
+        let email  = this.form.fields.email;
+        let pass   = this.form.fields.pass;
 
         return (
             <div>
@@ -70,7 +71,7 @@ class Auth extends Component {
                     </h2>
 
                     <form action="#" id="auth-form">
-                        <FormGroup ref = {(formGroup) => {email.setComponents({FormGroup : formGroup})}}>
+                        <FormGroup ref  = {(formGroup) => {email.setComponents({FormGroup : formGroup})}}>
                             <Label for  = {email.param.id}
                                    text = {lang.form.email.label}
                             />
@@ -80,13 +81,43 @@ class Auth extends Component {
                                 type_field  = {email.param.type}
                                 type_visual = {email.param.type_visual}
                                 required    = {email.param.required}
+                                def_value   = {email.param.def_value}
                                 placeholder = {lang.form.email.placeholder}
                             />
-                            <FieldMessage ref  = {(fieldMessage) => {email.setComponents({FieldMessage : fieldMessage})}}/>
-                            <Small text={lang.form.email.text}/>
+                            <FieldMessage
+                                ref         = {(fieldMessage) => {email.setComponents({FieldMessage : fieldMessage})}}
+                                type_field  = {email.param.type}
+                            />
+                            <Small text = {lang.form.email.text || ''}/>
                         </FormGroup>
 
-
+                        <FormGroup ref  = {(formGroup) => {pass.setComponents({FormGroup : formGroup})}}>
+                            <Label for  = {pass.param.id}
+                                   text = {lang.form.pass.label}
+                            />
+                            <InputText ref         = {(input) => {pass.setComponents({Input : input})}}
+                                       id          = {pass.param.id}
+                                       name_field  = {pass.param.name}
+                                       type_field  = {pass.param.type}
+                                       type_visual = {pass.param.type_visual}
+                                       required    = {pass.param.required}
+                                       def_value   = {pass.param.def_value}
+                                       placeholder = {lang.form.pass.placeholder}
+                            />
+                            <FieldMessage
+                                ref         = {(fieldMessage) => {pass.setComponents({FieldMessage : fieldMessage})}}
+                                type_field  = {pass.param.type}
+                            />
+                            <Small text={lang.form.pass.text || ''}/>
+                        </FormGroup>
+                        <Button
+                            ref   = {(fieldMessage) => {pass.setComponents({SendFormButton : fieldMessage})}}
+                            text  = {lang.form.button.send_form}
+                        /><span> </span>
+                        <Button
+                            text  = {lang.form.button.clear_form}
+                            action = {()=>{this.form.clearForm()}}
+                        />
                     </form>
 
                     {/*<form action="#" id="auth-form">*/}

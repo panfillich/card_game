@@ -48,7 +48,7 @@ class InputText extends Component {
 
     // Очистить поле
     clearValue(){
-        this.input.value = '';
+        this.input.value = this.props.def_value;
     }
 
     //Установить событие которое будет вызываться при изменении поля
@@ -63,6 +63,12 @@ class InputText extends Component {
     resetOnAction(){
         this.action.onBlur = false;
         this.action.onChange = true;
+    }
+
+    componentDidMount(){
+        if(this.props.def_value){
+            this.input.value = this.props.def_value;
+        }
     }
 
     render(){

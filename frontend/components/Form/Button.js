@@ -5,10 +5,15 @@ class Button extends Component {
 
     constructor(props){
         super(props);
-        this.disabled = false;
 
+        this.disabled = false;
         if(props.disabled){
             this.disabled = true;
+        }
+
+        this.action = new Function;
+        if(props.action){
+            this.action = props.action;
         }
 
         this.setDisabled    = this.setDisabled.bind(this);
@@ -37,7 +42,7 @@ class Button extends Component {
     // Вызвать действие
     callAction(){
         if(!this.disabled) {
-            action();
+            this.action();
         }
     }
 

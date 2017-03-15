@@ -36,7 +36,8 @@ module.exports = {
                 placeholder: 'Enter password'
             },
             button:{
-                name: 'Authorize'
+                send_form: 'Authorize',
+                clear_form: 'Clear'
             },
             error:{}
         }

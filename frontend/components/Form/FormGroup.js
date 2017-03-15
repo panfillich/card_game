@@ -4,16 +4,17 @@ import classNames from 'classnames'
 class FormGroup extends Component {
     constructor(props){
         super(props);
-        this.state_form = 'normal';
+        this.state_field = 'normal';
         this.has_success = false;
         this.has_danger  = false;
 
-        this.setNewState  = this.setNewState.bind(this);
+        this.setFieldState = this.setFieldState.bind(this);
+        this.getFieldState = this.getFieldState.bind(this);
     }
 
-    setNewState(state_form){
-        if(state_form != this.state_form){
-            switch(state_form){
+    setFieldState(state_field){
+        if(state_field != this.state_field){
+            switch(state_field){
                 case 'success':
                     this.has_success = true;
                     this.has_danger  = false;
@@ -26,8 +27,12 @@ class FormGroup extends Component {
                     this.has_success = false;
                     this.has_danger  = false;
             }
-            this.state_form = state_form;
+            this.state_field = state_field;
         }
+    }
+
+    getFieldState(){
+        return this.state_field;
     }
 
     render() {
