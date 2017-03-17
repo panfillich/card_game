@@ -13,6 +13,7 @@ import InputText    from '../components/Form/InputText'
 import Label        from '../components/Form/Label'
 import Small        from '../components/Form/Small'
 import Button       from '../components/Form/Button'
+import FormMessage  from '../components/Form/FormMessage'
 
 import Loader from '../actions/LoaderAction'
 import API from '../actions/API'
@@ -71,6 +72,9 @@ class Auth extends Component {
                     </h2>
 
                     <form action="#" id="auth-form">
+                        <FormMessage>
+                            test
+                        </FormMessage>
                         <FormGroup ref  = {(formGroup) => {email.setComponents({FormGroup : formGroup})}}>
                             <Label for  = {email.param.id}
                                    text = {lang.form.email.label}
