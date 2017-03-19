@@ -51,6 +51,7 @@ class Validate{
     // Валидируем форму и меняем состояние
     // Возвращает true, если форма валидна
     static validForm(form){
+
         let is_valid = true;
 
         return is_valid;
@@ -72,7 +73,21 @@ class Form{
     }
 
     checkValid(){
+        let is_valid = true;
+        for (let field_name in this.fields) {
+            let field = this.fields[field_name];
+            if(!field.param.is_valid){
+               if(is_valid){
+                   is_valid = false;
+               }
 
+               if(field.param.type_visual = 'normal'){
+                   field.validate();
+                   field.update();
+               }
+            }
+        }
+        return is_valid;
     }
 
     setButtonComponent(Button){
@@ -104,8 +119,11 @@ class Field{
     clearField(){
         this.is_reload            = true;
         this.param.value          = this.param.def_value;
+        this.param._is_reset_on_action = true;
         this.param.type_visual    = 'normal';
         this.param.type_message   = '';
+
+
         this.update();
     }
 
@@ -158,8 +176,24 @@ class Field{
         if(this.is_reload) {
             //Если значение изменилось при валидации
             if(this.components.Input){
+                let is_set_state = false;
+
                 if(this.components.Input.getValue() != this.param.value){
                     this.components.Input.setValue(this.param.value);
+                    if(!is_set_state){
+                        is_set_state = true;
+                    }
+                }
+
+                if(this.param._is_reset_on_action){
+                    this.param._is_reset_on_action = false;
+                    this.components.Input.resetOnAction();
+                    if(!is_set_state){
+                        is_set_state = true;
+                    }
+                }
+
+                if(is_set_state){
                     this.components.Input.setState();
                 }
             }

@@ -43,12 +43,16 @@ class InputText extends Component {
 
     // Установить новое значение для поля
     setValue(new_value){
-        this.input.value = new_value;
+        if(typeof new_value != 'undefined') {
+            this.input.value = new_value;
+        }
     }
 
     // Очистить поле
     clearValue(){
-        this.input.value = this.props.def_value;
+        if(this.props.def_value) {
+            this.input.value = this.props.def_value;
+        }
     }
 
     //Установить событие которое будет вызываться при изменении поля
@@ -61,8 +65,8 @@ class InputText extends Component {
     // Убрать проверку после каждого изменения поля,
     // проверка произойдет только после потери фокуса и установит событие onChange
     resetOnAction(){
-        this.action.onBlur = false;
-        this.action.onChange = true;
+        this.action.onBlur = true;
+        this.action.onChange = false;
     }
 
     componentDidMount(){

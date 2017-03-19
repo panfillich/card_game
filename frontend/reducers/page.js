@@ -14,10 +14,6 @@ const initialState = {
 }*/
 
 export default function page(state = initialState, action) {
-
-
-
-
     switch (action.type) {
         case SET_YEAR:
             let result_state = {

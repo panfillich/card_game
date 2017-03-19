@@ -40,9 +40,11 @@ module.exports = {
                 send_form: 'Автризироваться',
                 clear_form: 'Очистить'
             },
-            error:{}
-        }
-    },
+            error:{
+                not_found: 'Пользователь не найден.'
+            }
+        },
+     },
 
     reg: {
         title: 'Регистрация',

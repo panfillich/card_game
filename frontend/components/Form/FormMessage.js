@@ -4,23 +4,29 @@ class FormMessage extends Component {
 
     constructor(props){
         super(props);
+        this.display = "none";
+
+        this.show = this.show.bind(this);
     }
 
     // показать сообщение
     show(){
-        $('#form-message').alert();
+        this.display = "";
     }
 
     // убрать сообщение
     close(){
-        $('#form-message').alert('close')
+        this.display = "none";
     }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return true;
+    }
+
 
     render() {
         return (
-            <div id="form-message" className="alert alert-danger">
-                test
-                {/*<strong>Danger!</strong> Indicates a dangerous or potentially negative action.*/}
+            <div id="form-message" className="alert alert-danger" style={{display:this.display}}>
                 {this.props.children}
             </div>
         );

@@ -39,8 +39,11 @@ module.exports = {
                 send_form: 'Authorize',
                 clear_form: 'Clear'
             },
-            error:{}
-        }
+            error:{
+                not_found: 'User not found.'
+            }
+        },
+
     },
 
     reg: {

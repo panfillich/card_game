@@ -15,16 +15,13 @@ import Small        from '../components/Form/Small'
 import Button       from '../components/Form/Button'
 import FormMessage  from '../components/Form/FormMessage'
 
-import Loader from '../actions/LoaderAction'
-import API from '../actions/API'
-
+import Loader   from '../actions/LoaderAction'
+import User     from '../actions/UserAction'
+import API      from '../actions/API'
 
 class Auth extends Component {
     constructor(props) {
         super(props);
-
-        // Внутренние переменные, в которые передаем компоненты
-        this._email = {};
 
         // Cостояние формы по умолчанию
         let form = {
@@ -53,6 +50,32 @@ class Auth extends Component {
         };
 
         this.form = new Form(form);
+        this.sendForm = this.sendForm.bind(this);
+    }
+
+    sendForm(){
+        const is_valid = this.form.checkValid();
+
+        if(is_valid) {
+            // Запускаем отображение процесса загрузки + блокируем экран
+            const {lang, startLoading, finishLoading, login} = this.props;
+
+            startLoading(lang.auth.loading_message);
+            API.public.auth({
+                    'login'    : this.form.fields.email.param.value,
+                    'password' : this.form.fields.pass.param.value
+                }, (err, res) => {
+                    if(!err){
+                        login(res.detail);
+                        browserHistory.push('/');
+                    }else {
+                        this._formMessage.show();
+                        this._formMessage.setState();
+                    }
+                    finishLoading();
+                }
+            );
+        }
     }
 
     render() {
@@ -72,9 +95,10 @@ class Auth extends Component {
                     </h2>
 
                     <form action="#" id="auth-form">
-                        <FormMessage>
-                            test
+                        <FormMessage ref = {(formMessage) => {this._formMessage = formMessage}}>
+                            {lang.form.error.not_found}
                         </FormMessage>
+
                         <FormGroup ref  = {(formGroup) => {email.setComponents({FormGroup : formGroup})}}>
                             <Label for  = {email.param.id}
                                    text = {lang.form.email.label}
@@ -115,52 +139,19 @@ class Auth extends Component {
                             <Small text={lang.form.pass.text || ''}/>
                         </FormGroup>
                         <Button
-                            ref   = {(fieldMessage) => {pass.setComponents({SendFormButton : fieldMessage})}}
+                            ref   = {(sendFormButton) => {pass.setComponents({SendFormButton : sendFormButton})}}
+                            action = {this.sendForm}
                             text  = {lang.form.button.send_form}
                         /><span> </span>
                         <Button
                             text  = {lang.form.button.clear_form}
-                            action = {()=>{this.form.clearForm()}}
-                        />
+                            action = {()=>{
+                                this.form.clearForm();
+                                this._formMessage.close();
+                                this._formMessage.setState();
+                            }}
+                        /><span> </span>
                     </form>
-
-                    {/*<form action="#" id="auth-form">*/}
-                        {/*<FormGroup ref={(input) => {email.field = input}}>*/}
-                            {/*<Label for  = {email.id} text = {lang.form.email.label} />*/}
-                            {/*<InputText id={email.id}*/}
-                                       {/*ref={(input) => {email.field = input}}*/}
-                                       {/*name_field = {email.name}*/}
-                                       {/*type_field = {email.type}*/}
-                                       {/*type_visual= {email.type_visual}*/}
-                                       {/*required   = {email.required}*/}
-                                       {/*placeholder= {lang.form.email.placeholder}*/}
-                                       {/*handleElemChange={this.handleElemChange}*/}
-                            {/*/>*/}
-                            {/*<Message text={email.message}/>*/}
-                            {/*<Small text={lang.form.email.text}/>*/}
-                        {/*</FormGroup>*/}
-                        {/**/}
-                        {/*<FormGroup type_visual={pass.type_visual}>*/}
-                            {/*<Label for={pass.id} text={lang.form.pass.label}/>*/}
-                            {/*<InputText id={pass.id}*/}
-                                       {/*ref={(input) => {pass.field = input}}*/}
-                                       {/*name_field = {pass.name}*/}
-                                       {/*type_field = {pass.type}*/}
-                                       {/*type_visual= {email.type_visual}*/}
-                                       {/*required   = {pass.required}*/}
-                                       {/*placeholder= {lang.form.pass.placeholder}*/}
-                            {/*/>*/}
-                            {/*<Message text={pass.message}/>*/}
-                            {/*<Small text={lang.form.pass.text}/>*/}
-                        {/*</FormGroup>*/}
-                        {/*<button*/}
-                            {/*type="submit" className="btn btn-primary"*/}
-                            {/*onClick={this.sendForm}*/}
-                        {/*>*/}
-                            {/*{lang.form.button.name}*/}
-                        {/*</button>*/}
-                    {/*</form>*/}
-
                 </Content>
             </div>
         );
@@ -175,8 +166,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        startLoading:  bindActionCreators(Loader.startLoading, dispatch),
-        finishLoading: bindActionCreators(Loader.finishLoading, dispatch)
+        startLoading  : bindActionCreators(Loader.startLoading, dispatch),
+        finishLoading : bindActionCreators(Loader.finishLoading, dispatch),
+        login         : bindActionCreators(User.login, dispatch),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);
