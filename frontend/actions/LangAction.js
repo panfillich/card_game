@@ -1,5 +1,9 @@
-export function changeLanguage(lang) {
+function changeLanguage(lang) {
     return {
         type: lang,
     }
+}
+
+export default {
+    changeLanguage: changeLanguage
 }

@@ -10,6 +10,8 @@ module.exports = {
         menu: {
             main: 'Home',
             news: 'News',
+            deck: 'Deck',
+            game: 'Game',
             reg:  'Registration',
             auth: 'Authorization',
             log_out: 'Exit',

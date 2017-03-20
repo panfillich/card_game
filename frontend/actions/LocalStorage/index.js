@@ -29,7 +29,7 @@ class LocalStorage{
     }
 
     getItem(key){
-        this.localStorage.getItem(key);
+        return this.localStorage.getItem(key);
     }
 }
 

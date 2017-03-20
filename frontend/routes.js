@@ -7,7 +7,7 @@ import User from './components/User'
 import Home from './components/Home'
 import Link from './components/Link'
 
-import Auth2 from './containers/Auth2'
+import Auth from './containers/Auth'
 import Reg from './containers/Reg'
 import Main from './containers/Main'
 
@@ -21,7 +21,7 @@ export const routes = (
             <IndexRoute component={Main} />
 
             {/*Авторизация*/}
-            <Route path='/auth' component={Auth2} />
+            <Route path='/auth' component={Auth} />
             <Route path='/reg'  component={Reg} />
 
             <Route path='/page' component={Page} />

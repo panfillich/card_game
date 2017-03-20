@@ -1,13 +1,20 @@
-const initialState = {
+import localStorage from '../actions/LocalStorage'
+
+let initialState = {
     is_auth : false,
     login   : '',
     token   : ''
 }
 
-
+if(localStorage.getItem("login") !== null){
+    initialState = {
+        is_auth : true,
+        login   : localStorage.getItem("login"),
+        token   : localStorage.getItem("token")
+    }
+}
 
 export default function user(state = initialState, action) {
-    console.log(action);
     if(action.params){
         let obj_for_reload_state = {state};
         for(let param in action.params){
@@ -18,3 +25,4 @@ export default function user(state = initialState, action) {
         return state;
     }
 }
+

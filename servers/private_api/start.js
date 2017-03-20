@@ -1,18 +1,26 @@
-var express = require('express');
-var app = express();
+let log = require('../common_libs/logger')(module);
 
-server = app.listen(3002, function() {
-    console.log('api_private listening on port ' + 3002);
-});
+//Проверяем соединение с Redis / создаем клиента
+let client = require('../redis/client');
 
-app.get('/', function (req, res) {
-    //df////
-    res.send("Hello World! It's private-AP1I!");
-});
+//Устанавливаем/проверяем соединение с БД
+let bd = require("../db");
 
-app.get('/ping', function (req, res) {
-   res.send('pong from private-API')
-})
+//Связываем модели с базой, redis
+require('../models')(bd, client);
 
+//Определяем Express приложение
+let app = require('./app');
+//Устанавливаем настройки
+require('./config');
 
+//Фильтры
+require('./check_token');
+
+//Устанавливаем обработчики событий (контроллеры)
+require('./controllers');
+//Устанавливаем обработчики ошибок
+require('./errors');
+//Запускаем сервер
+require('./server');
 

@@ -54,7 +54,7 @@ class Button extends Component {
         });
         return (
             <button
-                type={this.props.type || ''}
+                type={this.props.type || 'button'}
                 className={class_name}
                 onClick={this.callAction}
             >

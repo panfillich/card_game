@@ -1,13 +1,21 @@
 import React, { Component } from 'react'
-import NavLink from '../components/NavLink'
 import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
-import * as LangAction from '../actions/LangAction'
+import { browserHistory } from 'react-router'
+
+import NavLink from '../components/NavLink'
+
+import LangAction from '../actions/LangAction'
+import UserAction from '../actions/UserAction'
+
+
 class Nav extends React.Component {
     //componentDidMount
     constructor(props) {
         super(props);
+
         this.changeLanguage = this.changeLanguage.bind(this);
+        this.logout = this.logout.bind(this);
     }
 
     changeLanguage(obj) {
@@ -16,18 +24,24 @@ class Nav extends React.Component {
         changeLanguage(language);
 
         // Injected by react-redux:
-        // console.log(1);
+
         // let { dispatch } = this.props
         // let action = LangAction.changeLanguage('ru')
         // dispatch(action)
 
     }
 
+    logout(){
+        let { logout } = this.props;
+        logout();
+        browserHistory.push('/');
+    }
+
     render(){
         const { lang, user } = this.props;
             let auth_block = '';
             let reg_block  = '';
-            let user_block = '';
+            let user_block = [];
 
             // Если пользователь не авторизирован
             if(!user.is_auth){
@@ -46,9 +60,24 @@ class Nav extends React.Component {
                 );
             } else {
                 // Блок зарегестрированного пользователя
-                user_block = (
+                user_block.push(
                     <li className="nav-item">
-                        <NavLink to='/user' className="nav-link">{user.login}</NavLink>
+                        <NavLink to='/deck' className="nav-link">{lang.nav.menu.deck}</NavLink>
+                    </li>
+                );
+                user_block.push(
+                    <li className="nav-item">
+                        <NavLink to='/game' className="nav-link">{lang.nav.menu.game}</NavLink>
+                    </li>
+                );
+                user_block.push(
+                    <li className="nav-item">
+                        <NavLink to='/user' className="nav-link">{capitaliseFirstLetter(user.login)}</NavLink>
+                    </li>
+                );
+                user_block.push(
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" onClick={this.logout}>{lang.nav.menu.log_out}</a>
                     </li>
                 );
             }
@@ -88,7 +117,7 @@ class Nav extends React.Component {
                            id="dropdown01"
                            data-toggle="dropdown"
                            aria-haspopup="true"
-                           aria-expanded="false">{lang.nav.menu.lang} ({lang.lang})</a>
+                           aria-expanded="false">{lang.nav.menu.lang} ({lang.cur_lang})</a>
                         <div className="dropdown-menu float-left" aria-labelledby="dropdown01">
                             <a className="dropdown-item" onClick={this.changeLanguage} value="en" href="#">English (en)</a>
                             <a className="dropdown-item" onClick={this.changeLanguage} value="ru" href="#">Русский (ru)</a>
@@ -113,6 +142,10 @@ Nav.defaultProps = {
     initialQty: 0
 };
 
+function capitaliseFirstLetter(string){
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function mapStateToProps(state) {
     return {
         user: state.user,
@@ -122,7 +155,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        changeLanguage: bindActionCreators(LangAction.changeLanguage, dispatch)
+        changeLanguage: bindActionCreators(LangAction.changeLanguage, dispatch),
+        logout: bindActionCreators(UserAction.logout, dispatch)
     }
 }
 
