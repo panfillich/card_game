@@ -1,8 +1,30 @@
 import fetch from 'isomorphic-fetch'
 import encodeForm from '../encodeForm'
 const SERVER = 'http://localhost:3000/pub-api';
+// const SERVER = 'http://localhost:3003';
+
+let useUniversalHandler = function (URL, CONFIG, callback) {
+    fetch(URL, CONFIG).then(function(res){
+        if(res.status){
+            switch (res.status) {
+                case 200:
+                    return res.json();
+                case 404:
+                    return Promise.reject('not_found');
+                case 403:
+                    return Promise.reject('forbidden');
+            }
+        }
+        return Promise.reject('serv_error');
+    }).then(function(data) {
+        callback(null, data);
+    }).catch(function (reason) {
+        callback(reason, null);
+    });
+}
 
 class Public{
+
     static auth(form, callback){
         const URL = SERVER +'/auth';
 
@@ -17,26 +39,32 @@ class Public{
             body: form_body
         };
 
-        fetch(URL, CONFIG).then(function(res){
-            if(res.status){
-                switch (res.status) {
-                    case 200:
-                        return res.json();
-                    case 404:
-                        return Promise.reject('not_found');
-                }
-            }
-            return Promise.reject('serv_error');
-        }).then(function(data) {
-            callback(null, data);
-        }).catch(function (reason) {
-            callback(reason, null);
-        });
+        useUniversalHandler(URL, CONFIG, callback);
     }
 
+    static articles(params, callback){
+        let page = 1;
+        if(params.page){
+            if(Number(params.page)>0 && Number(params.page)<5000){
+                page = params.page;
+            }
+        }
 
+        let language = 'en';
+        if(params.language){
+            if(Number(params.page) <= 3){
+                page = params.page;
+            }
+        }
 
+        const URL = SERVER +'/articles?page='+page+'&language='+ language;
 
+        const CONFIG = {
+            method: 'GET',
+        };
+
+        useUniversalHandler(URL, CONFIG, callback);
+    }
 
     static checkApi(callback) {
         fetch(SERVER + '/reg', {
@@ -59,10 +87,3 @@ class Public{
 
 export default Public;
 
-// export function checkApi(callback) {
-//     let text = '';
-//     text = fetch('http://localhost:3000/pub-api/reg')
-//         .then(function(req){
-//             callback(req);
-//         });
-// }

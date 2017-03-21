@@ -3,7 +3,7 @@ let Sequelize = require('sequelize');
 let config    = require('./config.json').development;
 let db        = {};
 
-// config.logging = console.log;
+config.logging = console.log;
 
 module.exports = function () {
     let sequelize = new Sequelize(config.database, config.username, config.password, config);

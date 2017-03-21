@@ -1,14 +1,8 @@
-const constants = {
-    table_name: 'decks',
-    type:{
-        DEFAULT: 1,
-        COMMON:  0
-    }
-};
+const consts = require('../consts/decks');
 
 let get_schema = function(Sequelize, DataTypes){
     return {
-        table_name: constants.table_name,
+        table_name: consts.table_name,
         fields: {
             deckId: {
                 type: DataTypes.INTEGER,
@@ -57,11 +51,11 @@ let get_schema = function(Sequelize, DataTypes){
                 }
             }
         ],
-        const: constants
+        const: consts
     }
 }
 
 module.exports = {
-    constants: constants,
+    constants: consts,
     get_schema: get_schema
 }

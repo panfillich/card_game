@@ -34,7 +34,7 @@ class Nav extends React.Component {
     logout(){
         let { logout } = this.props;
         logout();
-        browserHistory.push('/');
+        browserHistory.push('/auth');
     }
 
     render(){
@@ -103,7 +103,8 @@ class Nav extends React.Component {
                     </li>
 
                     <li className="nav-item">
-                        <NavLink to='/link' className="nav-link">link</NavLink>
+                        {/*<NavLink to='/link' className="nav-link">link</NavLink>*/}
+                        <NavLink to='/articles' className="nav-link">articles</NavLink>
                     </li>
                 </ul>
 

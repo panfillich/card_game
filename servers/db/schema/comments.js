@@ -1,14 +1,8 @@
-const constants = {
-    table_name: 'comments',
-    status: {
-        VISIBLE : 1,
-        HIDDEN : 0
-    }
-}
+const consts = require('../consts/comments');
 
 let get_schema = function(Sequelize, DataTypes){
     return {
-        table_name: constants.table_name,
+        table_name: consts.table_name,
         fields: {
             commentId: {
                 type: DataTypes.INTEGER,
@@ -17,7 +11,7 @@ let get_schema = function(Sequelize, DataTypes){
             },
             status: {
                 type: DataTypes.INTEGER(2),
-                defaultValue: constants.status.VISIBLE
+                defaultValue: consts.status.VISIBLE
                 // 0 - не опубликован
                 // 1 - опубликован
             },
@@ -52,11 +46,11 @@ let get_schema = function(Sequelize, DataTypes){
               }
             }*/
         ],
-        const: constants
+        const: consts
     }
 }
 
 module.exports = {
-    constants: constants,
+    constants: consts,
     get_schema: get_schema
 }

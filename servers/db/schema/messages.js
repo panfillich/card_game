@@ -1,3 +1,5 @@
+const consts = require('../consts/messages');
+
 let get_schema = function(Sequelize, DataTypes){
     return {
         table_name: 'messages',
@@ -46,6 +48,6 @@ let get_schema = function(Sequelize, DataTypes){
 }
 
 module.exports = {
-    constants: {},
+    constants: consts,
     get_schema: get_schema
 }

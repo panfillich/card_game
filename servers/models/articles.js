@@ -1,28 +1,75 @@
 let common_libs = '../common_libs/';
+let constants   = require('../db/schema/articles').constants;
 
 class Articles{
     //Подключаемся к базе
     switchToDB(db){
         if(db){
             this.db = db;
-            this.users = this.db.users;
+            this.articles = this.db.articles;
             return true;
         }
         return false;
     }
 
-    //Получаем информацию пользователя для авторизации
+    //Получаем превью статей
     //param: {
+    //  language,
+    //  commentStatus,
     //  publishStatus,
-    //  type,
-    //  articleId
+    //  type
     //}
-    get_article(param, callback){
-        users.findOne({
+    getPreviewArticles(param, callback){
+        let acticles = this.articles;
+
+        acticles.findAll({
+            attributes: [
+                'articleId',
+                'title',
+                'description',
+                'publishAt'
+            ],
             where: {
-                publishStatus: param.publishStatus,
-                type: param.type,
-                articleId: param.articleId
+                language      : param.language,
+                publishStatus : param.publishStatus,
+                type          : param.type
+            },
+            limit: param.limit,
+            offset: param.offset,
+            order: [
+                ['publishAt', 'DESC'],
+            ]
+        }).then(function(data) {
+            let result = [];
+            if (data.length > 0){
+                data.forEach(function (item) {
+                    result.push(item.dataValues);
+                });
+            }
+            callback(null, result);
+        }).catch(function(error){
+            callback(error, []);
+        });
+    }
+
+    //Получаем конкретную статью
+    getArticle(param, callback){
+        let acticles = this.articles;
+        acticles.findOne({
+            attributes: [
+                'articleId',
+                'title',
+                'keywords',
+                'description',
+                'publishAt',
+                'commentStatus',
+                'articleText'
+            ],
+            where: {
+                articleId     : param.articleId,
+                language      : param.language,
+                publishStatus : param.publishStatus,
+                type          : param.type
             }
         }).then(function(project) {
             let result = null;
@@ -33,21 +80,6 @@ class Articles{
         }).catch(function(error){
             callback(null, error);
         });
-    }
-
-    //получаем токен и дату
-    get token(){
-
-    }
-
-    //Устанавливаем токен и дату
-    set token(param){
-
-    }
-
-    //создаем нового пользователя
-    set new_user(param){
-
     }
 }
 

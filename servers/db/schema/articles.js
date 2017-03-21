@@ -1,41 +1,8 @@
-const constants = {
-    table_name: 'articles',
-    language: {
-        EN : 'en',
-        RU : 'ru'
-    },
-    robots: {
-        //robots — мета-тег, который отвечает за настройки индексирования страницы.
-        // У мета-тега «robots» могут быть следующие значения:
-        INDEX:      'index',    // index — страница индексируется;
-        NOINDEX:    'noindex',  // noindex — страница не индексируется;
-        FOLLOW:     'follow',   // follow — гиперссылки на странице учитываются;
-        NOFOLLOW:   'nofollow', // nofollow — гиперссылки на странице не учитываются
-        ALL:        'all',      // all — заменяет «index» и «follow», т.е. страница индексируется и гиперссылки на ней
-                                // учитываются (действует по умолчанию);
-        NONE:       'none'      // none — заменяет «noindex» и «nofollow», т.е. страница не индексируется и г
-                                // иперссылки на ней не учитываются.
-    },
-    commentStatus: {
-        OFF: 0,         // без комментариев
-        ON:  1,         // комментарии включены
-        ONLY_SHOW: 2    // комментарии видны, но добавление новых запрещено
-    },
-    publishStatus: {
-        PUBLISH: 1,     // опубликовано
-        HIDDEN: 0       // скрыто
-    },
-    type: {
-        NONE: 0,        // без категории
-        NEWS: 1,        // новости
-        GUIDES: 2,      // гайды
-        TECHNICALS: 3   // тех. моменты
-    }
-}
+const consts = require('../consts/articles');
 
 let get_schema = function(Sequelize, DataTypes){
     return {
-        table_name: constants.table_name,
+        table_name: consts.table_name,
         fields: {
             articleId: {
                 type: DataTypes.INTEGER,
@@ -47,26 +14,26 @@ let get_schema = function(Sequelize, DataTypes){
             description: DataTypes.STRING(140),
             language: { //< meta http-equiv="content-language" content="ru">
                 type:DataTypes.STRING(2),
-                defaultValue: constants.language.EN
+                defaultValue: consts.language.EN
             },
             robots: {
                 type:DataTypes.STRING(8),
-                defaultValue: constants.robots.INDEX
+                defaultValue: consts.robots.INDEX
             },
             articleText: {
                 type:DataTypes.TEXT('medium')
             },
             commentStatus: {
                 type: DataTypes.INTEGER(2),
-                defaultValue: constants.commentStatus.ON
+                defaultValue: consts.commentStatus.ON
             },
             type: {
                 type: DataTypes.INTEGER(2),
-                defaultValue: constants.type.NEWS
+                defaultValue: consts.type.NEWS
             },
             publishStatus: {
                 type: DataTypes.INTEGER(2),
-                defaultValue: constants.publishStatus.PUBLISH
+                defaultValue: consts.publishStatus.PUBLISH
             },
             publishAt: {
                 type: DataTypes.DATE
@@ -100,11 +67,11 @@ let get_schema = function(Sequelize, DataTypes){
                 }
             }
         ],
-        const: constants
+        const: consts
     }
 }
 
 module.exports = {
-    constants: constants,
+    constants:  consts,
     get_schema: get_schema
 }

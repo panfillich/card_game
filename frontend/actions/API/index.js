@@ -3,14 +3,9 @@ import Private from './private'
 import Public from './public'
 
 
-class API{
-    static get public(){
-        return Public;
-    }
-
-    static get private(){
-        return Private;
-    }
+let API = {
+    public  : Public,
+    private : Private
 }
 
 export default API

@@ -1,15 +1,8 @@
-const constants = {
-    table_name: "users",
-    status: {
-        INVITED: 0,     // пользователю выслано приглашение
-        ACTIVATED:  1,  // пользователь получил приглашение, перешел по ссылке и был активирован
-        BANNED: 2       // пользователь забанен
-    },
-}
+const consts = require('../consts/users');
 
 let get_schema = function(Sequelize, DataTypes){
     return {
-        table_name : constants.table_name,
+        table_name : consts.table_name,
         fields: {
             userId: {
                 type: DataTypes.INTEGER,
@@ -25,7 +18,7 @@ let get_schema = function(Sequelize, DataTypes){
             gameTokenCreate: DataTypes.DATE,
             status: {
                 type: DataTypes.INTEGER(2),
-                defaultValue: constants.status.INVITED
+                defaultValue: consts.status.INVITED
             },
             createdAt: {
                 type: DataTypes.DATE,
@@ -46,6 +39,6 @@ let get_schema = function(Sequelize, DataTypes){
 };
 
 module.exports = {
-    constants: constants,
+    constants:  consts,
     get_schema: get_schema
 }

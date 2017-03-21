@@ -14,6 +14,11 @@ import 'bootstrap/scss/bootstrap.scss'
 
 import './scss/style.scss'
 
+require.ensure(['./test.js'], function(require) {
+    let Stats = require('./test.js');
+    // console.dir(Stats());
+});
+
 render(
     <Provider store={store}>
         <Router history={browserHistory} routes={routes} />
