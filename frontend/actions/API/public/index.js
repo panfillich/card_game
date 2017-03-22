@@ -50,14 +50,14 @@ class Public{
             }
         }
 
-        let language = 'en';
-        if(params.language){
+        let lang = 'en';
+        if(params.lang){
             if(Number(params.page) <= 3){
-                page = params.page;
+                lang = params.lang;
             }
         }
 
-        const URL = SERVER +'/articles?page='+page+'&language='+ language;
+        const URL = SERVER +'/articles?page='+page+'&language='+ lang;
 
         const CONFIG = {
             method: 'GET',

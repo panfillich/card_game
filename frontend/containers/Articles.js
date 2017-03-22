@@ -13,25 +13,32 @@ class Articles extends Component {
     constructor(props) {
         super(props);
 
-        this.articles = [];
-        this.is_loading = true;
+        this.state = {
+            articles : []
+        };
+
         this.getArticles = this.getArticles.bind(this);
     }
 
     getArticles() {
-        const { startLoading, finishLoading } = this.props;
+        const { startLoading, finishLoading, lang, routeParams} = this.props;
         startLoading();
-        API.public.articles({page:1, auth:'en'}, (err, res) => {
+
+        let page = 1;
+        if(routeParams.page){
+            page = routeParams.page;
+        }
+
+        API.public.articles({page:page, lang:lang.cur_lang}, (err, res) => {
             if(err){
-                this.articles = [];
-            } else {
-                this.articles = res.detail.articles;
-            }
-            console.log(res.detail.articles);
-            this.is_loading = false;
-            this.setState(function () {
+                this.state.articles = [];
                 finishLoading();
-            });
+            } else {
+                this.state.articles = res.detail.articles;
+                this.setState(function () {
+                    finishLoading();
+                });
+            }
         });
     }
 
@@ -39,20 +46,45 @@ class Articles extends Component {
         this.getArticles();
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if(this.props.lang.cur_lang != nextProps.lang.cur_lang){
+            this.props.lang = nextProps.lang;
+            this.getArticles();
+        }
+        return true;
+    }
+
     render(){
+        let {lang, user} = this.props;
+
         // Если пользователь не авторизирован
         if(!this.props.user.is_auth){
 
         }
 
+        // this.getArticles();
+
         let articles = [];
-        for(let article in this.articles){
+        for(let key in this.state.articles){
+            let article = this.state.articles[key]
             articles.push(
-                <div>
-                    <p>{this.articles[article].description}</p>
-                    <p>{this.articles[article].title}</p>
-                    {/*<p>{}</p>*/}
-                </div>
+                <article>
+                    <header>
+                        <h2><a href="#">{article.title}</a></h2>
+                    </header>
+                    <p>Дата публикации:
+                        {/*<time datetime="2016-06-12T21:12:12">*/}
+                        <time datetime={article.publishAt}>
+                            {article.publishAt}
+                        </time>
+                    </p>
+                    <p className="text-justify">{article.description}</p>
+                    <p>
+                        <NavLink to={('/acticle/'+article.articleId)} onlyActiveOnIndex={true} className="nav-link">
+                            далее...
+                        </NavLink>
+                    </p>
+                </article>
             );
         }
 

@@ -19,11 +19,11 @@ export const routes = (
         <Route path='/' component={App}>
             <IndexRoute component={Main} />
 
-
             <Route path='/auth'     component={Auth} />
             <Route path='/reg'      component={Reg} />
 
-            <Route path='/articles' component={Articles} />
+            <Route path='/articles(/:page)' component={Articles} />
+
             <Route path='/page'     component={Page} />
             <Route path='/user'     component={User} />
             <Route path='/link'     component={Link} />

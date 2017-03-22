@@ -23,6 +23,16 @@ module.exports = {
         def_login: 'Гость'
     },
 
+    articles:{
+        title: 'Atricles',
+        header: 'Atricles',
+        loading_message: "Find articles on the server",
+    },
+
+    atricle:{
+        loading_message: "Find article on the server",
+    },
+
     auth: {
         title: 'Авторизация',
         header: 'Авторизация',
