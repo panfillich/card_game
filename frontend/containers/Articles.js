@@ -2,8 +2,10 @@ import React, { Component } from 'react'
 import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
+import classNames from 'classnames'
 
 import NavLink from '../components/NavLink'
+import { Link } from 'react-router'
 
 import LoaderAction   from '../actions/LoaderAction'
 import API            from '../actions/API'
@@ -14,7 +16,10 @@ class Articles extends Component {
         super(props);
 
         this.state = {
-            articles : []
+            articles : [],
+            page : -1,
+            is_last_pack : true,
+            is_get_new_article : true
         };
 
         this.getArticles = this.getArticles.bind(this);
@@ -22,34 +27,33 @@ class Articles extends Component {
 
     getArticles() {
         const { startLoading, finishLoading, lang, routeParams} = this.props;
-        startLoading();
+
+        startLoading(lang.articles.loading_message);
 
         let page = 1;
         if(routeParams.page){
             page = routeParams.page;
         }
+        this.state.page = Number(page);
 
-        API.public.articles({page:page, lang:lang.cur_lang}, (err, res) => {
+        API.public.articles({ page : page, lang : lang.cur_lang}, (err, res) => {
             if(err){
                 this.state.articles = [];
                 finishLoading();
             } else {
-                this.state.articles = res.detail.articles;
+                this.state.articles     = res.detail.articles;
+                this.state.is_last_pack = res.detail.is_last_pack;
                 this.setState(function () {
                     finishLoading();
                 });
-            }
+            } //
         });
     }
 
-    componentWillMount(){
-        this.getArticles();
-    }
-
     shouldComponentUpdate(nextProps, nextState) {
-        if(this.props.lang.cur_lang != nextProps.lang.cur_lang){
-            this.props.lang = nextProps.lang;
-            this.getArticles();
+        let currProps = this.props;
+        if(currProps.lang.cur_lang != nextProps.lang.cur_lang || currProps.routeParams.page != nextProps.routeParams.page){
+            nextState.is_get_new_article = true;
         }
         return true;
     }
@@ -57,13 +61,17 @@ class Articles extends Component {
     render(){
         let {lang, user} = this.props;
 
+        if(this.state.is_get_new_article){
+            this.state.is_get_new_article = false;
+            this.getArticles();
+        }
+
         // Если пользователь не авторизирован
-        if(!this.props.user.is_auth){
+        if(user.is_auth){
 
         }
 
-        // this.getArticles();
-
+        // Статьи
         let articles = [];
         for(let key in this.state.articles){
             let article = this.state.articles[key]
@@ -88,9 +96,66 @@ class Articles extends Component {
             );
         }
 
+        // Навигация / пагинация
+        let pagination = '';
+
+        if(articles.length > 0){
+            let previous = '';
+            let previous_link = '/articles/'+(this.state.page+1);
+            let previous_is_disabled = false;
+            if(this.state.is_last_pack){
+                previous_link = '#';
+                previous_is_disabled = true;
+            }
+            let previous_li_class = classNames({
+                'page-item': true,
+                'disabled' : previous_is_disabled
+            });
+            previous = (
+                <li className={previous_li_class}>
+                    <NavLink to={previous_link} onlyActiveOnIndex={true} className="page-link">
+                        {lang.pagination.previous} →
+                    </NavLink>
+                </li>
+            );
+
+            let next = '';
+            let next_link = '/articles/'+(this.state.page-1);
+            let next_is_disabled = false;
+            switch (this.state.page){
+                case 1:
+                    next_is_disabled = true;
+                    next_link = '#';
+                case 2:                    
+                    next_link = '/articles';
+            }
+            let next_li_class = classNames({
+                'page-item': true,
+                'disabled' : next_is_disabled
+            });
+            next = (
+                <li className={next_li_class}>
+                    <NavLink to={next_link} onlyActiveOnIndex={true} className="page-link">
+                        ← {lang.pagination.next}
+                    </NavLink>
+                </li>
+            );
+
+            pagination = (
+                <nav aria-label="Page navigation example">
+                    <ul className="pagination justify-content-end">
+                        {next}
+                        {previous}
+                    </ul>
+                </nav>
+            );
+        }
+
         return(
-            <div>
+            <div id="articles">
+                {pagination}
                 {articles}
+                {pagination}
             </div>
         )
     }

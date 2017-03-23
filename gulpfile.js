@@ -45,7 +45,7 @@ gulp.task('webpack-dev-server', function (callback) {
     var config = Object.create(webpackConfig);
 
     //config.devtool = 'eval';
-    config.debug = true;
+    // config.debug = true;
     //
     // Start a webpack-dev-server
     new WebpackDevServer(webpack(config), {

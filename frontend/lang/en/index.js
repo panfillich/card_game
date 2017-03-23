@@ -32,6 +32,11 @@ module.exports = {
         loading_message: "Find article on the server",
     },
 
+    pagination: {
+        next: 'Next',
+        previous: 'Previous'
+    },
+
     auth: {
         title: 'Authorization',
         header: 'Authorization',

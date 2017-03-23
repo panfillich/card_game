@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch'
 import encodeForm from '../encodeForm'
-const SERVER = 'http://localhost:3000/pub-api';
-// const SERVER = 'http://localhost:3003';
+// const SERVER = 'http://localhost:3000/pub-api';
+const SERVER = 'http://localhost:3003';
 
 let useUniversalHandler = function (URL, CONFIG, callback) {
     fetch(URL, CONFIG).then(function(res){
@@ -52,12 +52,12 @@ class Public{
 
         let lang = 'en';
         if(params.lang){
-            if(Number(params.page) <= 3){
+            if(params.lang.length <= 3){
                 lang = params.lang;
             }
         }
 
-        const URL = SERVER +'/articles?page='+page+'&language='+ lang;
+        const URL = SERVER +'/articles?page=' + page + '&language=' + lang;
 
         const CONFIG = {
             method: 'GET',

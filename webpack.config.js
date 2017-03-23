@@ -44,7 +44,7 @@ module.exports = {
         }),
 
         //--Файлы не создаются, если в них есть ошибки
-        new webpack.NoErrorsPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
 
         //--Создает css файл index.js
         new ExtractTextPlugin(`${cssNameFormat}.css`),
@@ -82,27 +82,48 @@ module.exports = {
     //ES7(ES2016) to ES6(ES2015)
     module: {
         noParse: [/.*(pixi\.js).*/],
-        loaders: [
-            {
-                test: /\.js?$/,
-                loader: 'babel',
-                exclude: [/node_modules/],
+        rules: [
+            {   test: /\.js$/,
+                loader: 'babel-loader',
                 query: {
-                    compact: false,
-                    presets: ['es2015', 'react']
+                    presets: [
+                        'es2015',
+                        'react'
+                    ],
+                    plugins: []
                 }
-            },
-            {
-                test: /\.json$/,
-                loader: "json"
+
             },
             {
                 test: /\.scss$/,
-                loader: ExtractTextPlugin.extract('style', 'css?sourceMap!sass?sourceMap')
+                loader: ExtractTextPlugin.extract({
+                    fallbackLoader: 'style-loader',
+                    loader: [
+                        'css-loader?sourceMap',
+                        // 'resolve-url-loader',
+                        'sass-loader?sourceMap'
+                    ]
+                })
 
+            },
+            // {
+            //     test: /\.json$/,
+            //     use: [{
+            //         loader: "json"
+            //     }]
+            // },
+            // {
+            //     test: /\.scss$/,
+            //     loader: ExtractTextPlugin.extract('style', 'css?sourceMap!sass?sourceMap')
+                // use: [{
+                //     loader: ExtractTextPlugin.extract({
+                //         fallbackLoader: "style-loader",
+                //         loader: "css-loader!sass-loader"
+                //     })
+                // }]
+                //
                 // loaders: ExtractTextPlugin.extract('style', 'css', 'postcss', 'sass')
-            }
-
+            // }
         ]
     }
 }

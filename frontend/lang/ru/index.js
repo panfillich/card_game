@@ -24,13 +24,18 @@ module.exports = {
     },
 
     articles:{
-        title: 'Atricles',
-        header: 'Atricles',
-        loading_message: "Find articles on the server",
+        title: 'Новости',
+        header: 'Новости',
+        loading_message: "Идет загрузка новостей",
     },
 
     atricle:{
-        loading_message: "Find article on the server",
+        loading_message: "Новость загружается",
+    },
+
+    pagination: {
+        next: 'Следующая',
+        previous: 'Предыдущая'
     },
 
     auth: {
