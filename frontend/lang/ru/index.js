@@ -24,12 +24,14 @@ module.exports = {
     },
 
     articles:{
-        title: 'Новости',
-        header: 'Новости',
+        title   : 'Новости',
+        header  : 'Новости',
+        next    : 'далее...',
         loading_message: "Идет загрузка новостей",
     },
 
-    atricle:{
+    article:{
+        date_of_publication: 'Дата публикации',
         loading_message: "Новость загружается",
     },
 

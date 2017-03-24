@@ -104,7 +104,7 @@ class Nav extends React.Component {
 
                     <li className="nav-item">
                         {/*<NavLink to='/link' className="nav-link">link</NavLink>*/}
-                        <NavLink to='/articles' className="nav-link">articles</NavLink>
+                        <NavLink to='/articles' className="nav-link">{lang.articles.header}</NavLink>
                     </li>
                 </ul>
 

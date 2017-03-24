@@ -7,11 +7,30 @@ let ResFormat   = require('../../common_libs/res_format');
 let articles_const = require('../../db/consts/articles');
 
 //Получить статью по Id
-router.get('/:articleId([0-9]{20})', function(req, res, next) {
-    // req.params.articleId
+router.get('/:article_id([0-9]{1,10}$)', function(req, res, next) {
+    const ARTICLE_ID = req.params.article_id;
+    const PARAMS = {
+        articleId     : ARTICLE_ID,
+        publishStatus : articles_const.publishStatus.PUBLISH,
+        type          : articles_const.type.NEWS
+    };
+    Articles.getArticle(PARAMS, function (err, result) {
+        if(err){
+            let status = 500;
+            let json = ResFormat(status, 'Errors with DB');
+            return res.status(status).send(JSON.stringify(json));
+        }
 
-    return res.status(status).send(JSON.stringify(json));
+        if(!result){
+            let status = 404;
+            let json = ResFormat(status, 'Articles not found');
+            return res.status(status).send(JSON.stringify(json));
+        }
 
+        let status = 200;
+        let json = ResFormat(status, 'Found article #' + ARTICLE_ID, result);
+        return res.status(status).send(JSON.stringify(json));
+    })
 });
 
 //Получить превьюхи статей (постранично)
@@ -45,7 +64,7 @@ router.get('/', function(req, res, next) {
         language      : language,
         publishStatus : articles_const.publishStatus.PUBLISH,
         type          : articles_const.type.NEWS,
-        limit         : count+1,
+        limit         : count + 1,
         offset        : (page - 1)*count
     };
 

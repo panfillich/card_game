@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
+import Helmet from "react-helmet"
 import { browserHistory } from 'react-router'
 import classNames from 'classnames'
 
 import NavLink from '../components/NavLink'
-import { Link } from 'react-router'
+import Time from '../components/Time'
 
 import LoaderAction   from '../actions/LoaderAction'
 import API            from '../actions/API'
@@ -66,7 +67,7 @@ class Articles extends Component {
             this.getArticles();
         }
 
-        // Если пользователь не авторизирован
+        // Если пользователь авторизирован
         if(user.is_auth){
 
         }
@@ -80,16 +81,11 @@ class Articles extends Component {
                     <header>
                         <h2><a href="#">{article.title}</a></h2>
                     </header>
-                    <p>Дата публикации:
-                        {/*<time datetime="2016-06-12T21:12:12">*/}
-                        <time datetime={article.publishAt}>
-                            {article.publishAt}
-                        </time>
-                    </p>
+                    <p>{lang.article.date_of_publication}: <Time time={article.publishAt} /></p>
                     <p className="text-justify">{article.description}</p>
                     <p>
-                        <NavLink to={('/acticle/'+article.articleId)} onlyActiveOnIndex={true} className="nav-link">
-                            далее...
+                        <NavLink to={('/article/'+article.articleId)} onlyActiveOnIndex={true} className="nav-link">
+                            {lang.articles.next}
                         </NavLink>
                     </p>
                 </article>
@@ -153,6 +149,12 @@ class Articles extends Component {
 
         return(
             <div id="articles">
+                <Helmet
+                    title={lang.articles.title}
+                />
+
+                <h1>{lang.articles.header}</h1>
+
                 {pagination}
                 {articles}
                 {pagination}

@@ -84,21 +84,23 @@ module.exports = {
         noParse: [/.*(pixi\.js).*/],
         rules: [
             {   test: /\.js$/,
-                loader: 'babel-loader',
-                query: {
-                    presets: [
-                        'es2015',
-                        'react'
-                    ],
-                    plugins: []
-                }
-
+                use: [{
+                    loader: 'babel-loader',
+                    query: {
+                        presets: [
+                            'es2015',
+                            'react'
+                        ],
+                        plugins: []
+                    }
+                }],
             },
             {
                 test: /\.scss$/,
-                loader: ExtractTextPlugin.extract({
-                    fallbackLoader: 'style-loader',
-                    loader: [
+
+                use : ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: [
                         'css-loader?sourceMap',
                         // 'resolve-url-loader',
                         'sass-loader?sourceMap'

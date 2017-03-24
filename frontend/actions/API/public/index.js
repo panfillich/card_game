@@ -66,6 +66,16 @@ class Public{
         useUniversalHandler(URL, CONFIG, callback);
     }
 
+    static article(params, callback){
+        const URL = SERVER +'/articles/' + params.article_id;
+
+        const CONFIG = {
+            method: 'GET',
+        };
+
+        useUniversalHandler(URL, CONFIG, callback);
+    }
+
     static checkApi(callback) {
         fetch(SERVER + '/reg', {
             method: 'GET',

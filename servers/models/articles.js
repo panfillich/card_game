@@ -67,7 +67,6 @@ class Articles{
             ],
             where: {
                 articleId     : param.articleId,
-                language      : param.language,
                 publishStatus : param.publishStatus,
                 type          : param.type
             }
@@ -76,9 +75,9 @@ class Articles{
             if (project){
                 result = project.dataValues;
             }
-            callback(result, null);
+            callback(null, result);
         }).catch(function(error){
-            callback(null, error);
+            callback(error, null);
         });
     }
 }

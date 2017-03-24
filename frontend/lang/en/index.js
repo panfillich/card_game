@@ -8,14 +8,14 @@ module.exports = {
     nav:{
         user_greeting: 'Hello, ',
         menu: {
-            main: 'Home',
-            news: 'News',
-            deck: 'Deck',
-            game: 'Game',
-            reg:  'Registration',
-            auth: 'Authorization',
-            log_out: 'Exit',
-            lang: 'Language'
+            main    : 'Home',
+            news    : 'News',
+            deck    : 'Deck',
+            game    : 'Game',
+            reg     : 'Registration',
+            auth    : 'Authorization',
+            log_out : 'Exit',
+            lang    : 'Language'
         }
     },
     user:{
@@ -23,24 +23,26 @@ module.exports = {
     },
 
     articles:{
-        title: 'Atricles',
-        header: 'Atricles',
+        title   : 'Atricles',
+        header  : 'Atricles',
+        next    : 'next...',
         loading_message: "Find articles on the server",
     },
 
-    atricle:{
-        loading_message: "Find article on the server",
+    article:{
+        date_of_publication : 'Date of publication',
+        loading_message     : "Find article on the server",
     },
 
     pagination: {
-        next: 'Next',
+        next    : 'Next',
         previous: 'Previous'
     },
 
     auth: {
-        title: 'Authorization',
-        header: 'Authorization',
-        tagline: "Let's do it!",
+        title   : 'Authorization',
+        header  : 'Authorization',
+        tagline : "Let's do it!",
         loading_message: "Find a user on the server",
         form:{
             email:{
