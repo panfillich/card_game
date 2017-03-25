@@ -89,70 +89,69 @@ class Auth extends Component {
                 <Helmet
                     title={lang.title}
                 />
-                <Content>
-                    <h2>
-                        {lang.header}
-                    </h2>
 
-                    <form action="#" id="auth-form">
-                        <FormMessage ref = {(formMessage) => {this._formMessage = formMessage}}>
-                            {lang.form.error.not_found}
-                        </FormMessage>
+                <h2>
+                    {lang.header}
+                </h2>
 
-                        <FormGroup ref  = {(formGroup) => {email.setComponents({FormGroup : formGroup})}}>
-                            <Label for  = {email.param.id}
-                                   text = {lang.form.email.label}
-                            />
-                            <InputText ref  = {(input) => {email.setComponents({Input : input})}}
-                                       id          = {email.param.id}
-                                       name_field  = {email.param.name}
-                                       type_field  = {email.param.type}
-                                       type_visual = {email.param.type_visual}
-                                       required    = {email.param.required}
-                                       def_value   = {email.param.def_value}
-                                       placeholder = {lang.form.email.placeholder}
-                            />
-                            <FieldMessage
-                                ref         = {(fieldMessage) => {email.setComponents({FieldMessage : fieldMessage})}}
-                                type_field  = {email.param.type}
-                            />
-                            <Small text = {lang.form.email.text || ''}/>
-                        </FormGroup>
+                <form action="#" id="auth-form">
+                    <FormMessage ref = {(formMessage) => {this._formMessage = formMessage}}>
+                        {lang.form.error.not_found}
+                    </FormMessage>
 
-                        <FormGroup ref  = {(formGroup) => {pass.setComponents({FormGroup : formGroup})}}>
-                            <Label for  = {pass.param.id}
-                                   text = {lang.form.pass.label}
-                            />
-                            <InputText ref         = {(input) => {pass.setComponents({Input : input})}}
-                                       id          = {pass.param.id}
-                                       name_field  = {pass.param.name}
-                                       type_field  = {pass.param.type}
-                                       type_visual = {pass.param.type_visual}
-                                       required    = {pass.param.required}
-                                       def_value   = {pass.param.def_value}
-                                       placeholder = {lang.form.pass.placeholder}
-                            />
-                            <FieldMessage
-                                ref         = {(fieldMessage) => {pass.setComponents({FieldMessage : fieldMessage})}}
-                                type_field  = {pass.param.type}
-                            />
-                            <Small text={lang.form.pass.text || ''}/>
-                        </FormGroup>
-                        <Button
-                            ref   = {(sendFormButton) => {pass.setComponents({SendFormButton : sendFormButton})}}
-                            action = {this.sendForm}
-                            text  = {lang.form.button.send_form}
-                        /><span> </span>
-                        <Button
-                            text  = {lang.form.button.clear_form}
-                            action = {()=>{
-                                this.form.clearForm();
-                                this._formMessage.close();
-                                this._formMessage.setState();
-                            }}
+                    <FormGroup ref  = {(formGroup) => {email.setComponents({FormGroup : formGroup})}}>
+                        <Label for  = {email.param.id}
+                               text = {lang.form.email.label}
                         />
-                    </form>
-                </Content>
+                        <InputText ref  = {(input) => {email.setComponents({Input : input})}}
+                                   id          = {email.param.id}
+                                   name_field  = {email.param.name}
+                                   type_field  = {email.param.type}
+                                   type_visual = {email.param.type_visual}
+                                   required    = {email.param.required}
+                                   def_value   = {email.param.def_value}
+                                   placeholder = {lang.form.email.placeholder}
+                        />
+                        <FieldMessage
+                            ref         = {(fieldMessage) => {email.setComponents({FieldMessage : fieldMessage})}}
+                            type_field  = {email.param.type}
+                        />
+                        <Small text = {lang.form.email.text || ''}/>
+                    </FormGroup>
+
+                    <FormGroup ref  = {(formGroup) => {pass.setComponents({FormGroup : formGroup})}}>
+                        <Label for  = {pass.param.id}
+                               text = {lang.form.pass.label}
+                        />
+                        <InputText ref         = {(input) => {pass.setComponents({Input : input})}}
+                                   id          = {pass.param.id}
+                                   name_field  = {pass.param.name}
+                                   type_field  = {pass.param.type}
+                                   type_visual = {pass.param.type_visual}
+                                   required    = {pass.param.required}
+                                   def_value   = {pass.param.def_value}
+                                   placeholder = {lang.form.pass.placeholder}
+                        />
+                        <FieldMessage
+                            ref         = {(fieldMessage) => {pass.setComponents({FieldMessage : fieldMessage})}}
+                            type_field  = {pass.param.type}
+                        />
+                        <Small text={lang.form.pass.text || ''}/>
+                    </FormGroup>
+                    <Button
+                        ref   = {(sendFormButton) => {pass.setComponents({SendFormButton : sendFormButton})}}
+                        action = {this.sendForm}
+                        text  = {lang.form.button.send_form}
+                    /><span> </span>
+                    <Button
+                        text  = {lang.form.button.clear_form}
+                        action = {()=>{
+                            this.form.clearForm();
+                            this._formMessage.close();
+                            this._formMessage.setState();
+                        }}
+                    />
+                </form>
             </div>
         );
     }

@@ -8,10 +8,10 @@ export default class Auth extends Component {
                 <Helmet
                     title="Главная"
                 />
-                <Content>
-                    <h2>Главная</h2>
-                    <p>Давай авторизовывайся</p>
-                </Content>
+
+                <h2>Главная</h2>
+                <p>Давай авторизовывайся</p>
+
             </div>
         )
     }

@@ -70,6 +70,10 @@ class Articles extends Component {
                         keywords={article.keywords}
                     />
 
+                    <button onClick={browserHistory.goBack} type="button" className="btn btn-secondary">
+                        ← Назад
+                    </button>
+
                     <article>
                         <header>
                             <h2>{article.title}</h2>

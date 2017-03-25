@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
 import Helmet from "react-helmet"
-import { browserHistory } from 'react-router'
 import classNames from 'classnames'
+import { Link } from 'react-router'
 
-import NavLink from '../components/NavLink'
 import Time from '../components/Time'
+
 
 import LoaderAction   from '../actions/LoaderAction'
 import API            from '../actions/API'
@@ -79,15 +79,13 @@ class Articles extends Component {
             articles.push(
                 <article>
                     <header>
-                        <h2><a href="#">{article.title}</a></h2>
+                        <h2><Link to={('/article/'+article.articleId)}>{article.title}</Link></h2>
                     </header>
                     <p>{lang.article.date_of_publication}: <Time time={article.publishAt} /></p>
                     <p className="text-justify">{article.description}</p>
                     <p>
-                        <NavLink to={('/article/'+article.articleId)} onlyActiveOnIndex={true} className="nav-link">
-                            {lang.articles.next}
-                        </NavLink>
-                    </p>
+                        <Link to={('/article/'+article.articleId)}>{lang.articles.next}</Link>
+                     </p>
                 </article>
             );
         }
@@ -109,9 +107,9 @@ class Articles extends Component {
             });
             previous = (
                 <li className={previous_li_class}>
-                    <NavLink to={previous_link} onlyActiveOnIndex={true} className="page-link">
+                    <Link to={previous_link} className="page-link">
                         {lang.pagination.previous} →
-                    </NavLink>
+                    </Link>
                 </li>
             );
 
@@ -131,9 +129,9 @@ class Articles extends Component {
             });
             next = (
                 <li className={next_li_class}>
-                    <NavLink to={next_link} onlyActiveOnIndex={true} className="page-link">
+                    <Link to={next_link} className="page-link">
                         ← {lang.pagination.next}
-                    </NavLink>
+                    </Link>
                 </li>
             );
 

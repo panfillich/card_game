@@ -22,7 +22,7 @@ export const routes = (
             <Route path='/reg'      component={Reg} />
 
             <Route path='/article/:article_id' component={Article} />
-            <Route path='/articles(/:page)' component={Articles} />
+            <Route path='/articles(/:page)'    component={Articles} />
 
             <Route path='/link'     component={Link} />
             <Route path='/nav'      component={Nav} />
