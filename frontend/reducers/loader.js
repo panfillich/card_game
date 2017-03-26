@@ -22,7 +22,9 @@ export default function lang(state = initialState, action) {
                 message: ''
             };
         default:{
-            return initialState;
+            return {
+                state
+            }
         }
     }
 }

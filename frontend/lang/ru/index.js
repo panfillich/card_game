@@ -10,6 +10,7 @@ module.exports = {
         menu: {
             main: 'Главная',
             news: 'Новости',
+            chat: 'Чат',
             deck: 'Колода',
             game: 'Игра',
             reg:  'Регистрация',

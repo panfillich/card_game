@@ -1,27 +1,11 @@
-
 import React, { Component } from 'react'
 import className from 'classnames'
 import RightSide from '../containers/RightSide'
-// let f = require('../actions/API/public');
+import { connect } from 'react-redux'
 
-export default class Content extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            is_right_column : false
-        }
-
-        this.change = this.change.bind(this);
-    }
-
-    change(){
-        this.state.is_right_column = !this.state.is_right_column;
-        this.setState();
-    }
-
+class Content extends Component {
     render() {
-        let is_right_column = this.state.is_right_column;
+        let is_right_column = this.props.right_side.chat;
         let main_class_name = className({
             "col-sm-12" : !is_right_column,
             "col-md-12" : !is_right_column,
@@ -34,18 +18,27 @@ export default class Content extends Component {
         });
         return (
             <div className="container align-top" id="content">
-                <button onClick={this.change}>test</button>
                 <div className="row">
                     <div className={main_class_name}>
                         {this.props.children}
                     </div>
                     <div className={right_class_name}>
-                        <RightSide />
+                        <RightSide is_update={false}/>
                     </div>
                 </div>
             </div>
         );
     }
 }
+
+
+function mapStateToProps(state) {
+    return {
+        right_side: state.right_side
+    }
+}
+
+export default connect(mapStateToProps)(Content);
+
 
 

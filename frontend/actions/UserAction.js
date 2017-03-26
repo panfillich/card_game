@@ -1,12 +1,13 @@
-import LocalStorage from './LocalStorage';
+import localStorage from './LocalStorage';
 
 function login(param) {
-    LocalStorage.setItem('login', param.login);
-    LocalStorage.setItem('token', param.token);
+    if(localStorage.is_local_storage) {
+        localStorage.setItem('login', param.login);
+        localStorage.setItem('token', param.token);
+    }
     return {
-        type  :'login',
+        type  :'LOGIN',
         params : {
-            is_auth : true,
             login   : param.login,
             token   : param.token
         },
@@ -14,14 +15,11 @@ function login(param) {
 }
 
 function logout() {
-    LocalStorage.clear();
+    if(localStorage.is_local_storage) {
+        localStorage.clear();
+    }
     return {
-        type : 'logout',
-        params : {
-            is_auth: false,
-            login: '',
-            token: ''
-        }
+        type : 'LOGOUT'
     }
 }
 

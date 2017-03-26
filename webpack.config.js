@@ -95,6 +95,10 @@ module.exports = {
                     }
                 }],
             },
+            // {
+            //     test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+            //     use: [{loader: 'url-loader?limit=100000'}]
+            // },
             {
                 test: /\.scss$/,
 
@@ -102,6 +106,7 @@ module.exports = {
                     fallback: 'style-loader',
                     use: [
                         'css-loader?sourceMap',
+                        // 'url-loader?limit=100000',
                         // 'resolve-url-loader',
                         'sass-loader?sourceMap'
                     ]

@@ -6,7 +6,6 @@ class LocalStorage{
         try {
             this.is_local_storage = 'localStorage' in window && window['localStorage'] !== null;
         } catch (e) {
-
             this.is_local_storage = false;
         }
         if(this.is_local_storage) {

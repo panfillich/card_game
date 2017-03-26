@@ -3,10 +3,10 @@ import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 
-import NavLink from '../components/NavLink'
-
-import LangAction from '../actions/LangAction'
-import UserAction from '../actions/UserAction'
+import NavLink          from '../components/NavLink'
+import RightSideAction  from '../actions/RightSideAction'
+import LangAction       from '../actions/LangAction'
+import UserAction       from '../actions/UserAction'
 
 
 class Nav extends React.Component {
@@ -60,6 +60,11 @@ class Nav extends React.Component {
                 );
             } else {
                 // Блок зарегестрированного пользователя
+                user_block.push(
+                    <li className="nav-item" onClick={this.props.showChat}>
+                        <a href="#" className="nav-link">{lang.nav.menu.chat}</a>
+                    </li>
+                );
                 user_block.push(
                     <li className="nav-item">
                         <NavLink to='/deck' className="nav-link">{lang.nav.menu.deck}</NavLink>
@@ -156,8 +161,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        changeLanguage: bindActionCreators(LangAction.changeLanguage, dispatch),
-        logout: bindActionCreators(UserAction.logout, dispatch)
+        changeLanguage  : bindActionCreators(LangAction.changeLanguage, dispatch),
+        logout          : bindActionCreators(UserAction.logout, dispatch),
+        closeChat       : bindActionCreators(RightSideAction.closeChat, dispatch),
+        showChat        : bindActionCreators(RightSideAction.showChat, dispatch)
     }
 }
 

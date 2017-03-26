@@ -10,6 +10,7 @@ module.exports = {
         menu: {
             main    : 'Home',
             news    : 'News',
+            chat    : 'Chat',
             deck    : 'Deck',
             game    : 'Game',
             reg     : 'Registration',
