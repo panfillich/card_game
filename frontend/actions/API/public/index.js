@@ -1,27 +1,9 @@
 import fetch from 'isomorphic-fetch'
 import encodeForm from '../encodeForm'
-// const SERVER = 'http://localhost:3000/pub-api';
-const SERVER = 'http://localhost:3003';
+import useUniversalHandler from '../useUniversalHandler'
 
-let useUniversalHandler = function (URL, CONFIG, callback) {
-    fetch(URL, CONFIG).then(function(res){
-        if(res.status){
-            switch (res.status) {
-                case 200:
-                    return res.json();
-                case 404:
-                    return Promise.reject('not_found');
-                case 403:
-                    return Promise.reject('forbidden');
-            }
-        }
-        return Promise.reject('serv_error');
-    }).then(function(data) {
-        callback(null, data);
-    }).catch(function (reason) {
-        callback(reason, null);
-    });
-}
+const SERVER = 'http://localhost:3000/pub-api';
+// const SERVER = 'http://localhost:3003';
 
 class Public{
 

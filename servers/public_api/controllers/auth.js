@@ -40,7 +40,20 @@ router.post('/', function(req, res, next) {
             email: result.email
         };
 
-        Session.createToken(param_for_token, function (err, token) {
+        Session._checkUserSession('sfd', function (err, result) {
+            if (err) {
+                return next(err);
+            } else {
+                return next(new Error(result));
+            }
+
+        });
+
+        // let status = 404;
+        // let json = ResFormat(status, 'User not found');
+        // return res.status(status).send(JSON.stringify(json));
+
+        /*Session.createToken(param_for_token, function (err, token) {
             if (err) next(err);
             let status = 200;
             let json = ResFormat(status, 'Token created',{
@@ -49,7 +62,7 @@ router.post('/', function(req, res, next) {
                 date:  token.date
             });
             return res.status(status).send(JSON.stringify(json));
-        });
+        });*/
     });
 });
 

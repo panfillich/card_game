@@ -3,30 +3,31 @@ import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
 
 import RightSideAction  from '../actions/RightSideAction'
+import CloseButton from '../components/Chat/CloseButton'
 
 class Chat extends Component {
     render() {
         return (
             <div className="portlet portlet-default">
                 <div className="portlet-heading">
-                    <button className='btn btn-primary'><i className='glyphicon glyphicon-asterisk'></i></button>
+                    <CloseButton className='btn btn-primary' />
+
                     <div className="portlet-title">
                         <h4><i className="fa fa-circle text-green"> Jane Smith</i></h4>
                     </div>
                     <div className="portlet-widgets">
                         <div className="btn-group">
-                            <button type="button" className="btn btn-white dropdown-toggle btn-xs" data-toggle="dropdown">
-                                <i className="fa fa-circle text-green"></i> Status
-                                <span className="caret"></span>
+                            <button type="button" className="btn btn-white dropdown-toggle btn-xs"
+                                    data-toggle="dropdown" id="chat-status-dropdown">
+                               Status
                             </button>
-                            <ul className="dropdown-menu" role="menu">
-                                <li><a href="#"><i className="fa fa-circle text-green"></i> Online</a>
-                                </li>
-                                <li><a href="#"><i className="fa fa-circle text-orange"></i> Away</a>
-                                </li>
-                                <li><a href="#"><i className="fa fa-circle text-red"></i> Offline</a>
-                                </li>
-                            </ul>
+
+                            <div className="dropdown-menu float-left" aria-labelledby="chat-status-dropdown">
+                                <a className="dropdown-item" onClick={()=>{}} value="en" href="#">Online</a>
+                                <a className="dropdown-item" onClick={()=>{}} value="ru" href="#">Away</a>
+                                <a className="dropdown-item" onClick={()=>{}} value="ru" href="#">Offline</a>
+                            </div>
+
                         </div>
                         <span className="divider"></span>
                         <a data-toggle="collapse" data-parent="#accordion" href="#chat"><i className="fa fa-chevron-down"></i></a>

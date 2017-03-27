@@ -95,6 +95,10 @@ module.exports = {
                     }
                 }],
             },
+            {
+                test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,
+                use: [{loader: 'url-loader'}]
+            },
             // {
             //     test: /\.(png|woff|woff2|eot|ttf|svg)$/,
             //     use: [{loader: 'url-loader?limit=100000'}]

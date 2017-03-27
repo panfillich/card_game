@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 
 import NavLink          from '../components/NavLink'
-import RightSideAction  from '../actions/RightSideAction'
+import ShowCloseButton  from '../components/Chat/ShowCloseButton'
 import LangAction       from '../actions/LangAction'
 import UserAction       from '../actions/UserAction'
 
@@ -61,8 +61,8 @@ class Nav extends React.Component {
             } else {
                 // Блок зарегестрированного пользователя
                 user_block.push(
-                    <li className="nav-item" onClick={this.props.showChat}>
-                        <a href="#" className="nav-link">{lang.nav.menu.chat}</a>
+                    <li className="nav-item">
+                        <ShowCloseButton className="nav-link" />
                     </li>
                 );
                 user_block.push(
@@ -120,11 +120,11 @@ class Nav extends React.Component {
                     <li className="nav-item dropdown">
                         <a className="nav-link dropdown-toggle"
                            href="http://example.com"
-                           id="dropdown01"
+                           id="lang-dropdown"
                            data-toggle="dropdown"
                            aria-haspopup="true"
                            aria-expanded="false">{lang.nav.menu.lang} ({lang.cur_lang})</a>
-                        <div className="dropdown-menu float-left" aria-labelledby="dropdown01">
+                        <div className="dropdown-menu float-left" aria-labelledby="lang-dropdown">
                             <a className="dropdown-item" onClick={this.changeLanguage} value="en" href="#">English (en)</a>
                             <a className="dropdown-item" onClick={this.changeLanguage} value="ru" href="#">Русский (ru)</a>
                         </div>
@@ -162,9 +162,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         changeLanguage  : bindActionCreators(LangAction.changeLanguage, dispatch),
-        logout          : bindActionCreators(UserAction.logout, dispatch),
-        closeChat       : bindActionCreators(RightSideAction.closeChat, dispatch),
-        showChat        : bindActionCreators(RightSideAction.showChat, dispatch)
+        logout          : bindActionCreators(UserAction.logout, dispatch)
     }
 }
 

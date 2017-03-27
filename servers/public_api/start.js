@@ -9,8 +9,7 @@ require('./app');
 require('./config');
 //Устанавливаем обработчики событий (контроллеры)
 require('./controllers');
-//Устанавливаем обработчики ошибок
-require('./errors');
+
 //Запускаем сервер
 require('./server');
 
@@ -39,6 +38,9 @@ bd.sequelize.sync().then(function () {
         });
     });
 });
+
+//Устанавливаем обработчики ошибок
+require('./errors');
 
 
 

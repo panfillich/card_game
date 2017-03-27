@@ -1,11 +1,8 @@
+let ResFormat   = require('../../common_libs/res_format');
 let app = require('../app');
 
 app.use(function(req, res){
     let status = 404;
-    res.status(status);
-    res.send({
-        status: status,
-        description: 'Not Found',
-        error: 'Not found URL: '+req.url
-    });
+    let json = ResFormat(status, 'Not found URL: '+req.url);
+    return res.status(status).send(JSON.stringify(json));
 });

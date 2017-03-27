@@ -1,15 +1,8 @@
 let client = require('../redis/client');
 let Token = require('../common_libs/token');
 
-const TOKEN_PREFIX  = 'token';
-const USER_PREFIX = 'user';
-const LIFETIME = 600;
-
-class UserSession{
-    constructor(userId){
-        this.userId = userId;
-    }
-}
+let prefix = 'token';
+let lifetime = 600;
 
 class Sessions{
     switchToRedis(client){
@@ -20,49 +13,8 @@ class Sessions{
         return false;
     }
 
-    createNewSession(param, callback){
-        let token = Token.createForUser(param.email);
-        this._checkUserSession(param.userId, function (err, result) {
-            if(err){
-                callback(err, false);
-            } else if(result){
-               // используем готовый user:id (только поменяем ему token)
-
-            } else {
-               // создаем новый user:id
-
-            }
-        });
-    }
-
-    // Создаем пользовательскую сессию user:id
-    _createUserSession(){
-
-    }
-
-    // Проверям существует ли ключ user:id, если существует то добавляем ему время жизни
-    _checkUserSession(userId, callback){
-        let client = this.client;
-        const KEY = [USER_PREFIX, userId].join(':');
-
-        client.expire(KEY, LIFETIME, function (err, res) {
-            if(err){
-                callback('Error in RAM, when we set lifetime to user session', false);
-            } else if (res){
-                return callback(null, true);
-            } else {
-                return callback(null, false);
-            }
-        });
-    }
-
-    createSession(){
-
-    }
-
-
     // Установить токен / создать сессию
-    /*createToken(param, callback){
+    createToken(param, callback){
 
         let token = Token.createForUser(param.email);
 
@@ -184,7 +136,7 @@ class Sessions{
             }
             callback(null, res);
         });
-    }*/
+    }
 }
 
 module.exports = new Sessions();

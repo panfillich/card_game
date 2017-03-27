@@ -14,7 +14,6 @@ app.use(function (req, res, next) {
         return forbidden();
     }
 
-
     next();
 });
 
