@@ -71,7 +71,7 @@ gulp.task('webpack-dev-server', function (callback) {
                 pathRewrite: {'/pub-api': '/'}
             },
             {   context: ['/priv-api/**'],
-                target: 'http://localhost:3003',
+                target: 'http://localhost:3002',
                 pathRewrite: {'/pub-api': '/'}
             },
             {   context: ['/*.*'],

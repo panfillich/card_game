@@ -91,7 +91,7 @@ router.get('/', function(req, res, next) {
         let final_result = {
             articles: result,
             is_last_pack: is_last_pack
-        }
+        };
 
         let status = 200;
         let json = ResFormat(status, 'Found '+result.length+' articles', final_result);

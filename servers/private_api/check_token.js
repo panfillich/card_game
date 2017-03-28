@@ -1,5 +1,6 @@
 let app         = require('./app');
 let ResFormat   = require('../common_libs/res_format');
+let Session     = require('../models/sessions');
 
 // Проверяем валидность токена
 app.use(function (req, res, next) {
@@ -14,6 +15,22 @@ app.use(function (req, res, next) {
         return forbidden();
     }
 
-    next();
+    Session.getSession(req.headers.token, function (err, res) {
+        if(err){//
+            return next(err);
+        }
+
+        if(!res){
+            return forbidden();
+        }
+
+        if(req.headers.token!=res.token){
+            return forbidden();
+        }
+
+        req.session = '';
+        next();
+    });
+
 });
 

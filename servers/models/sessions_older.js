@@ -33,7 +33,7 @@ class Sessions{
     }
 
     // Получить всю сессию
-    getSessionAll(token, callback){
+    getSession(token, callback){
         let client = this.client;
 
         let full_key = [prefix, token].join(':');

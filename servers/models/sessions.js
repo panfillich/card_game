@@ -6,8 +6,8 @@ const USER_PREFIX = 'user';
 const LIFETIME = 600;
 
 class UserSession{
-    constructor(userId){
-        this.userId = userId;
+    constructor(data){
+        this.data = userId;
     }
 }
 
@@ -24,7 +24,7 @@ class Sessions{
         let token = Token.createForUser(param.email);
 
         // создаем сессию-токен
-        this._createTokenSession(token.hash, (err) => {
+        this._createTokenSession(token.hash, param.userId, (err) => {
             if(err){
                 callback(err, null);
             } else {
@@ -53,21 +53,22 @@ class Sessions{
                     }
                 });
             }
-
         });
     }
 
 
     // Создаем сессию-токен token:[token]
-    _createTokenSession(token_hash, callback){
+    _createTokenSession(token_hash, userId, callback){
         let client = this.client;
-        const KEY = [TOKEN_PREFIX, param.userId].join(':');
+        const KEY = [TOKEN_PREFIX, token_hash].join(':');
         client.multi([
-            ['set', KEY, token_hash],
+            ['set', KEY, userId],//
             ['expire', KEY, LIFETIME]//
         ]).exec(function (err, res) {
-            if (err || res[0]!='OK') {
-                callback("Error in RAM: can't create token session")
+            if (err) {
+                callback(err);
+            } else if (res[0]!='OK'){
+                callback(new Error("Error in RAM: can't create token session"));
             } else {
                 callback(null);
             }
@@ -82,14 +83,16 @@ class Sessions{
         let hmset = ['hmset', KEY];
         for (let key in param) {
             hmset.push(key);
-            hmset.push(fields[key]);
+            hmset.push(param[key]);
         }
         client.multi([
             hmset,
             ['expire', KEY, LIFETIME]//
         ]).exec(function (err, res) {
-            if (err || !res[0]!='OK') {
-                callback("Error in RAM: can't create user session", null)
+            if (err) {
+                callback(err);
+            } else if (res[0]!='OK'){
+                callback(new Error("Error in RAM: can't create user session"));
             } else {
                 callback(null)
             }
@@ -101,20 +104,33 @@ class Sessions{
         let client = this.client;
         const USER_KEY = [USER_PREFIX, userId].join(':');
 
-        client.multi([
+        client.hget(USER_KEY, 'token', function (err, res) {
+            if (err) {
+                callback(err);
+            } else if (!res) {
+                callback(new Error("Error in RAM: can't change token in user session"));
+            } else {
+                const OLD_TOKEN_KEY = [TOKEN_PREFIX, res].join(':');
+                client.del(OLD_TOKEN_KEY);
+                client.hset(USER_KEY, 'token', token_hash);
+                callback(null);
+            }
+        });
+
+        /*client.multi([
             ['hget', USER_KEY, 'token'],
             ['hset', USER_KEY, 'token', token_hash]//
         ]).exec(function (err, res) {
-            if (err || !res[0]) {
-                callback("Error in RAM: can't change token in user session")
+            if (err) {
+                callback(err);
+            } else if (!res[0]) {
+                callback(new Error("Error in RAM: can't change token in user session"));
             } else {
                 const OLD_TOKEN_KEY = [TOKEN_PREFIX, res[0]].join(':');
                 client.del(OLD_TOKEN_KEY);
                 callback(null);
             }
-        });
-
-        const OLD_TOKEN_KEY = '';
+        });*/
     }
 
     // Проверям существует ли ключ user:id, если существует то добавляем ему время жизни
@@ -124,7 +140,7 @@ class Sessions{
 
         client.expire(KEY, LIFETIME, function (err, res) {
             if(err){
-                callback('Error in RAM, when we set lifetime to user session', false);
+                callback(err, false);
             } else if (res){
                 return callback(null, true);
             } else {
@@ -285,5 +301,7 @@ class Sessions{
         });
     }*/
 }
+
+// Sessions.createNodeSession = UserSession;
 
 module.exports = new Sessions();
