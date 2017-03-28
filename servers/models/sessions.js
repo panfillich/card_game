@@ -6,8 +6,18 @@ const USER_PREFIX = 'user';
 const LIFETIME = 600;
 
 class UserSession{
-    constructor(data){
-        this.data = userId;
+    constructor(params, Sessions){
+        for(const param_name in params){
+            this[param_name] = params[param_name];
+        }
+    }
+
+    getParam(param){
+        return this[param];
+    }
+
+    setParams(callback) {
+        // Sessions.setParamsInSession(userId, token_hash, params);
     }
 }
 
@@ -43,7 +53,7 @@ class Sessions{
                         });
                     } else {
                         // создаем новый user:id
-                        this._createUserSession(param, function (err) {
+                        this._createUserSession(param, token.hash, function (err) {
                             if(err){
                                 callback(err, null);
                             } else {
@@ -76,11 +86,11 @@ class Sessions{
     }
 
     // Создаем пользовательскую сессию user:[id]
-    _createUserSession(param, callback){
+    _createUserSession(param, token_hash, callback){
         let client = this.client;
         const KEY = [USER_PREFIX, param.userId].join(':');
 
-        let hmset = ['hmset', KEY];
+        let hmset = ['hmset', KEY, 'token', token_hash];
         for (let key in param) {
             hmset.push(key);
             hmset.push(param[key]);
@@ -153,7 +163,6 @@ class Sessions{
     getSession(token, callback){
         let client = this.client;
         const TOKEN_KEY = [TOKEN_PREFIX, token].join(':');
-
         client.multi([
             ['get', TOKEN_KEY],
             ['expire', TOKEN_KEY, LIFETIME]
@@ -167,7 +176,10 @@ class Sessions{
                     ['hgetall', USER_KEY],
                     ['expire',  USER_KEY, LIFETIME]
                 ]).exec(function (err, res) {
-                    console.log(res[0]);
+                    if (err) {
+                        callback(err, null);
+                    }
+                    callback(null, res[0]);
                 });
             } else {
                 callback(null, null);
@@ -175,131 +187,31 @@ class Sessions{
         });
     }
 
-
-    // Установить токен / создать сессию
-    /*createToken(param, callback){
-
-        let token = Token.createForUser(param.email);
-
-        this.setSessionFields(token.hash, param, function (err, res) {
-            if (err) {
-                callback(err, null)
-            }
-
-            if (!res) {
-                let err_message = "Can't create token in REDIS"
-                callback(err, null)
-            }
-
-            callback(null, token);
-        })
-    }
-
-    // Получить всю сессию
-    getSessionAll(token, callback){
+    // Установить параметры в сессию
+    setParamsInSession(userId, token_hash, params){
         let client = this.client;
-
-        let full_key = [prefix, token].join(':');
-
-        client.multi([
-            ['hgetall', full_key],
-            ['expire', full_key, lifetime]
-        ]).exec(function (err, res) {
-            if (err) {
-                callback(err, null)
+        const KEY = [USER_PREFIX, userId].join(':');
+        const TOKEN_KEY = [TOKEN_PREFIX, token_hash].join(':');
+        let hmset = ['hmset', KEY];
+        for (let param_name in params) {
+            if(['userId','token'].indexOf(param_name) == -1) {
+                hmset.push(param_name);
+                hmset.push(params[param_name]);
             }
-            callback(null, res[0])
-        });
-    }
-
-    // Получть часть данных
-    // fields - массив
-    getSessionFields(token, fields, callback){
-        let client = this.client;
-        let full_key = [prefix, token].join(':');
-        let hmget = ['hmget', full_key];
-        fields.forEach(function (field) {
-            hmget.push(field)
-        });
-        client.multi([
-            hmget,
-            ['expire', full_key, lifetime]//
-        ]).exec(function (err, res) {
-            if (err) {
-                callback(err, null)
-            }
-            let result = {};
-            fields.forEach(function (field, key) {
-                result[field] = res[key]
-            });
-            callback(null, result)
-        });
-    }
-
-    // Установить часть данных/все данные в сессию
-    // fields - обьект
-    setSessionFields(token, fields, callback){
-        let client = this.client;
-        let full_key = [prefix, token].join(':');
-        let hmset = ['hmset', full_key];
-        for (let key in fields) {
-            hmset.push(key);
-            hmset.push(fields[key]);
         }
         client.multi([
             hmset,
-            ['expire', full_key, lifetime]//
+            ['expire', KEY, LIFETIME],
+            ['expire', TOKEN_KEY, LIFETIME]
         ]).exec(function (err, res) {
             if (err) {
-                callback(err, null)
+                callback(err, null);
+            } else {
+                callback(null, res[0]);
             }
-            callback(null, res[0]=='OK')
         });
     }
 
-    // Полностью удалить сессию
-    clearSessionAll(token, callback){
-        let client = this.client;
-        let full_key = [prefix, token].join(':');
-        client.multi([
-            ['del', full_key],
-            ['expire', full_key, lifetime]
-        ]).exec(function (err, res){
-            if (err) {
-                callback(err, null)
-            }
-            callback(null, res)
-        });
-    }
-
-    // Удалить часть полей
-    // fields - массив
-    clearSessionFields(token, fields, callback){
-        let client = this.client;
-        let full_key = [prefix, token].join(':');
-        let operations = [];
-        fields.forEach(function (field) {
-            operations.push(['hdel', full_key, field])
-        });
-        client.multi(operations).exec(function (err, res) {
-            if (err) {
-                callback(err, null)
-            }
-            callback(null, res)
-        });
-    }
-
-    // Установить время жизни
-    setLifetime(token, callback){
-        let client = this.client;
-        let full_key = [prefix, token].join(':');
-        client.expire(full_key, lifetime, function (err, res) {
-            if(err){
-                callback(err, false);
-            }
-            callback(null, res);
-        });
-    }*/
 }
 
 // Sessions.createNodeSession = UserSession;

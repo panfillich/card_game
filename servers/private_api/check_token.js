@@ -4,7 +4,7 @@ let Session     = require('../models/sessions');
 
 // Проверяем валидность токена
 app.use(function (req, res, next) {
-    
+
     function forbidden() {
         const status = 403;
         const json = ResFormat(status, "You don't have permission to use this end-point");
@@ -19,7 +19,7 @@ app.use(function (req, res, next) {
         if(err){//
             return next(err);
         }
-
+        console.log(4);
         if(!res){
             return forbidden();
         }
@@ -28,6 +28,7 @@ app.use(function (req, res, next) {
             return forbidden();
         }
 
+        console.log(res);
         req.session = '';
         next();
     });
