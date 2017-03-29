@@ -5,19 +5,38 @@ const TOKEN_PREFIX  = 'token';
 const USER_PREFIX = 'user';
 const LIFETIME = 600;
 
-class UserSession{
+class SessionInterface{
     constructor(params, Sessions){
+        this._Sessions = Sessions;
+        this._params = {};
         for(const param_name in params){
-            this[param_name] = params[param_name];
+            this._params[param_name] = params[param_name];
         }
     }
 
-    getParam(param){
-        return this[param];
+    get(param){
+        if(this._params[param]) {
+            return this._params[param];
+        }
+        return '';
     }
 
-    setParams(callback) {
-        // Sessions.setParamsInSession(userId, token_hash, params);
+    getAll(){
+        return this._params;
+    }
+
+    set(params, callback) {
+        this._Sessions.setParamsInSession(this._params.userId, this._params.token, params, function (err) {
+            if(err) {
+                callback(err, null);
+            } else {
+                callback(null, true);
+            }
+        });
+    }
+
+    del(params, callback) {
+
     }
 }
 
@@ -126,21 +145,6 @@ class Sessions{
                 callback(null);
             }
         });
-
-        /*client.multi([
-            ['hget', USER_KEY, 'token'],
-            ['hset', USER_KEY, 'token', token_hash]//
-        ]).exec(function (err, res) {
-            if (err) {
-                callback(err);
-            } else if (!res[0]) {
-                callback(new Error("Error in RAM: can't change token in user session"));
-            } else {
-                const OLD_TOKEN_KEY = [TOKEN_PREFIX, res[0]].join(':');
-                client.del(OLD_TOKEN_KEY);
-                callback(null);
-            }
-        });*/
     }
 
     // Проверям существует ли ключ user:id, если существует то добавляем ему время жизни
@@ -160,9 +164,9 @@ class Sessions{
     }
 
     // Получить всю сессию
-    getSession(token, callback){
+    getSession(token_hash, callback){
         let client = this.client;
-        const TOKEN_KEY = [TOKEN_PREFIX, token].join(':');
+        const TOKEN_KEY = [TOKEN_PREFIX, token_hash].join(':');
         client.multi([
             ['get', TOKEN_KEY],
             ['expire', TOKEN_KEY, LIFETIME]
@@ -188,32 +192,41 @@ class Sessions{
     }
 
     // Установить параметры в сессию
-    setParamsInSession(userId, token_hash, params){
+    setParamsInSession(userId, token_hash, params, callback){
         let client = this.client;
-        const KEY = [USER_PREFIX, userId].join(':');
+        const USER_KEY = [USER_PREFIX, userId].join(':');
+        console.log(USER_KEY);
         const TOKEN_KEY = [TOKEN_PREFIX, token_hash].join(':');
-        let hmset = ['hmset', KEY];
+        let hmset = ['hmset', USER_KEY];
+
         for (let param_name in params) {
             if(['userId','token'].indexOf(param_name) == -1) {
                 hmset.push(param_name);
                 hmset.push(params[param_name]);
             }
         }
+        console.log(hmset);
         client.multi([
             hmset,
-            ['expire', KEY, LIFETIME],
+            ['expire', USER_KEY, LIFETIME],
             ['expire', TOKEN_KEY, LIFETIME]
         ]).exec(function (err, res) {
             if (err) {
                 callback(err, null);
+            } else if (res[0] != 'OK') {
+                console.log(res);
+                callback(new Error("Error in RAM: can't set new params session"), null);
             } else {
-                callback(null, res[0]);
+                callback(null, true);
             }
         });
     }
 
+    // Создать класс для удобной работы с сессией,
+    // чтобы при работе с ними нам не нужно знать hash токена и id пользователя
+    createSessionInterface(params){
+        return new SessionInterface(params, this);
+    }
 }
-
-// Sessions.createNodeSession = UserSession;
 
 module.exports = new Sessions();

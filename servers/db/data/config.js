@@ -2,11 +2,19 @@ module.exports = {
     test : {
         users: {
             //количество пользователей
-            count: 100000,
+            count: 10000,
             //шаблоны (%(id)s - порядковый номер)
             email: 'email-%(id)s@gmail.com',
             login: 'login-%(id)s',
             password: 'Qwerty123!'
+        },
+
+        friends: {
+            // Число друзей: минимальное и максимальное
+            count: {
+                min: 1,
+                max: 100
+            }
         },
 
         articles: {

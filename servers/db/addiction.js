@@ -19,5 +19,8 @@ module.exports = function(Sequelize, DataTypes) {
     models['users'].hasMany(models['comments'], {foreignKey: 'userId', targetKey: 'userId'});
     models['comments'].belongsTo(models['users'], {foreignKey: 'userId', targetKey: 'userId'});
 
+    models['users'].hasMany(models['friends'], {foreignKey: 'userId', targetKey: 'userId'});
+    models['friends'].belongsTo(models['users'], {foreignKey: 'userId', targetKey: 'userId'});
+
     return return_models;
 }

@@ -19,7 +19,7 @@ app.use(function (req, res, next) {
         if(err){//
             return next(err);
         }
-        console.log(4);
+
         if(!res){
             return forbidden();
         }
@@ -28,9 +28,10 @@ app.use(function (req, res, next) {
             return forbidden();
         }
 
-        console.log(res);
-        req.session = '';
-        next();
+        // Создаем удобный интерфейс для использования сессий
+        req.session = Session.createSessionInterface(res);
+
+        return next();
     });
 
 });
