@@ -54,7 +54,8 @@ module.exports = {
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
-            "window.Tether": 'tether'
+            // "window.Tether": 'tether',
+            Tether: 'tether'
         }),
 
         //--Убирает комментарии и сжимает css

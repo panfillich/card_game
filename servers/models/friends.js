@@ -30,7 +30,7 @@ class Friends{
             include: [{
                 model: users,
                 as: ADDICTION_TYPE,
-                attributes: ['userId', 'login'],
+                attributes: ['login', 'userId'],
                 required: true
             }],
             order: [

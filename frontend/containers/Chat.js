@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 
 import RightSideAction  from '../actions/RightSideAction'
 import CloseButton from '../components/Chat/CloseButton'
+import Friends from '../components/Chat/Friends'
 
 class Chat extends Component {
     render() {
@@ -93,6 +94,7 @@ class Chat extends Component {
                         </form>
                     </div>
                 </div>
+                <Friends />
             </div>
         );
     }
