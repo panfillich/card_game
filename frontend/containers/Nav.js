@@ -39,144 +39,101 @@ class Nav extends React.Component {
 
     render(){
         const { lang, user } = this.props;
-            let auth_block = '';
-            let reg_block  = '';
-            let user_block = [];
+        let auth_block = '';
+        let reg_block  = '';
+        let user_block = [];
 
-            // Если пользователь не авторизирован
-            if(!user.is_auth){
-                // Авторизация
-                auth_block =(
-                    <li className="nav-item">
-                        <NavLink to='/auth' className="nav-link">{lang.nav.menu.auth}</NavLink>
-                    </li>
-                );
+        // Если пользователь не авторизирован
+        if(!user.is_auth){
+            // Авторизация
+            auth_block =(
+                <li className="nav-item">
+                    <NavLink to='/auth' className="nav-link">{lang.nav.menu.auth}</NavLink>
+                </li>
+            );
 
-                // Регистрация
-                reg_block =(
-                    <li className="nav-item">
-                        <NavLink to='/reg' className="nav-link">{lang.nav.menu.reg}</NavLink>
-                    </li>
-                );
-            } else {
-                // Блок зарегестрированного пользователя
-                user_block.push(
-                    <li className="nav-item">
-                        <ShowCloseButton className="nav-link" />
-                    </li>
-                );
-                user_block.push(
-                    <li className="nav-item">
-                        <NavLink to='/deck' className="nav-link">{lang.nav.menu.deck}</NavLink>
-                    </li>
-                );
-                user_block.push(
-                    <li className="nav-item">
-                        <NavLink to='/game' className="nav-link">{lang.nav.menu.game}</NavLink>
-                    </li>
-                );
-                user_block.push(
-                    <li className="nav-item">
-                        <NavLink to='/user' className="nav-link">{capitaliseFirstLetter(user.login)}</NavLink>
-                    </li>
-                );
-                user_block.push(
-                    <li className="nav-item">
-                        <a className="nav-link" href="#" onClick={this.logout}>{lang.nav.menu.log_out}</a>
-                    </li>
-                );
-            }
+            // Регистрация
+            reg_block =(
+                <li className="nav-item">
+                    <NavLink to='/reg' className="nav-link">{lang.nav.menu.reg}</NavLink>
+                </li>
+            );
+        } else {
+            // Блок зарегестрированного пользователя
+            user_block.push(
+                <li className="nav-item">
+                    <ShowCloseButton className="nav-link" />
+                </li>
+            );
+            user_block.push(
+                <li className="nav-item">
+                    <NavLink to='/deck' className="nav-link">{lang.nav.menu.deck}</NavLink>
+                </li>
+            );
+            user_block.push(
+                <li className="nav-item">
+                    <NavLink to='/game' className="nav-link">{lang.nav.menu.game}</NavLink>
+                </li>
+            );
+            user_block.push(
+                <li className="nav-item">
+                    <NavLink to='/user' className="nav-link">{capitaliseFirstLetter(user.login)}</NavLink>
+                </li>
+            );
+            user_block.push(
+                <li className="nav-item">
+                    <a className="nav-link" href="#" onClick={this.logout}>{lang.nav.menu.log_out}</a>
+                </li>
+            );
+        }
 
         return(
-            <nav className="navbar navbar-toggleable-md navbar-light bg-faded">
-                <button className="navbar-toggler navbar-toggler-right"
-                        type="button"
-                        data-toggle="collapse"
-                        data-target="#navbarNav"
-                        aria-controls="navbarNav"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <a className="navbar-brand" href="#">Navbar</a>
-                <div className="collapse navbar-collapse" id="navbarNav">
-                    <ul className="navbar-nav">
-                        <li className="nav-item">
-                            <NavLink to='/' onlyActiveOnIndex={true} className="nav-link">{lang.nav.menu.main}</NavLink>
-                        </li>
+            <nav className="navbar navbar-light bg-faded">
+                <div className="container">
+                    <div className="row ">
+                        <button type="button"
+                                className="navbar-toggle hidden-sm-up "
+                                data-toggle="collapse"
+                                data-target="#bs-example-navbar-collapse-1"
+                        >
+                            <span className="sr-only">Toggle navigation</span>
+                            ☰
+                        </button>
 
-                        <li className="nav-item">
-                            {/*<NavLink to='/link' className="nav-link">link</NavLink>*/}
-                            <NavLink to='/articles' className="nav-link">{lang.articles.header}</NavLink>
-                        </li>
-                    </ul>
-                    <ul className="navbar-nav">
+                        <div className="collapse navbar-toggleable-xs" id="bs-example-navbar-collapse-1">
+                            <a className="navbar-brand hidden-sm-down" href="#">Logo</a>
+                            <ul className="nav navbar-nav">
+                                <li className="nav-item">
+                                    <NavLink to='/' onlyActiveOnIndex={true} className="nav-link">{lang.nav.menu.main}</NavLink>
+                                </li>
 
+                                <li className="nav-item">
+                                    {/*<NavLink to='/link' className="nav-link">link</NavLink>*/}
+                                    <NavLink to='/articles' className="nav-link">{lang.articles.header}</NavLink>
+                                </li>
+                            </ul>
 
-                        <li className="nav-item active">
-                            <a className="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#">Features</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#">Pricing</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link disabled" href="#">Disabled</a>
-                        </li>
-                    </ul>
+                            <ul className="nav navbar-nav float-xs-left float-sm-right">
+                                {auth_block}
+                                {reg_block}
+                                {user_block}
+                                <li className="nav-item dropdown">
+                                    <a className="nav-link dropdown-toggle"
+                                       href="http://example.com"
+                                       id="lang-dropdown"
+                                       data-toggle="dropdown"
+                                       aria-haspopup="true"
+                                       aria-expanded="false">{lang.nav.menu.lang} ({lang.cur_lang})</a>
+                                    <div className="dropdown-menu float-left" aria-labelledby="lang-dropdown">
+                                        <a className="dropdown-item" onClick={this.changeLanguage} value="en" href="#">English (en)</a>
+                                        <a className="dropdown-item" onClick={this.changeLanguage} value="ru" href="#">Русский (ru)</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </nav>
-        );
-
-        return(
-        <nav className="navbar navbar-toggleable-md navbar-light bg-faded">
-        <div className="container">
-        <div className="row ">
-            <button type="button"
-                    className="navbar-toggle hidden-sm-up "
-                    data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1"
-                   >
-                <span className="sr-only">Toggle navigation</span>
-                ☰
-            </button>
-
-            <div className="collapse navbar-toggleable-xs" id="bs-example-navbar-collapse-1">
-                <a className="navbar-brand hidden-sm-down" href="#">Logo</a>
-                <ul className="nav navbar-nav">
-                    <li className="nav-item">
-                        <NavLink to='/' onlyActiveOnIndex={true} className="nav-link">{lang.nav.menu.main}</NavLink>
-                    </li>
-
-                    <li className="nav-item">
-                        {/*<NavLink to='/link' className="nav-link">link</NavLink>*/}
-                        <NavLink to='/articles' className="nav-link">{lang.articles.header}</NavLink>
-                    </li>
-                </ul>
-
-                <ul className="nav navbar-nav float-xs-left float-sm-right">
-                    {auth_block}
-                    {reg_block}
-                    {user_block}
-                    <li className="nav-item dropdown">
-                        <a className="nav-link dropdown-toggle"
-                           href="http://example.com"
-                           id="lang-dropdown"
-                           data-toggle="dropdown"
-                           aria-haspopup="true"
-                           aria-expanded="false">{lang.nav.menu.lang} ({lang.cur_lang})</a>
-                        <div className="dropdown-menu float-left" aria-labelledby="lang-dropdown">
-                            <a className="dropdown-item" onClick={this.changeLanguage} value="en" href="#">English (en)</a>
-                            <a className="dropdown-item" onClick={this.changeLanguage} value="ru" href="#">Русский (ru)</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        </div>
-        </nav>
         )
     }
 }
