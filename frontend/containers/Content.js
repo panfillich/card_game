@@ -9,12 +9,12 @@ class Content extends Component {
         let main_class_name = className({
             "col-sm-12" : !is_right_column,
             "col-md-12" : !is_right_column,
-            "col-md-8"  : is_right_column
+            "col-md-7"  : is_right_column
         });
 
         let right_class_name = className({
             "hidden"   : !is_right_column,
-            "col-md-4" : is_right_column
+            "col-md-5" : is_right_column
         });
         return (
             <div className="container align-top" id="content">

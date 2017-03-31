@@ -157,7 +157,6 @@ gulp.task('db:data-test:reload', ['db:connect'], function (callback) {
 });
 
 
-
 //Перезаписываем вообще все + тестовые данные
 gulp.task('reset', ['redis:connect', 'db:connect'], function (callback) {
     data.dbTestDateReload(function () {

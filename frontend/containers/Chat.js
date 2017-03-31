@@ -8,86 +8,100 @@ import Friends from '../components/Chat/Friends'
 
 class Chat extends Component {
     render() {
-        return (
-            <div className="portlet portlet-default">
-                <div className="portlet-heading">
-                    <CloseButton className='btn btn-primary' />
 
-                    <div className="portlet-title">
-                        <h4><i className="fa fa-circle text-green"> Jane Smith</i></h4>
+        let users = [
+            {
+                login   : 'User1',
+                time    : '2016-02-01T00:00:00.000Z',
+                message : 'Donec id elit non mi porta gravida at eget metus. ' +
+                          'Maecenas sed diam eget risus varius blandit.'
+            },
+            {
+                login   : 'User2',
+                time    : '2016-02-01T00:00:00.000Z',
+                message : 'Donec id elit non mi porta gravida at eget metus. ' +
+                          'Maecenas sed diam eget risus varius blandit.'
+            },
+            {
+                login   : 'User2',
+                time    : '2016-02-01T00:00:00.000Z',
+                message : 'Donec id elit non mi porta gravida at eget metus. ' +
+                          'Maecenas sed diam eget risus varius blandit.'
+            },
+            {
+                login   : 'User2',
+                time    : '2016-02-01T00:00:00.000Z',
+                message : 'Donec id elit non mi porta gravida at eget metus. ' +
+                'Maecenas sed diam eget risus varius blandit.'
+            },
+            {
+                login   : 'User2',
+                time    : '2016-02-01T00:00:00.000Z',
+                message : 'Donec id elit non mi porta gravida at eget metus. ' +
+                'Maecenas sed diam eget risus varius blandit.'
+            },
+        ];
+
+        let html_users = [];
+        users.forEach(function (user) {
+            html_users.push(
+                <li className="list-group-item">
+                    <div style={{height:"30px"}}>
+                        <div style={{width:"50%", float:"left"}}>
+                            <h5>{user.login}</h5>
+                        </div>
+                        <div style={{width:"50%", float:"right", "text-align":"right"}}>
+                            <small className="text-muted">{user.time}</small>
+                        </div>
                     </div>
-                    <div className="portlet-widgets">
-                        <div className="btn-group">
-                            <button type="button" className="btn btn-white dropdown-toggle btn-xs"
-                                    data-toggle="dropdown" id="chat-status-dropdown">
-                               Status
-                            </button>
+                    <p>{user.message}</p>
+                </li>
+            );
+        });
 
+        return (
+            <div >
+                <div className="portlet-heading">
+                    <nav className="bg-faded">
+                        <div className="btn-group" style={{width:"100%"}}>
+                            <button type="button" className="btn btn-outline-success "
+                                    data-toggle="dropdown" id="chat-status-dropdown" style={{width:"30%"}}>
+                                Status
+                            </button>
                             <div className="dropdown-menu float-left" aria-labelledby="chat-status-dropdown">
                                 <a className="dropdown-item" onClick={()=>{}} value="en" href="#">Online</a>
                                 <a className="dropdown-item" onClick={()=>{}} value="ru" href="#">Away</a>
                                 <a className="dropdown-item" onClick={()=>{}} value="ru" href="#">Offline</a>
                             </div>
+                            <button type="button" style={{width:"50%"}} className="btn btn-outline-info">Secondary</button>
+
+                            <CloseButton style={{float:"right", width:"20%"}} className='btn btn-outline-danger btn btn-outline-success'/>
 
                         </div>
-                        <span className="divider"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#chat"><i className="fa fa-chevron-down"></i></a>
-                    </div>
-                    <div className="clearfix"></div>
+
+                    </nav>
                 </div>
-                <div id="chat" className="panel-collapse collapse in">
-                    <div className="portlet-body chat-widget" style={{"overflow-y": "auto","width": "auto", "height": "300px"}}>
-                        <div className="row">
-                            <div className="col-lg-12">
-                                <p className="text-center text-muted small">January 1, 2014 at 12:23 PM</p>
-                            </div>
+                <div id="chat">
+                    <div className="chat-widget" style={{
+                        "margin-top":"7px", "margin-bottom":"7px",
+                        "border":"1px solid white",
+                        "overflow-y": "auto","width": "auto", "height": "400px"
+                    }}>
+                        <div style={{"margin-right":"7px"}}>
+                            <ul className="list-group">
+                                {html_users}
+                            </ul>
                         </div>
-                        <div className="row">
-                            <div className="col-lg-12">
-                                <div className="media">
-                                    <div className="media-body">
-                                        <h4 className="media-heading">Jane Smith
-                                            <span className="small pull-right">12:23 PM</span>
-                                        </h4>
-                                        <p>Hi, I wanted to make sure you got the latest product report. Did Roddy get it to you?</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr />
-                        <div className="row">
-                            <div className="col-lg-12">
-                                <div className="media">
-                                    <div className="media-body">
-                                        <h4 className="media-heading">John Smith
-                                            <span className="small pull-right">12:28 PM</span>
-                                        </h4>
-                                        <p>Yeah I did. Everything looks good.</p>
-                                        <p>Did you have an update on purchase order #302?</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr />
-                        <div className="row">
-                            <div className="col-lg-12">
-                                <div className="media">
-                                    <div className="media-body">
-                                        <h4 className="media-heading">Jane Smith
-                                            <span className="small pull-right">12:39 PM</span>
-                                        </h4>
-                                        <p>No not yet, the transaction hasn't cleared yet. I will let you know as soon as everything goes through. Any idea where you want to get lunch today?</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                     <div className="portlet-footer">
                         <form role="form">
-                            <div className="form-group">
-                                <textarea className="form-control" placeholder="Enter message..."></textarea>
+                            <div className="form-group" style={{width:"80%"}}>
+                                <textarea
+
+                                    className="form-control" placeholder="Enter message..."></textarea>
                             </div>
-                            <div className="form-group">
+                            <div className="form-group" style={{width:"20%"}}>
                                 <button type="button" className="btn btn-default pull-right">Send</button>
                                 <div className="clearfix"></div>
                             </div>
