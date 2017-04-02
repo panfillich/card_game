@@ -7,6 +7,7 @@ let Pm2_task    = require('./pm2_task.js');
 
 let public_api  = new Pm2_task('public_api','pub_api');
 let private_api = new Pm2_task('private_api','priv_api');
+let chat_api  = new Pm2_task('chat_api','chat');
 
 var gutil = require("gulp-util");
 
@@ -18,20 +19,25 @@ let WebpackDevServer = require('webpack-dev-server');
 //Таски, которые запускают процессы
 public_api.start();
 private_api.start();
+chat_api.start();
+
 gulp.task('start_servers', [
     public_api.startName,
-    private_api.startName
+    private_api.startName,
+    chat_api.startName
 ]);
 
 //Таски, которые перезапускают процессы
 public_api.reload();
 private_api.reload();
+chat_api.reload();
 
 //Мониторинг изменения файлов в папке servers
 //и перезапуск соответствующего процесса
 gulp.task('check_servers', function () {
     public_api.watch();
     private_api.watch();
+    chat_api.watch();
 });
 //---------------------------------------------------------//
 

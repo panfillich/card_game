@@ -7,7 +7,37 @@ import CloseButton from '../components/Chat/CloseButton'
 import Friends from '../components/Chat/Friends'
 
 class Chat extends Component {
+
+    constructor(props){
+        super(props);
+    }
+
+    getFriendList(){
+
+    }
+
+    deleteFriend(){
+
+    }
+
     render() {
+
+        var socket = require('socket.io-client')('http://localhost:3004');
+        socket.on('connect', function(data) {
+            console.log('connect');
+            socket.emit('join', 'Hello World from client');
+            socket.on('message', function (data) {
+                console.log(data);
+                // socket.emit('join', 'Hello World from client2');
+            });
+
+        });
+
+        const { lang, user } = this.props;
+        //
+        if(!user.is_auth){
+             return null;
+        }
 
         let users = [
             {
@@ -64,19 +94,20 @@ class Chat extends Component {
                 <div className="portlet-heading">
                     <nav className="bg-faded">
                         <div className="btn-group" style={{width:"100%"}}>
-                            <button type="button" className="btn btn-outline-success "
+                            <button type="button" className="btn btn-outline-info"
                                     data-toggle="dropdown" id="chat-status-dropdown" style={{width:"30%"}}>
-                                Status
+                                <span id="search_concept">Status</span><span className="caret dropdown-toggle"></span>
                             </button>
-                            <div className="dropdown-menu float-left" aria-labelledby="chat-status-dropdown">
-                                <a className="dropdown-item" onClick={()=>{}} value="en" href="#">Online</a>
-                                <a className="dropdown-item" onClick={()=>{}} value="ru" href="#">Away</a>
-                                <a className="dropdown-item" onClick={()=>{}} value="ru" href="#">Offline</a>
-                            </div>
-                            <button type="button" style={{width:"50%"}} className="btn btn-outline-info">Secondary</button>
+                            <ul className="dropdown-menu float-left" aria-labelledby="chat-status-dropdown">
+                                <li><a className="dropdown-item" onClick={()=>{}} value="en" href="#">Online</a></li>
+                                <li><a className="dropdown-item" onClick={()=>{}} value="ru" href="#">Away</a></li>
+                                <li><a className="dropdown-item" onClick={()=>{}} value="ru" href="#">Offline</a></li>
+                            </ul>
+                            <button type="button" style={{width:"50%"}} className="btn btn-outline-info">
+                                <span id="search_concept">User1</span><span className="caret"></span>
+                            </button>
 
                             <CloseButton style={{float:"right", width:"20%"}} className='btn btn-outline-danger btn btn-outline-success'/>
-
                         </div>
 
                     </nav>
@@ -85,7 +116,7 @@ class Chat extends Component {
                     <div className="chat-widget" style={{
                         "margin-top":"7px", "margin-bottom":"7px",
                         "border":"1px solid white",
-                        "overflow-y": "auto","width": "auto", "height": "400px"
+                        "overflow-y": "auto","width": "auto", "height": "300px"
                     }}>
                         <div style={{"margin-right":"7px"}}>
                             <ul className="list-group">
@@ -94,23 +125,48 @@ class Chat extends Component {
                         </div>
 
                     </div>
-                    <div className="portlet-footer">
-                        <form role="form">
-                            <div className="form-group" style={{width:"80%"}}>
-                                <textarea
+                </div>
+                <div className="portlet-footer">
+                    <form role="form">
+                        <div className="btn-group" style={{width:"100%"}}>
+                            <div className="form-group" style={{width:"80%", float:"left"}}>
+                                    <textarea
+                                        style={{"border-bottom-right-radius":0, "border-top-right-radius":0}}
+                                        className="form-control" placeholder="Enter message..."></textarea>
+                            </div>
+                            <div className="form-group bg-faded" style={{width:"20%", float:"right"}}>
+                                <button style={{height:"68px", width:"100%", "border-bottom-left-radius":0, "border-top-left-radius":0}}
+                                        className="btn btn-outline-success" type="button" >Send</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div className="input-group" style={{"padding-top":"7px", "padding-bottom":"7px"}}>
+                            <div className="input-group-btn search-panel">
+                                <button type="button" className="btn btn-outline-info dropdown-toggle bg-faded" data-toggle="dropdown">
+                                    <span id="search_concept">Sort by</span> <span className="caret"></span>
+                                </button>
+                                <ul className="dropdown-menu float-left" aria-labelledby="search_concept">
+                                    <li><a className="dropdown-item" onClick={()=>{}} value="en" href="">Online</a></li>
+                                    <li><a className="dropdown-item" onClick={()=>{}} value="ru" href="">Away</a></li>
+                                    <li><a className="dropdown-item" onClick={()=>{}} value="ru" href="">Offline</a></li>
+                                </ul>
+                            </div>
 
-                                    className="form-control" placeholder="Enter message..."></textarea>
-                            </div>
-                            <div className="form-group" style={{width:"20%"}}>
-                                <button type="button" className="btn btn-default pull-right">Send</button>
-                                <div className="clearfix"></div>
-                            </div>
-                        </form>
-                    </div>
+                            <input name="search_param" value="all" id="search_param" type="hidden" />
+                            <input className="form-control" name="x" placeholder="Filter by name..." type="text" />
+
                 </div>
                 <Friends />
             </div>
         );
+    }
+}
+
+function mapStateToProps(state) {
+    return {
+        user: state.user,
+        lang: state.lang
     }
 }
 
@@ -120,7 +176,7 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(null, mapDispatchToProps)(Chat);
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);
 
 
 

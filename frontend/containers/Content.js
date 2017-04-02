@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 class Content extends Component {
     render() {
         let is_right_column = this.props.right_side.chat;
+        is_right_column = true;
         let main_class_name = className({
             "col-sm-12" : !is_right_column,
             "col-md-12" : !is_right_column,

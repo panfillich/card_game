@@ -42,10 +42,10 @@ function setEvents(client) {
     });
 
     client.on("end", function () {
-        console.log("end");
-        client.quit()
-        client = redis.createClient(option);
-        setEvents(client);
+        // console.log("end");
+        // client.quit()
+        // client = redis.createClient(option);
+        // setEvents(client);
     });
 }
 

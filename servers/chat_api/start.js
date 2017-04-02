@@ -1,13 +1,27 @@
-var express = require('express');
-var app = express();
+let log = require('../common_libs/logger')(module);
 
-server = app.listen(3004, function() {
-    console.log('Chat_api listening on port ' + 3004);
+// Проверяем соединение с Redis / создаем клиента
+let client = require('../redis/client');
+
+// Устанавливаем/проверяем соединение с БД
+let bd = require("../db");
+
+// Определяем Express приложение
+let app = require('./app');
+
+// Определяем сервер
+let server = require('./server');
+
+// Навешиваем слушатель событий + определяем класс для работы с socket.io
+let io = require('./io');
+
+// Запускаем сервер
+server.listen(3004, function() {
+    log.info('Chat server listening on port %d', 3004);
 });
 
-app.get('/', function (req, res) {
-    res.send('Hello World!')
-})
+// Навешиваем обработчики событий socket.io
+require('./socket');
 
 
 
