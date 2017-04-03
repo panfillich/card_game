@@ -80,6 +80,10 @@ gulp.task('webpack-dev-server', function (callback) {
                 target: 'http://localhost:3002',
                 pathRewrite: {'/priv-api': '/'}
             },
+            {   context: ['/chat/**'],
+                target: 'http://localhost:3004',
+                pathRewrite: {'/chat': '/'}
+            },
             {   context: ['/*.*'],
                 target: 'http://localhost:3000/public'
             },

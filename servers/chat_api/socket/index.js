@@ -2,6 +2,18 @@ var io = require('../io');
 
 var connect  = require('../../redis/connect');
 
+class User{
+    constructor(id){
+        this.is_auth = false;
+        this.chat_id = 0;
+        this.status = {};
+        this.friends = {};
+    }
+}
+
+let users = [];
+
+
 let client1  = connect();
 let client2  = connect();
 
@@ -19,23 +31,38 @@ client1.on('pmessage', function(pattern, channel, message) {
     console.log(channel);
     console.log(message);
 
-    io.sockets.connected[client_id].emit('message', {111:'test'});
+    //io.sockets.connected[client_id].emit('message', {111:'test'});
     // client2.hgetall(msg, function(err, res) {
     //     res.key = msg;
     //     io.sockets.emit(res);
     // });
 });
 
-client1.psubscribe('chat:*');
+client1.psubscribe('chat:*', 'test:*');
 
 //https://toster.ru/q/79184
 io.on('connection', function(client) {
 
-    client2.publish('chat:222:222', 'message2');
+    // проверяем токен
+    var headers = client.request.headers;
 
-    console.dir(client.id);
-    console.log('Client connected...');
-    client_id = client.id;
+    console.log(client.request);
+    if(!headers.token){
+        // нужного заголовка в принципе нет - отключаем
+        client.disconnect();
+        return;
+    }
+
+    // заголовок есть - проверяем длинну
+
+        client2.publish('chat:222:222', 'message2');
+
+        console.dir(client.id);
+        console.log('Client connected...');
+        client_id = client.id;
+
+
+
     client.on('join', function(data) {
         console.log(data);
         // io.sockets.connected[client.id].emit('message', {111:'test'});

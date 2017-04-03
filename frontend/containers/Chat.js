@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
 
+import API from '../actions/API'
 import RightSideAction  from '../actions/RightSideAction'
 import CloseButton from '../components/Chat/CloseButton'
 import Friends from '../components/Chat/Friends'
@@ -22,7 +23,11 @@ class Chat extends Component {
 
     render() {
 
-        var socket = require('socket.io-client')('http://localhost:3004');
+        const { lang, user } = this.props;
+
+
+
+        /*var socket = require('socket.io-client')('http://localhost:3004');
         socket.on('connect', function(data) {
             console.log('connect');
             socket.emit('join', 'Hello World from client');
@@ -31,13 +36,15 @@ class Chat extends Component {
                 // socket.emit('join', 'Hello World from client2');
             });
 
-        });
+        });*/
 
-        const { lang, user } = this.props;
-        //
+
+
         if(!user.is_auth){
              return null;
         }
+
+        API.chat.connect();
 
         let users = [
             {
