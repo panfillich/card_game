@@ -1,6 +1,10 @@
 import localStorage from './LocalStorage';
+import API from './API'
 
 function login(param) {
+
+    API.chat.connect(param.token);
+
     if(localStorage.is_local_storage) {
         localStorage.setItem('login', param.login);
         localStorage.setItem('token', param.token);
@@ -15,6 +19,7 @@ function login(param) {
 }
 
 function logout() {
+    API.chat.disconnect();
     if(localStorage.is_local_storage) {
         localStorage.clear();
     }

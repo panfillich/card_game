@@ -44,7 +44,7 @@ class Chat extends Component {
              return null;
         }
 
-        API.chat.connect();
+
 
         let users = [
             {

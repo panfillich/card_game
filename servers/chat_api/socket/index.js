@@ -1,6 +1,6 @@
-var io = require('../io');
-
-var connect  = require('../../redis/connect');
+let io          = require('../io');
+let Session     = require('../../models/sessions');
+let connect     = require('../../redis/connect');
 
 class User{
     constructor(id){
@@ -26,10 +26,6 @@ client1.on('pmessage', function(pattern, channel, message) {
         console.log(data);
     });
     var room = channel.split(":");
-    console.log(room);
-    console.log(pattern);
-    console.log(channel);
-    console.log(message);
 
     //io.sockets.connected[client_id].emit('message', {111:'test'});
     // client2.hgetall(msg, function(err, res) {
@@ -38,29 +34,55 @@ client1.on('pmessage', function(pattern, channel, message) {
     // });
 });
 
+//https://toster.ru/q/79184
 client1.psubscribe('chat:*', 'test:*');
 
-//https://toster.ru/q/79184
+
 io.on('connection', function(client) {
+    // Проверяем токен
+    var token = client.request._query.token;
 
-    // проверяем токен
-    var headers = client.request.headers;
-
-    console.log(client.request);
-    if(!headers.token){
-        // нужного заголовка в принципе нет - отключаем
+    // Параметра нет - отключаем
+    if(!token){
         client.disconnect();
         return;
     }
 
+    // Токен есть, робим валидацию
+    // Для начала длинну
+    if(token.length!=128){
+        client.disconnect();
+        return;
+    }
+
+    // Теперь находим пользователя с таким токеном
+    Session.getSession(token, function (err, res) {
+        if(err){
+            return client.disconnect();
+        }
+
+        if(!res){
+             return client.disconnect();
+        }
+
+        if(token!=res.token){
+            return client.disconnect();
+        }
+
+        // Нашли пользователя, теперь подтягиваем его друзей
+        console.log(res);
+
+
+        // return next();
+    });
+
     // заголовок есть - проверяем длинну
 
-        client2.publish('chat:222:222', 'message2');
+    client2.publish('chat:222:222', 'message2');
 
-        console.dir(client.id);
-        console.log('Client connected...');
-        client_id = client.id;
-
+    console.dir(client.id);
+    console.log('Client connected...');
+    client_id = client.id;
 
 
     client.on('join', function(data) {

@@ -1,6 +1,6 @@
 import Private from './private'
-import Public from './public'
-import Chat from './chat'
+import Public from  './public'
+import Chat from    './chat'
 
 
 let API = {

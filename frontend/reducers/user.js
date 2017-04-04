@@ -1,4 +1,5 @@
 import localStorage from '../actions/LocalStorage'
+import API          from '../actions/API/index'
 
 let initialState = {
     is_auth : false,
@@ -8,6 +9,7 @@ let initialState = {
 
 if(localStorage.is_local_storage) {
     if (localStorage.getItem("login") !== null) {
+        API.chat.connect(localStorage.getItem("token"));
         initialState = {
             is_auth: true,
             login: localStorage.getItem("login"),
@@ -34,6 +36,7 @@ export default function user(state = initialState, action) {
                 token   : ''
             };
         default:
+
             return state;
     }
 
