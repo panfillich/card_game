@@ -191,11 +191,22 @@ class Sessions{
         });
     }
 
+    // Получить сессию стороннего пользователя, если он онлайн
+    getSessionById(userId, callback){
+        let client = this.client;
+        const USER_KEY = [USER_PREFIX, userId].join(':');
+        client.hgetall('hgetall', function (err, res) {
+            if (err) {
+                callback(err, null);
+            }
+            callback(null, res);
+        });
+    }
+
     // Установить параметры в сессию
     setParamsInSession(userId, token_hash, params, callback){
         let client = this.client;
         const USER_KEY = [USER_PREFIX, userId].join(':');
-        console.log(USER_KEY);
         const TOKEN_KEY = [TOKEN_PREFIX, token_hash].join(':');
         let hmset = ['hmset', USER_KEY];
 
@@ -205,7 +216,6 @@ class Sessions{
                 hmset.push(params[param_name]);
             }
         }
-        console.log(hmset);
         client.multi([
             hmset,
             ['expire', USER_KEY, LIFETIME],
@@ -214,10 +224,13 @@ class Sessions{
             if (err) {
                 callback(err, null);
             } else if (res[0] != 'OK') {
-                console.log(res);
-                callback(new Error("Error in RAM: can't set new params session"), null);
+                if(callback) {
+                    callback(new Error("Error in RAM: can't set new params session"), null);
+                }
             } else {
-                callback(null, true);
+                if(callback) {
+                    callback(null, true);
+                }
             }
         });
     }

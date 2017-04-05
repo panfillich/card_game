@@ -1,84 +1,99 @@
 let io          = require('../io');
+
 let Session     = require('../../models/sessions');
+let Friends     = require('../../models/friends');
+
 let connect     = require('../../redis/connect');
 
-class User{
-    constructor(id){
-        this.is_auth = false;
-        this.chat_id = 0;
-        this.status = {};
-        this.friends = {};
-    }
-}
+// 10.1 минуты
+// Время, после которого проверяем токен
+const MAIN_TIME  = 606000;
+
+// Если токен найден, но чат неактивен (что странно, но бывает)
+// Уменьшаем интервалы проверок до 30 секунд
+const DETAIL_TIME = 500;
+
+
+
 
 let users = [];
 
-
-let client1  = connect();
-let client2  = connect();
-
-let client_id = '';
-
-
-client1.on('pmessage', function(pattern, channel, message) {
-    client2.get('tester', function (err,  data) {
-        console.log(err);
-        console.log(data);
-    });
-    var room = channel.split(":");
-
-    //io.sockets.connected[client_id].emit('message', {111:'test'});
-    // client2.hgetall(msg, function(err, res) {
-    //     res.key = msg;
-    //     io.sockets.emit(res);
-    // });
-});
-
-//https://toster.ru/q/79184
-client1.psubscribe('chat:*', 'test:*');
-
-
+let checkTokenTimer;
 io.on('connection', function(client) {
+    function logout() {
+        client.emit('logout', "token is invalid");
+        console.log('logout');
+        client.disconnect();
+    }
+
     // Проверяем токен
     var token = client.request._query.token;
 
     // Параметра нет - отключаем
     if(!token){
-        client.disconnect();
-        return;
+        return logout();
     }
 
     // Токен есть, робим валидацию
     // Для начала длинну
     if(token.length!=128){
-        client.disconnect();
-        return;
+        return logout();
     }
 
     // Теперь находим пользователя с таким токеном
-    Session.getSession(token, function (err, res) {
+    Session.getSession(token, function (err, user) {
         if(err){
-            return client.disconnect();
+            return logout();
         }
 
-        if(!res){
-             return client.disconnect();
+        if(!user){
+            return logout();
         }
 
-        if(token!=res.token){
-            return client.disconnect();
+        if(token!=user.token){
+            return logout();
         }
+
+        // Устанавливаем состояние пользователя в сессию
+        Session.setParamsInSession(user.userId, user.token, {status:'ENTER'});
 
         // Нашли пользователя, теперь подтягиваем его друзей
-        console.log(res);
+        Friends.getAllFriends({userId: user.userId}, function (err, friends) {
+            if(err){
+                return logout();
+            }
 
+            if(friends){
+                // Формируем адекватный список так как пользователю не нужно знать IDs друзей
+                let friend_list_for_client = [];
+                friends.forEach(function (friend) {
+                    friend_list_for_client.push({
+                        createdAt : friend.createdAt,
+                        login :  friend.login,
+                        recordId : friend.recordId
+                    });
+                });
 
-        // return next();
+                // Отправляем этот список
+                client.emit('friend:list', friend_list_for_client);
+
+                // Узнаем статуса друзей (асинхронно)
+                friends.forEach(function (friend) {
+                    Session.getSessionById(friend.recordId, function (err, res) {
+                       if(!err && res){
+                           if(res.status){
+                               client.emit('friend:status', friend_list_for_client);
+                           }
+                       }
+                    });
+                });
+            }
+        });
     });
 
     // заголовок есть - проверяем длинну
 
-    client2.publish('chat:222:222', 'message2');
+    /*client2.publish('chat:222:222', 'message2');
 
     console.dir(client.id);
     console.log('Client connected...');
@@ -109,7 +124,7 @@ io.on('connection', function(client) {
 
     client.on('disconnect', function () {
         console.log('user disconnected');
-    });
+    });*/
 });
 
 /*io.sockets.on('connection', function (socket) {
@@ -128,3 +143,28 @@ io.on('connection', function(client) {
     });
 
 });*/
+
+
+
+let client1  = connect();
+let client2  = connect();
+
+let client_id = '';
+
+
+client1.on('pmessage', function(pattern, channel, message) {
+    client2.get('tester', function (err,  data) {
+        console.log(err);
+        console.log(data);
+    });
+    var room = channel.split(":");
+
+    //io.sockets.connected[client_id].emit('message', {111:'test'});
+    // client2.hgetall(msg, function(err, res) {
+    //     res.key = msg;
+    //     io.sockets.emit(res);
+    // });
+});
+
+//https://toster.ru/q/79184
+client1.psubscribe('chat:*', 'test:*', 'token:*');

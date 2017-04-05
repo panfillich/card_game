@@ -19,7 +19,6 @@ if(localStorage.is_local_storage) {
 }
 
 export default function user(state = initialState, action) {
-
     switch(true){
         case action.type == 'LOGIN':
             return {

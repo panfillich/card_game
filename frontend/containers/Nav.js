@@ -7,6 +7,7 @@ import NavLink          from '../components/NavLink'
 import ShowCloseButton  from '../components/Chat/ShowCloseButton'
 import LangAction       from '../actions/LangAction'
 import UserAction       from '../actions/UserAction'
+import API              from '../actions/API'
 
 
 class Nav extends React.Component {
@@ -35,6 +36,10 @@ class Nav extends React.Component {
         let { logout } = this.props;
         logout();
         browserHistory.push('/auth');
+    }
+
+    componentWillMount(){
+        API.chat.setAction(API.chat.ACTION_CONSTS.LOGOUT, this.logout);
     }
 
     render(){
