@@ -195,7 +195,7 @@ class Sessions{
     getSessionById(userId, callback){
         let client = this.client;
         const USER_KEY = [USER_PREFIX, userId].join(':');
-        client.hgetall('hgetall', function (err, res) {
+        client.hgetall(USER_KEY, function (err, res) {
             if (err) {
                 callback(err, null);
             }

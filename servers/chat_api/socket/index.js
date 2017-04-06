@@ -60,7 +60,7 @@ io.on('connection', function(client) {
         // Нашли пользователя, теперь подтягиваем его друзей
         Friends.getAllFriends({userId: user.userId}, function (err, friends) {
             if(err){
-                return logout();
+                return;
             }
 
             if(friends){
@@ -79,13 +79,38 @@ io.on('connection', function(client) {
 
                 // Узнаем статуса друзей (асинхронно)
                 friends.forEach(function (friend) {
-                    Session.getSessionById(friend.recordId, function (err, res) {
+                    Session.getSessionById(friend.userId, function (err, res) {
                        if(!err && res){
                            if(res.status){
-                               client.emit('friend:status', friend_list_for_client);
+                               client.emit('friend:status', {
+                                   status: res.status,
+                                   recordId: friend.recordId
+                               });
                            }
                        }
                     });
+                });
+
+                // Навешиваем события от пользователя
+
+                // Пользователь послал сообщение
+                client.on('friend:message', function (data) {
+
+                });
+
+                // Пользователь изменит статус
+                client.on('friends:status', function (data) {
+
+                });
+
+                // Пользователь удалил друга
+                client.on('friend:del', function (data) {
+
+                });
+
+                // Пользователь пытается добавить нового друга
+                client.on('friend:add', function (data) {
+
                 });
             }
         });
