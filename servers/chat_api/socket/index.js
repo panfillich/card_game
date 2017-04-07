@@ -3,7 +3,14 @@ let io          = require('../io');
 let Session     = require('../../models/sessions');
 let Friends     = require('../../models/friends');
 
-let connect     = require('../../redis/connect');
+let redis_client= require('../../redis/client');
+
+let Users       = require('./users');
+
+let statuses    = require('./status');
+
+//Все события redis обрабатываются тут
+require('./redis_event');
 
 // 10.1 минуты
 // Время, после которого проверяем токен
@@ -55,12 +62,12 @@ io.on('connection', function(client) {
         }
 
         // Устанавливаем состояние пользователя в сессию
-        Session.setParamsInSession(user.userId, user.token, {status:'ENTER'});
+        Session.setParamsInSession(user.userId, user.token, {status: statuses.ONLINE});
 
         // Нашли пользователя, теперь подтягиваем его друзей
         Friends.getAllFriends({userId: user.userId}, function (err, friends) {
             if(err){
-                return;
+                friends = [];
             }
 
             if(friends){
@@ -90,29 +97,41 @@ io.on('connection', function(client) {
                        }
                     });
                 });
-
-                // Навешиваем события от пользователя
-
-                // Пользователь послал сообщение
-                client.on('friend:message', function (data) {
-
-                });
-
-                // Пользователь изменит статус
-                client.on('friends:status', function (data) {
-
-                });
-
-                // Пользователь удалил друга
-                client.on('friend:del', function (data) {
-
-                });
-
-                // Пользователь пытается добавить нового друга
-                client.on('friend:add', function (data) {
-
-                });
             }
+
+            // создаем нового пользователя
+            Users.createNewUser({
+                user: user,
+                friends: friends,
+                clientId: client.id
+            });
+
+            // Пользователь послал сообщение
+            client.on('friend:message', function (data) {
+                // Проверяем есть ли у него такой друг
+
+            });
+
+            // Пользователь изменит статус
+            client.on('friends:status', function (data) {
+
+            });
+
+            // Пользователь удалил друга
+            client.on('friend:del', function (data) {
+
+            });
+
+            // Пользователь пытается добавить нового друга
+            client.on('friend:add', function (data) {
+
+            });
+
+            // Отключили пользователя
+            client.on('disconnect', function () {
+                console.log('user disconnected');
+            });
+
         });
     });
 
@@ -168,28 +187,3 @@ io.on('connection', function(client) {
     });
 
 });*/
-
-
-
-let client1  = connect();
-let client2  = connect();
-
-let client_id = '';
-
-
-client1.on('pmessage', function(pattern, channel, message) {
-    client2.get('tester', function (err,  data) {
-        console.log(err);
-        console.log(data);
-    });
-    var room = channel.split(":");
-
-    //io.sockets.connected[client_id].emit('message', {111:'test'});
-    // client2.hgetall(msg, function(err, res) {
-    //     res.key = msg;
-    //     io.sockets.emit(res);
-    // });
-});
-
-//https://toster.ru/q/79184
-client1.psubscribe('chat:*', 'test:*', 'token:*');

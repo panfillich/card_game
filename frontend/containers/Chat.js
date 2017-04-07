@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 
 import API from '../actions/API'
 import RightSideAction  from '../actions/RightSideAction'
+import ChatActions from '../actions/ChatActions'
+
 import CloseButton from '../components/Chat/CloseButton'
 import Friends from '../components/Chat/Friends'
 
@@ -22,6 +24,8 @@ class Chat extends Component {
     }
 
     render() {
+
+        this.props.addFriendMessage(3,12);
 
         const { lang, user } = this.props;
 
@@ -174,12 +178,14 @@ function mapStateToProps(state) {
     return {
         user: state.user,
         lang: state.lang
+
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        closeChat : bindActionCreators(RightSideAction.closeChat, dispatch)
+        closeChat : bindActionCreators(RightSideAction.closeChat, dispatch),
+        addFriendMessage : bindActionCreators(ChatActions.addFriendMessage, dispatch),
     }
 }
 
