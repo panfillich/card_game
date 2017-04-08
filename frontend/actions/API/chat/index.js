@@ -1,6 +1,7 @@
 let socket_io_client = require('socket.io-client');
 import ACTION_CONSTS    from './action_consts'
 
+
 // const SERVER = 'http://localhost:3004/priv-api';
 const SERVER    = 'http://localhost:3004';
 const DEBUG     = true;
