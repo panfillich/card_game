@@ -5,9 +5,11 @@ export default function (URL, CONFIG, callback) {
                 case 200:
                     return res.json();
                 case 404:
-                    return Promise.reject('not_found');
+                    return Promise.reject(new Error('not_found'));
                 case 403:
-                    return Promise.reject('forbidden');
+                    return Promise.reject(new Error('forbidden'));
+                default:
+                    return Promise.reject(new Error('server_error'));
             }
         }
         return Promise.reject('serv_error');

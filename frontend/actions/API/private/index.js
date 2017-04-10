@@ -7,8 +7,14 @@ const SERVER = 'http://localhost:3000/priv-api';
 
 class Private{
     // Получить информацию по конкретному пользователю
-    static me(callback){
+    static getUserInfo(callback){
         const URL = SERVER +'/user/me';
+
+        // get token from local storage
+        const TOKEN = getToken();
+        if(!TOKEN){
+            return callback(new Error('invalid_token'),null)
+        }
 
         const CONFIG = {
             method: 'GET',

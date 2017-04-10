@@ -2,10 +2,47 @@ import LoaderAction from  './LoaderAction';
 import localStorage from './LocalStorage';
 import API from './API'
 
+function checkToken(token) {
+    return function (dispatch, getState) {
+        if(localStorage.is_local_storage) {
+            if (localStorage.getItem("login") !== null) {
+                const TOKEN = localStorage.getItem("token")
+                const LOGIN = localStorage.getItem("login");
+
+                let message = getState().lang.auth.loading_message;
+                dispatch(LoaderAction.startLoading(message));
+                API.private.getUserInfo(function (err, res) {
+                    if(!err){
+                        if(localStorage.is_local_storage) {
+                            if (localStorage.getItem("login") !== null) {
+                                const TOKEN = localStorage.getItem("token")
+                                const LOGIN = localStorage.getItem("login");
+                                API.chat.connect(localStorage.getItem("token"));
+                                dispatch({
+                                    type  :'LOGIN',
+                                    params : {
+                                        login   : LOGIN,
+                                        token   : TOKEN
+                                    },
+                                });
+                            }
+                        }
+                    } else {
+                        if (localStorage.is_local_storage) {
+                            localStorage.clear();
+                        }
+                    }
+                    dispatch(LoaderAction.finishLoading());
+                });
+            }
+        }
+    }
+}
 
 function authentication(param) {
     return function (dispatch, getState) {
-        dispatch(LoaderAction.startLoading());
+        let message = getState().lang.auth.loading_message;
+        dispatch(LoaderAction.startLoading(message));
         API.public.auth({
                 'login'    : param.login,
                 'password' : param.password
@@ -18,6 +55,7 @@ function authentication(param) {
                         localStorage.setItem('login', LOGIN);
                         localStorage.setItem('token', TOKEN);
                     }
+                    API.chat.connect(TOKEN);
                     dispatch({
                         type  :'LOGIN',
                         params : {
@@ -25,8 +63,8 @@ function authentication(param) {
                             token   : TOKEN
                         },
                     });
-                    API.chat.connect(res.token.token);
                 }else {
+                    //Вывод ошибки, т.к. пользователь не найден (по разным причинам)
 
                 }
                 dispatch(LoaderAction.finishLoading());
@@ -48,6 +86,7 @@ function logout() {
 
 export default {
     logout: logout,
-    authentication: authentication
+    authentication: authentication,
+    checkToken: checkToken
 }
 

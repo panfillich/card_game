@@ -82,7 +82,16 @@ class Auth extends Component {
         }
     }
 
+
+
     render() {
+        let user = this.props.user;
+        if(user.is_auth){
+            browserHistory.push('/');
+            return (<div></div>);
+        }
+
+
         const lang = this.props.lang.auth;
 
         let email  = this.form.fields.email;
@@ -163,14 +172,13 @@ class Auth extends Component {
 
 function mapStateToProps(state) {
     return {
-        lang: state.lang
+        lang: state.lang,
+        user: state.user
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        startLoading  : bindActionCreators(Loader.startLoading, dispatch),
-        finishLoading : bindActionCreators(Loader.finishLoading, dispatch),
         userAuthentication : bindActionCreators(User.authentication, dispatch)
     }
 }

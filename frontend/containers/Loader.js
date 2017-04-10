@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import classnames from 'classnames'
 
 class Loader extends Component {
     constructor(props){
@@ -13,8 +14,23 @@ class Loader extends Component {
 
     render() {
         const { lang, loader } = this.props;
+
+        let class_background = {
+            "modal-backdrop" : false,
+            "in" : false
+        };
+
+        let style = {};
+
+        if(loader.is_loading){
+            class_background["modal-backdrop"] = true;
+            class_background["in"] = true;
+            style = {display:"block"}
+        }
+
         return(
-            <div id="loader" className="modal">
+            <div className={classnames(class_background)}>
+            <div id="loader" className="modal" style={style}>
                 <div className="modal-block">
                 <div className="loader-centre">
                 <div className="loader-container">
@@ -30,6 +46,7 @@ class Loader extends Component {
                 </div>
                 </div>
                 </div>
+            </div>
             </div>
         );
     }

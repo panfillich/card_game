@@ -2,7 +2,10 @@ import localStorage from '../LocalStorage';
 
 export default function () {
     if(localStorage.is_local_storage) {
-        return localStorage.getItem('token');
+        const TOKEN = localStorage.getItem('token');
+        if(TOKEN){
+            return TOKEN;
+        }
     }
-    return '';
+    return false;
 }

@@ -9,26 +9,37 @@ const initialState = {
 
 export default function chat(state = initialState, action) {
     switch (action.type) {
-        case CHAT.LOG_IN_CHAT :
-            state.status = 'ONLINE';
-            state.is_connect = true;
-            break;
 
-        case CHAT.SET_NEW_FRIENDS_STATE:
-            state.friends = action.friends;
-            break;
+        /*case CHAT.CHAT_CONNECT :
+            return {
+                is_connect : true,
+                status : 'ONLINE',
+                friends : []
+            };*/
 
-        case CHAT.CHANGE_MY_STATUS:
-            state.status = action.status;
-            break;
+        case CHAT.CHAT_SET_NEW_FRIENDS_STATE:
+            return {
+                 is_connect : state.is_connect,
+                 status     : state.status,
+                 friends    : action.friends
+            };
 
-        case CHAT.LOG_OUT_FROM_CHAT :
-            state.status = 'OFFLINE';
-            state.is_connect = false;
-            break;
+        case CHAT.CHAT_CHANGE_USER_STATUS:
+            return {
+                status      : action.status,
+                is_connect  : state.is_connect,
+                friends     : action.friends
+            };
+
+
+        case CHAT.CHAT_LOG_OUT :
+            return {
+                is_connect  : false,
+                status      : 'OFFLINE',
+                friends     : []
+            };
         default:
-            break;
+            return state;
     }
-    return state;
 }
 

@@ -8,6 +8,7 @@ import ChatActions from '../actions/ChatActions'
 
 import CloseButton from '../components/Chat/CloseButton'
 import Friends from '../components/Chat/Friends'
+import Message from '../components/Chat/Messages'
 
 class Chat extends Component {
 
@@ -123,20 +124,7 @@ class Chat extends Component {
 
                     </nav>
                 </div>
-                <div id="chat">
-                    <div className="chat-widget" style={{
-                        "margin-top":"7px", "margin-bottom":"7px",
-                        "border":"1px solid white",
-                        "overflow-y": "auto","width": "auto", "height": "300px"
-                    }}>
-                        <div style={{"margin-right":"7px"}}>
-                            <ul className="list-group">
-                                {html_users}
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
+                <Message />
                 <div className="portlet-footer">
                     <form role="form">
                         <div className="btn-group" style={{width:"100%"}}>

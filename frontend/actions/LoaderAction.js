@@ -1,5 +1,5 @@
 function startLoading(message) {
-    $('#loader').modal('show');
+    // $('#loader').modal('show');
     return {
         type: 'START_LOADING',
         message: message
@@ -7,7 +7,7 @@ function startLoading(message) {
 }
 
 function finishLoading() {
-    $('#loader').modal('hide');
+    // $('#loader').modal('hide');
     return {
         type: 'STOP_LOADING'
     }

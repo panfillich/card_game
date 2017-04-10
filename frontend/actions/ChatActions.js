@@ -3,7 +3,7 @@ import CHAT from '../constants/Chat'
 
 function _setFriends(friends) {
     return {
-        type: CHAT.SET_NEW_FRIENDS_STATE,
+        type: CHAT.CHAT_SET_NEW_FRIENDS_STATE,
         friends: friends
     }
 }
@@ -31,7 +31,7 @@ function setStateFriendsToOffline(){
         friends.forEach(function (friend) {
             friend.status = 'OFFLINE';
         });
-        return  dispatch(_setFriends(friends));
+        dispatch(_setFriends(friends));
     }
 }
 
@@ -54,7 +54,7 @@ function setActualFriendList(new_friends) {
                 }
             }
         });
-        return _setFriends(new_friends);
+        dispatch(_setFriends(new_friends));
     }
 }
 
@@ -80,29 +80,33 @@ function changeFriendStatus(recordId, status) {
 
 function changeMyStatus(status) {
     return {
-        type: CHAT.CHANGE_MY_STATUS,
+        type: CHAT.CHAT_CHANGE_USER_STATUS,
         status: status
     }
 }
 
+// Выходим из профиля пользователя
 function logOut() {
+    return {
+        type: CHAT.CHAT_LOG_OUT
+
+    }
+}
+
+// При потере связи с сервером
+function disconnect() {
     return function (dispatch, getState) {
         let friends = getState().chat.friends;
         friends.forEach(function (friend) {
             friend.status = 'OFFLINE';
         });
         return {
-            type: CHAT.LOG_OUT_FROM_CHAT,
+            type: CHAT.CHAT_SET_NEW_FRIENDS_STATE,
             friends : friends
         }
     }
 }
 
-function logIn() {
-    return {
-        type: CHAT.LOG_IN_CHAT
-    }
-}
 
 export default {
     addFriendMessage: addFriendMessage,
@@ -112,5 +116,5 @@ export default {
     setStateFriendsToOffline :setStateFriendsToOffline,
     setActualFriendList : setActualFriendList,
     logOut: logOut,
-    logIn: logIn
+    disconnect: disconnect
 }
