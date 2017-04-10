@@ -29,7 +29,6 @@ export default function chat(state = initialState, action) {
         default:
             break;
     }
-    console.log(state)
     return state;
 }
 

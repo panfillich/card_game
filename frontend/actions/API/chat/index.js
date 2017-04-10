@@ -43,7 +43,9 @@ class Chat{
     }
 
     disconnect(){
-        this.client.io.disconnect();
+        if(this.client) {
+            this.client.io.disconnect();
+        }
     }
 
     reconnect(){

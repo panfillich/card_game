@@ -87,7 +87,6 @@ function changeMyStatus(status) {
 
 function logOut() {
     return function (dispatch, getState) {
-        console.log(getState());
         let friends = getState().chat.friends;
         friends.forEach(function (friend) {
             friend.status = 'OFFLINE';

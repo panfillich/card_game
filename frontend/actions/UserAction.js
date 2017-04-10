@@ -1,22 +1,40 @@
+import LoaderAction from  './LoaderAction';
 import localStorage from './LocalStorage';
 import API from './API'
 
-function login(param) {
 
-    API.chat.connect(param.token);
+function authentication(param) {
+    return function (dispatch, getState) {
+        dispatch(LoaderAction.startLoading());
+        API.public.auth({
+                'login'    : param.login,
+                'password' : param.password
+            }, (err, res) => {
+                if(!err){
+                    const TOKEN = res.detail.token;
+                    const LOGIN = res.detail.login;
 
-    if(localStorage.is_local_storage) {
-        localStorage.setItem('login', param.login);
-        localStorage.setItem('token', param.token);
-    }
-    return {
-        type  :'LOGIN',
-        params : {
-            login   : param.login,
-            token   : param.token
-        },
+                    if(localStorage.is_local_storage) {
+                        localStorage.setItem('login', LOGIN);
+                        localStorage.setItem('token', TOKEN);
+                    }
+                    dispatch({
+                        type  :'LOGIN',
+                        params : {
+                            login   : LOGIN,
+                            token   : TOKEN
+                        },
+                    });
+                    API.chat.connect(res.token.token);
+                }else {
+
+                }
+                dispatch(LoaderAction.finishLoading());
+            }
+        );
     }
 }
+
 
 function logout() {
     API.chat.disconnect();
@@ -30,6 +48,6 @@ function logout() {
 
 export default {
     logout: logout,
-    login:  login
+    authentication: authentication
 }
 

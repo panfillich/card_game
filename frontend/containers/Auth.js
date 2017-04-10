@@ -58,7 +58,7 @@ class Auth extends Component {
 
         if(is_valid) {
             // Запускаем отображение процесса загрузки + блокируем экран
-            const {lang, startLoading, finishLoading, login} = this.props;
+           /* const {lang, startLoading, finishLoading, login} = this.props;
 
             startLoading(lang.auth.loading_message);
             API.public.auth({
@@ -74,7 +74,11 @@ class Auth extends Component {
                     }
                     finishLoading();
                 }
-            );
+            );*/
+            this.props.userAuthentication({
+                'login'    : this.form.fields.email.param.value,
+                'password' : this.form.fields.pass.param.value
+            });
         }
     }
 
@@ -167,7 +171,7 @@ function mapDispatchToProps(dispatch) {
     return {
         startLoading  : bindActionCreators(Loader.startLoading, dispatch),
         finishLoading : bindActionCreators(Loader.finishLoading, dispatch),
-        login         : bindActionCreators(User.login, dispatch),
+        userAuthentication : bindActionCreators(User.authentication, dispatch)
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);
