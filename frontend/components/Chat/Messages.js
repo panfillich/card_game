@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 class Messages extends Component {
-
     constructor(props){
         super(props);
 
@@ -27,7 +26,6 @@ class Messages extends Component {
         }
         return false;
     }
-
 
     render() {
         let html_messages = [];
@@ -62,7 +60,6 @@ class Messages extends Component {
             </div>
         );
     }
-
 }
 
 function mapStateToProps(state) {

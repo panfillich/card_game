@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
+import SortFilter from './SortFilter'
+
 class Friends extends Component {
     render() {
         let friends = this.props.chat.friends;
@@ -15,14 +17,16 @@ class Friends extends Component {
         });
 
         return (
-            <div style={{ "overflow-y": "auto","width": "auto", "height": "150px"}}>
-            <div style={{"margin-right":"7px"}}>
-            <ul className="list-group">
-                {html_friends}
-            </ul>
+            <div>
+                <SortFilter />
+                <div style={{ "overflow-y": "auto","width": "auto", "height": "150px"}}>
+                    <div style={{"margin-right":"7px"}}>
+                        <ul className="list-group">
+                            {html_friends}
+                        </ul>
+                    </div>
+                </div>
             </div>
-            </div>
-
         );
     }
 

@@ -25,6 +25,8 @@ function _addMessage(recordId, message, type) {
     }
 }
 
+
+
 function setStateFriendsToOffline(){
     return function (dispatch, getState) {
         let friends = getState().chat.friends;
