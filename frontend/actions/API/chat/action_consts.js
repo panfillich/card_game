@@ -9,7 +9,7 @@ const ACTION_CONSTS= {
     // Изменение статуса 1-го конкретного друга
     FRIEND_STATUS: 'friend:status',
     // Сообщение от 1-го конкретного пользователя
-    MESSAGE: 'friend:message'
+    MESSAGE: 'message'
 }
 
 export default ACTION_CONSTS;

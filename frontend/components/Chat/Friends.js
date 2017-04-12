@@ -11,7 +11,7 @@ class Friends extends Component {
         friends.forEach(function (friend) {
             html_friends.push(
                 <li className="list-group-item justify-content-between">
-                    {friend.login} ({friend.status})
+                    ({friend.unread_messages}) {friend.login} ({friend.status})
                 </li>
             );
         });

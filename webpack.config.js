@@ -72,12 +72,13 @@ module.exports = {
          chunks: ["home", "chat"],
          minChunks: 2 //Т.е. берем общий код не из всех а хотябы из 2х
          }),
+        */
 
          //--Делаем обустификацию кода
-         new JavaScriptObfuscator({
-            rotateUnicodeArray: false
-         })
-         */
+         // new JavaScriptObfuscator({
+         //    rotateUnicodeArray: false
+         // })
+
     ],
 
     //ES7(ES2016) to ES6(ES2015)

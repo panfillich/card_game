@@ -1,6 +1,4 @@
 import Chat from './index'
-import ChatAction from './../../ChatActions'
-import ACTION from './action_consts'
 
 export  default function (store) {
     Chat.setAction(ACTION.CONNECT, function () {
@@ -20,6 +18,8 @@ export  default function (store) {
     });
 
     Chat.setAction(ACTION.MESSAGE, function (data) {
-        store.dispatch(ChatAction.addFriendMessage(data.recordId, data.message));
+        store.dispatch(ChatAction.addFriendMessage(
+            data.type, data.recordId, data.time, data.text
+        ));
     })
 }

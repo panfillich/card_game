@@ -1,6 +1,7 @@
 import CHAT from '../constants/Chat'
 
 const initialState = {
+    action_type : '',
     is_connect : false,
     status : 'OFFLINE',
     friends : []
@@ -9,35 +10,36 @@ const initialState = {
 
 export default function chat(state = initialState, action) {
     switch (action.type) {
-
-        /*case CHAT.CHAT_CONNECT :
-            return {
+        case "CONNECT":
+            return Object.assign({}, state, {
+                action_type: action.type,
                 is_connect : true,
                 status : 'ONLINE',
-                friends : []
-            };*/
+                friends: action.friends
+            });
 
-        case CHAT.CHAT_SET_NEW_FRIENDS_STATE:
-            return {
-                 is_connect : state.is_connect,
-                 status     : state.status,
-                 friends    : action.friends
-            };
+        case "DISCONNECT":
+            return Object.assign({}, state, {
+                action_type: action.type,
+                is_connect : false,
+                status : 'OFFLINE',
+                friends: action.friends
+            });
 
-        case CHAT.CHAT_CHANGE_USER_STATUS:
-            return {
-                status      : action.status,
-                is_connect  : state.is_connect,
-                friends     : action.friends
-            };
+        case "CHANGE_USER_STATUS":
+            return Object.assign({}, state, {
+                status : action.status
+            });
 
+        case "LOGOUT":
+            return initialState;
 
-        case CHAT.CHAT_LOG_OUT :
-            return {
-                is_connect  : false,
-                status      : 'OFFLINE',
-                friends     : []
-            };
+        case "CHANGE_FRIEND_LIST":
+            return Object.assign({}, state, {
+                action_type: action.action_type,
+                friends: action.friends
+            });
+
         default:
             return state;
     }

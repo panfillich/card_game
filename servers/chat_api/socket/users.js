@@ -55,7 +55,7 @@ class Users{
     }
 
     // пользователь отправил сообщение (отправитель получатель сообщение)
-    sendMessage(sender_userId, recipient_userId, message){
+    sendMessage(type, recipient_userId, sender_userId, text, time){
         // Проверяем наличие получателя
         let User = this.users['u'+recipient_userId];
         if(!User){
@@ -71,7 +71,12 @@ class Users{
 
         // Отправляем сообщение
         User.clientIds.forEach(function (clientId) {
-            io.sockets.connected[clientId].emit('friend:message', {recordId: recordId, message: message});
+            io.sockets.connected[clientId].emit('message', {
+                type: type,
+                recordId: recordId,
+                text: text,
+                time: time
+            });
         });
     }
 }
