@@ -1,16 +1,21 @@
 import React, { Component } from 'react'
+import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
 
 import SortFilter from './SortFilter'
+import ChatAction from '../../actions/ChatActions'
 
 class Friends extends Component {
+
     render() {
         let friends = this.props.chat.friends;
+        let setFriend = this.props.setFriend;
 
         let html_friends = [];
-        friends.forEach(function (friend) {
+        friends.forEach(function(friend){
             html_friends.push(
-                <li className="list-group-item justify-content-between">
+                <li className="list-group-item justify-content-between list-group-item-action list-group-item-success"
+                    onClick={function(){setFriend(friend.recordId)}}>
                     ({friend.unread_messages}) {friend.login} ({friend.status})
                 </li>
             );
@@ -40,8 +45,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        // changeLanguage  : bindActionCreators(LangAction.changeLanguage, dispatch),
-        // logout          : bindActionCreators(UserAction.logout, dispatch)
+        setFriend  : bindActionCreators(ChatAction.Client.setFriend, dispatch)
     }
 }
 

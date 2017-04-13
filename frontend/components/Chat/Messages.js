@@ -6,42 +6,55 @@ class Messages extends Component {
         super(props);
 
         this.state = {
-            friend: false
+            recordId: 0
         };
 
-        this.setFriends = this.setFriends.bind(this);
+        this.getFriend = this.getFriend.bind(this);
     }
 
-    setFriends(recordId){
+    getFriend(){
         let friends = this.props.chat.friends;
-
-
-        for(let i; i<friends.length; i++){
-            if(friends[i].recordId == recordId){
-                this.setState({
-                    friend: friends[i]
-                });
-                return true;
+        for(let i = 0; i<friends.length; i++){
+            let friend = friends[i];
+            console.log(friend);
+            if(friend.is_selected){
+                return friend;
             }
         }
         return false;
     }
 
     render() {
-        let html_messages = [];
-        if(!this.state.friend){
-            if(this.props.chat.friends.length > 0){
-                this.state.friend = this.props.chat.friends[0];
-            }
-        } else {
-            this.state.friend.messages.forEach(function (message) {
-                html_messages.push(
-                    <li className="list-group-item justify-content-between">
-                        {message.text}
-                    </li>
-                );
-            });
+        let {user} = this.props;
+
+        if(!user.is_auth){
+            return null;
         }
+
+        let friend = this.getFriend();
+        let html_messages = [];
+        if(friend) {
+            if(friend.messages.length > 0) {
+                let friend_login = friend.login;
+                let user_login  = user.login;
+
+                friend.messages.forEach(function (message) {
+                    let login = '';
+                    if(message.type == 'self') {
+                        login = user_login;
+                    } else if(message.type == 'friend'){
+                        login = friend_login;
+                    }
+
+                    html_messages.push(
+                        <li className="list-group-item justify-content-between">
+                            {message.date} : {login} <br />{message.text}
+                        </li>
+                    );
+                });
+            }
+        }
+
 
         return (
             <div id="chat">
@@ -64,17 +77,11 @@ class Messages extends Component {
 
 function mapStateToProps(state) {
     return {
+        user: state.user,
         chat: state.chat
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        // changeLanguage  : bindActionCreators(LangAction.changeLanguage, dispatch),
-        // logout          : bindActionCreators(UserAction.logout, dispatch)
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Messages);
+export default connect(mapStateToProps)(Messages);
 
 

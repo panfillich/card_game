@@ -11,10 +11,10 @@ class Client{
             let  new_friends = _.cloneDeep(friends);
 
             new_friends.forEach(function (new_friend) {
-                new_friend.unread_messages = 0;
                 new_friend.is_selected = false;
                 if(new_friend.recordId == recordId){
                     new_friend.is_selected = true;
+                    new_friend.unread_messages = 0;
                 }
             });
 
@@ -71,7 +71,7 @@ class FromServer{
         return function (dispatch, getState) {
             switch (true){
                 // Сообщение пользователя и его друзей
-                case (['user', 'friend'].indexOf(type)!= -1) :
+                case (['self', 'friend'].indexOf(type)!= -1) :
                     let friends = getState().chat.friends;
                     let new_friends = _.cloneDeep(friends);
 
