@@ -16,7 +16,6 @@ class Messages extends Component {
         let friends = this.props.chat.friends;
         for(let i = 0; i<friends.length; i++){
             let friend = friends[i];
-            console.log(friend);
             if(friend.is_selected){
                 return friend;
             }

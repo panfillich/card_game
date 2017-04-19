@@ -49,7 +49,6 @@ class ToServer{
     }
 }
 
-console.log(_.now());
 
 // Ответы сервера
 class FromServer{

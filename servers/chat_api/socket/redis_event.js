@@ -17,19 +17,27 @@ sub_client.on('pmessage', function(pattern, channel, str_data) {
     var room = channel.split(":");
 
     switch(room[0]){
+        // redis-cli: publish message:friend:1:2 '{"text":"test", "time": 1492590630153}'
+        // redis-cli: publish message:self:1     '{"text":"test", "time": 1492590630153}'
         case 'message':
             const TYPE = room[1];
 
             // Сообщение от друга
-            if(TYPE == 'friend'){
-                const RECIPIENT_USER_ID = room[2];
-                const SENDER_USER_ID    = room[3];
+            if(TYPE == 'private'){
                 const data = JSON.parse(str_data);
-                Users.sendMessage(TYPE, RECIPIENT_USER_ID, SENDER_USER_ID, data.text, data.time);
+                Users.sendMessage(TYPE, {
+                    recipient_userId : room[2],
+                    sender_userId : room[3],
+                    text:   data.text,
+                    time:   data.time
+                });
             }
 
-
+        // redis-cli: publish status:2 'ONLINE'
+        // redis-cli: publish status:2 'OFFLINE'
         case 'status':
+            const USER_ID = Number(room[1]);
+            Users.changeStatus(USER_ID, str_data);
     }
 
 
