@@ -124,27 +124,6 @@ class FromServer{
 
     }
 
-    // Пользователю послали сообщение
-    static sendMessageToUser(recordId, message){
-        return function (dispatch, getState) {
-            let friends = getState().chat.friends;
-            for (let i = 0; i < friends.length; i++) {
-                if (friends[i].recordId == recordId) {
-                    let date = new Date();
-                    friends[i].messages.push({
-                        type: 'FRIEND',
-                        date: date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds(),
-                        text: message
-                    });
-                    return dispatch({
-                        type: "CHANGE_FRIEND_LIST",
-                        friends: new_friends
-                    });
-                }
-            }
-        }
-    }
-
 
     /*--ДЕЙСТВИЯ ИНЫХ ПОЛЬЗОВАТЕЛЕЙ--*/
 

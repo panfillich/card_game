@@ -1,13 +1,13 @@
+let _           = require('lodash');
+
 let io          = require('../io');
 
 let Session     = require('../../models/sessions');
 let Friends     = require('../../models/friends');
 
 let redis_client= require('../../redis/client');
-
 let Users       = require('./users');
 
-let statuses    = require('./status');
 
 //Все события redis обрабатываются тут
 require('./redis_event');
@@ -19,9 +19,6 @@ const MAIN_TIME  = 606000;
 // Если токен найден, но чат неактивен (что странно, но бывает)
 // Уменьшаем интервалы проверок до 30 секунд
 const DETAIL_TIME = 500;
-
-
-
 
 let users = [];
 
@@ -61,11 +58,14 @@ io.on('connection', function(client) {
             return logout();
         }
 
+        const USER_ID = user.userId;
+        const TOKEN = user.token;
+
         // Устанавливаем состояние пользователя в сессию
-        Session.setParamsInSession(user.userId, user.token, {status: statuses.ONLINE});
+        Session.setParamsInSession(USER_ID, TOKEN, {status: 'ONLINE'});
 
         // Нашли пользователя, теперь подтягиваем его друзей
-        Friends.getAllFriends({userId: user.userId}, function (err, friends) {
+        Friends.getAllFriends({userId: USER_ID}, function (err, friends) {
             if(err){
                 friends = [];
             }
@@ -76,8 +76,8 @@ io.on('connection', function(client) {
                 friends.forEach(function (friend) {
                     friend_list_for_client.push({
                         createdAt : friend.createdAt,
-                        login :  friend.login,
-                        recordId : friend.recordId
+                        login     : friend.login,
+                        recordId  : friend.recordId
                     });
                 });
 
@@ -90,7 +90,7 @@ io.on('connection', function(client) {
                        if(!err && res){
                            if(res.status){
                                client.emit('friend:status', {
-                                   status: res.status,
+                                   status  : res.status,
                                    recordId: friend.recordId
                                });
                            }
@@ -100,21 +100,58 @@ io.on('connection', function(client) {
             }
 
             // создаем нового пользователя
-            Users.createNewUser({
+            let User = Users.createNewUser({
                 user: user,
                 friends: friends,
                 clientId: client.id
             });
 
             // Пользователь послал сообщение
-            client.on('friend:message', function (data) {
-                // Проверяем есть ли у него такой друг
+            client.on('message', function (data) {
+                if(!data.text || !data.recordId){
+                    return logout();
+                }
 
+                data.text = String(data.text);
+                if(data.text.length > 128){
+                    return logout();
+                }
+
+                const FRIEND_ID = User.getFriendUserIdByRecordId(data.recordId);
+                if(!FRIEND_ID){
+                    return logout();
+                }
+
+                Session.checkUserSession(USER_ID, function (err, user_in_session) {
+                    if (err || !user_in_session) {
+                        return logout();
+                    }
+                    redis_client.publish("message:private:" + FRIEND_ID + ":" + USER_ID, JSON.stringify({
+                        time: _.now(),
+                        text: data.text
+                    }));
+                });
             });
 
-            // Пользователь изменит статус
-            client.on('friends:status', function (data) {
 
+            // Пользователь изменил статус
+            client.on('status', function (data) {
+                if(!data.status){
+                    return logout();
+                }
+
+                if(['ONLINE', 'OFFLINE'].indexOf(data.status) == -1){
+                    return logout();
+                }
+
+                Session.checkUserSession(USER_ID, function (err, user_in_session) {
+                    if(err || !user_in_session){
+                        return logout();
+                    }
+
+                    Session.setParamsInSession(USER_ID, TOKEN, {status: 'ONLINE'});
+                    redis_client.publish("status:" + USER_ID, data.status);
+                });
             });
 
             // Пользователь удалил друга
@@ -128,10 +165,14 @@ io.on('connection', function(client) {
             });
 
             // Отключили пользователя
-            client.on('disconnect', function () {
+            client.on('disconnect', function (data) {
+                User.friends.forEach(function () {
+                    redis_client.publish("status:" + USER_ID, 'OFFLINE');
+                });
+                Users.delUser(USER_ID);
+                console.log(data);
                 console.log('user disconnected');
             });
-
         });
     });
 

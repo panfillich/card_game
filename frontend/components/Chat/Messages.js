@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import API from '../../actions/API'
 
 class Messages extends Component {
     constructor(props){
@@ -9,7 +10,16 @@ class Messages extends Component {
             recordId: 0
         };
 
-        this.getFriend = this.getFriend.bind(this);
+        this.getFriend      = this.getFriend.bind(this);
+        this.sendMessage    = this.sendMessage.bind(this);
+    }
+
+    sendMessage(recordId){
+        let client = API.chat.getClient();
+        client.emit('message', {
+           recordId:  recordId,
+           text: 'test'
+        });
     }
 
     getFriend(){
@@ -68,6 +78,24 @@ class Messages extends Component {
                         </ul>
                     </div>
 
+                </div>
+
+                <div className="portlet-footer">
+                    <form role="form">
+                        <div className="btn-group" style={{width:"100%"}}>
+                            <div className="form-group" style={{width:"80%", float:"left"}}>
+                                    <textarea
+                                        style={{"border-bottom-right-radius":0, "border-top-right-radius":0}}
+                                        className="form-control" placeholder="Enter message..."></textarea>
+                            </div>
+                            <div className="form-group bg-faded" style={{width:"20%", float:"right"}}>
+                                <button style={{height:"68px", width:"100%", "border-bottom-left-radius":0, "border-top-left-radius":0}}
+                                        className="btn btn-outline-success" type="button"
+                                    onClick={()=>{this.sendMessage(friend.recordId)}}
+                                >Send</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         );

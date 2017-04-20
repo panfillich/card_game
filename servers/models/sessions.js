@@ -58,7 +58,7 @@ class Sessions{
                 callback(err, null);
             } else {
                 // после создания токена проверяем сессию пользователя
-                this._checkUserSession(param.userId, (err, result) => {
+                this.checkUserSession(param.userId, (err, result) => {
                     if (err) {
                         callback(err, null);
                     } else if (result) {
@@ -148,7 +148,7 @@ class Sessions{
     }
 
     // Проверям существует ли ключ user:id, если существует то добавляем ему время жизни
-    _checkUserSession(userId, callback){
+    checkUserSession(userId, callback){
         let client = this.client;
         const KEY = [USER_PREFIX, userId].join(':');
 

@@ -58,6 +58,9 @@ class Chat{
         });
     }
 
+    getClient(){
+        return this.client;
+    }
 }
 
 export default new Chat;

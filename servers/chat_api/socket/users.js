@@ -76,7 +76,7 @@ class Users{
             let user = users.get(USER_ID);
             const CLIENT_ID = param.clientId;
             user.setClientId(CLIENT_ID);
-            return true
+            return user
         }
 
         // ...если нет, то создаем нового
@@ -98,6 +98,8 @@ class Users{
                 friends.set(FRIEND_ID, f_users);
             }
         });
+
+        return new_user;
     }
 
     // Удаляем одно соединение
