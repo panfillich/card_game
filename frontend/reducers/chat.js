@@ -3,8 +3,10 @@ import CHAT from '../constants/Chat'
 const initialState = {
     action_type : '',
     is_connect : false,
+    current_friend : false,
     status : 'OFFLINE',
-    friends : []
+    friends : new Map(),
+    selected_friend: 0
 };
 
 

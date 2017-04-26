@@ -1,30 +1,214 @@
 import CHAT from '../constants/Chat'
 import _ from 'lodash'
 
+const MAX_MESSAGES_PER_USER = 50;
+
+// Структура state.chat:
+// const initialState = {
+//     action_type : '',
+//     is_connect : false,
+//     current_friend : false,
+//     status : 'OFFLINE',
+//     friends : new Map(),
+//     unconfirmed_friends: new Map(),
+//     selected_friend: 0
+// };
+
+
 // Действия в рамках клинта, никаких запросов на сервер или обработка ответов
 class Client{
-    // Установить друга для разговора
     static setFriend(recordId){
+        return {
+            type: "CHAT_CURRENT_FRIEND",
+            recordId: recordId
+        }
+    }
+}
+
+// Ответы сервера
+class FromServer{
+
+    // Изменение статуса пользователя
+    static changeUserStatus(status){
+        return {
+            type: "CHAT_CHANGE_USER_STATUS",
+            status: status
+        }
+    }
+
+
+    // Изменение статуса друга
+    static changeFriendStatus(recordId, status){
         return function (dispatch, getState) {
             let friends = getState().chat.friends;
+            let new_friends = _.cloneDeep(friends);
 
-            let  new_friends = _.cloneDeep(friends);
+            let friend = new_friends.get(recordId);
+            friend.status = status;
 
-            new_friends.forEach(function (new_friend) {
-                new_friend.is_selected = false;
-                if(new_friend.recordId == recordId){
-                    new_friend.is_selected = true;
-                    new_friend.unread_messages = 0;
+            return {
+                type: "CHAT_CHANGE_FRIEND_STATUS",
+                friends: new_friends
+            }
+        }
+    }
+
+
+    // Потеря соединения
+    static disconnect() {
+        return function (dispatch, getState) {
+            let friends = getState().chat.friends;
+            let new_friends = _.cloneDeep(friends);
+
+            for(let friend of new_friends.values()) {
+                friend.status = 'OFFLINE';
+            }
+
+            return {
+                type: "CHAT_DISCONNECT",
+                friends : friends
+            }
+        }
+    }
+
+
+    // Отключится от сервера, команда с сервера (по сути это тот же disconnect но с другим сообщением)
+    static logOut(){
+        return {
+            type: "LOGOUT"
+        }
+    }
+
+
+    // Cписок друзей (оффлайн), первый ответ с сервера
+    static setOfflineFriends(friends){
+        let old_friends = getState().chat.friends;
+        let old_selected_friend = getState().chat.selected_friend;
+
+        let new_friends = new Map();
+        let new_selected_friend = 0;
+
+        friends.forEach(function (friend) {
+            friend.is_selected = false;
+            friend.status = 'OFFLINE';
+            friend.messages = [];
+            friend.unread_messages = 0;
+
+            if(new_selected_friend == 0){
+                if(friend.recordId == old_selected_friend){
+                    new_selected_friend = old_selected_friend;
                 }
-            });
+            }
+
+            if(old_friends.has(friend.recordId)){
+                let old_friend = old_friends.get(friend.recordId);
+                friend.messages         = old_friend.messages;
+                friend.unread_messages  = old_friend.unread_messages;
+                if(old_friend.is_selected){
+                    friend.is_selected = true;
+                }
+            }
+        });
+
+        return dispatch({
+            type: "CHAT_NEW_FRIENDS_LIST",
+            friends : new_friends,
+            selected_friend: new_selected_friend
+        });
+    }
+
+
+    // Пользовательское coобщение или сообщение от друга
+    static addMessage(recordId, message){
+        return function (dispatch, getState) {
+            let friends = getState().chat.friends;
+            let new_friends = _.cloneDeep(friends);
+
+            let friend = new_friends.get(recordId);
+
+            if(friend.messages.length > MAX_MESSAGES_PER_USER){
+                friend.messages.splice(0,1);
+            }
+
+            if(message.type == 'friend' && !friend.is_selected){
+                if(friend.unread_messages < MAX_MESSAGES_PER_USER){
+                    friend.unread_messages++;
+                }
+            }
+
+            friend.messages.push(message);
 
             return dispatch({
-                type: "CHANGE_FRIEND_LIST",
+                type: "CHAT_ADD_NEW_MESSAGE",
+                friends: new_friends
+            });
+        }
+    }
+
+
+    // Пользователь изменил статус
+    static changeUserStatus(status){
+        return {
+            type: "CHAT_CHANGE_USER_STATUS",
+            status: status
+        }
+    }
+
+
+    // Друг изменил статус
+    static changeFriendStatus(recordId, status){
+        return function (dispatch, getState) {
+            let friends = getState().chat.friends;
+            let new_friends = _.cloneDeep(friends);
+
+            let friend = new_friends.get(recordId);
+            friend.status = status;
+            return dispatch({
+                type: "CHAT_CHANGE_FRIEND_STATUS",
+                friends: new_friends
+            });
+        }
+    }
+
+
+    // Добавляем нового друга
+    static addFriend(friend){
+        return function (dispatch, getState) {
+            let friends = getState().chat.friends;
+            let new_friends = _.cloneDeep(friends);
+
+            let friends = getState().chat.friends;
+
+            friend.is_selected = false;
+            friend.messages = [];
+            friend.unread_messages = 0;
+
+            new_friends.set(friend.recordId, friend);
+
+            return dispatch({
+                type: "CHAT_ADD_FRIEND",
+                friends: new_friends
+            });
+        }
+    }
+
+
+    // Удаляем из друзей пользователя
+    static delFriend(recordId){
+        return function (dispatch, getState) {
+            let friends = getState().chat.friends;
+            let new_friends = _.cloneDeep(friends);
+
+            new_friends.delete(recordId);
+
+            return dispatch({
+                type: "CHAT_DEL_FRIEND",
                 friends: new_friends
             });
         }
     }
 }
+
 
 // Запросы на сервер
 class ToServer{
@@ -50,263 +234,6 @@ class ToServer{
 }
 
 
-// Ответы сервера
-class FromServer{
-
-    /*--ОТВЕТЫ НА ДЕЙСТВИЯ ПОЛЬЗОВАТЕЛЯ--*/
-
-    // Подтверждение добавления друга
-    static confirmAddFriend(recordId) {
-
-    }
-
-    // Подтверждение удаление друга
-    static confirmDelFriend(recordId) {
-
-    }
-
-    // Сообщения от всех (себя/друзей/прочего)
-    static addMessage(type, recordId, text, time){
-        return function (dispatch, getState) {
-            switch (true){
-                // Сообщение пользователя и его друзей
-                case (['self', 'friend'].indexOf(type)!= -1) :
-                    let friends = getState().chat.friends;
-                    let new_friends = _.cloneDeep(friends);
-
-                    for (let i = 0; i < friends.length; i++) {
-                        if (new_friends[i].recordId == recordId) {
-                            let date = new Date(time);
-                            let new_message = {
-                                type: type,
-                                date: date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds(),
-                                text: text
-                            };
-
-                            if(!(type == 'self' || ( type == 'friend' && new_friends[i].is_selected == true))){
-                                if(new_friends[i].unread_messages < 50){
-                                    new_friends[i].unread_messages++;
-                                }
-                            }
-
-                            new_friends[i].messages.push(new_message);
-
-                            //Если у пользователя больше 50 сообщений, то удаляем 51
-                            if( new_friends[i].messages.length > 50){
-                                new_friends[i].messages.splice(0,1);
-                            }
-
-                            return dispatch({
-                                type: "CHANGE_FRIEND_LIST",
-                                friends: new_friends
-                            });
-                        }
-                    }
-                // Техническое сообщение
-                case (type == 'tech'):
-                    return false;
-                default:
-                    return false;
-            }
-        }
-    }
-
-
-    /*--ДЕЙСТВИЯ ДРУЗЕЙ--*/
-
-    // Пользователя самого удалили из друзей
-    static delUserFromFriends(recordId) {
-
-    }
-
-    // Изменен статус друга
-    static changeUserStatus(recordId, status){
-
-    }
-
-
-    /*--ДЕЙСТВИЯ ИНЫХ ПОЛЬЗОВАТЕЛЕЙ--*/
-
-    // Запрос на добавление пользователя в друзья
-    static addUserToFriends(recordId, login){
-
-    }
-
-
-    /*--ИНЫЕ ДЕЙСТВИЯ/СОБЫТИЯ СЕРВЕРА--*/
-
-    // Отключится от сервера, команда с сервера (по сути это тот же disconnect но с другим сообщением)
-    static logOut(){
-        return {
-            type: "LOGOUT"
-        }
-    }
-
-    // Потеря соединения
-    static disconnect() {
-        return function (dispatch, getState) {
-            let friends = getState().chat.friends;
-            friends.forEach(function (friend) {
-                friend.status = 'OFFLINE';
-            });
-            return {
-                type: "DISCONNECT",
-                friends : friends
-            }
-        }
-    }
-
-    // Новое соединение
-    // При новом соединение мы получаем актуальный список друзей без их статусов (приходят потом)
-    static connect(new_friends) {
-        return function (dispatch, getState) {
-            let old_friends = getState().chat.friends;
-
-            // Найден ли выбранный пользователь в новом актульном списке друзей
-            let is_selected_user_found = false;
-
-            new_friends.forEach(function (new_friend) {
-                new_friend.is_selected = false;
-                new_friend.status = 'OFFLINE';
-                new_friend.messages = [];
-                new_friend.unread_messages = 0;
-
-                // Старые сообщения при реконнекте сохраняем в новое состояние
-                for (let i = 0; i < old_friends.length; i++) {
-                    if(old_friends[i].recordId == new_friend.recordId){
-                        new_friend.messages         = old_friends[i].messages;
-                        new_friend.unread_messages  = old_friends[i].unread_messages;
-                        if(old_friends[i].is_selected){
-                            new_friend.is_selected = true;
-                            is_selected_user_found = true;
-                        }
-                    }
-                }
-            });
-
-            if(!is_selected_user_found && new_friends.length > 0){
-                new_friends[0].is_selected = true;
-            }
-
-            return dispatch({
-                type: "CONNECT",
-                friends : new_friends
-            });
-        }
-    }
-}
-
-
-
-
-
-/*
-function _setFriends(friends) {
-    return {
-        type: CHAT.CHAT_SET_NEW_FRIENDS_STATE,
-        friends: friends
-    }
-}
-
-function _addMessage(recordId, message, type) {
-    return function (dispatch, getState) {
-        let friends = getState().chat.friends;
-        for (let i = 0; i < friends.length; i++) {
-            if (friends[i].recordId == recordId) {
-                let date = new Date();
-                friends[i].messages.push({
-                    type: type,
-                    date: date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds(),
-                    text: message
-                });
-                return  dispatch(_setFriends(friends));
-            }
-        }
-    }
-}
-
-function setStateFriendsToOffline(){
-    return function (dispatch, getState) {
-        let friends = getState().chat.friends;
-        friends.forEach(function (friend) {
-            friend.status = 'OFFLINE';
-        });
-        dispatch(_setFriends(friends));
-    }
-}
-
-function setActualFriendList(new_friends) {
-    return function (dispatch, getState) {
-        let old_friends = getState().chat.friends;
-
-        new_friends.forEach(function (friend) {
-            if (!friend.status) {
-                friend.status = 'OFFLINE';
-            }
-
-            if (!friend.message) {
-                friend.messages = [];
-            }
-
-            for (let i = 0; i < old_friends.length; i++) {
-                if(old_friends[i].recordId = friend.recordId){
-                    friend.messages = old_friends[i].messages;
-                }
-            }
-        });
-        dispatch(_setFriends(new_friends));
-    }
-}
-
-function addFriendMessage(recordId, message) {
-    return _addMessage(recordId, message, 'friend');
-}
-
-function addUserMessage(recordId, message) {
-    return _addMessage(recordId, message, 'user')
-}
-
-function changeFriendStatus(recordId, status) {
-    return function (dispatch, getState) {
-        let friends = getState().chat.friends;
-        for (let i = 0; i < friends.length; i++) {
-            if (friends[i].recordId == recordId) {
-                friends[i].status = status;
-                return dispatch(_setFriends(friends));
-            }
-        }
-    }
-}
-
-function changeMyStatus(status) {
-    return {
-        type: CHAT.CHAT_CHANGE_USER_STATUS,
-        status: status
-    }
-}
-
-// Выходим из профиля пользователя
-function logOut() {
-    return {
-        type: CHAT.CHAT_LOG_OUT
-
-    }
-}
-
-// При потере связи с сервером
-function disconnect() {
-    return function (dispatch, getState) {
-        let friends = getState().chat.friends;
-        friends.forEach(function (friend) {
-            friend.status = 'OFFLINE';
-        });
-        return {
-            type: CHAT.CHAT_SET_NEW_FRIENDS_STATE,
-            friends : friends
-        }
-    }
-}
-*/
 
 export default {
     Client : Client,

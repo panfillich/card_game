@@ -115,15 +115,17 @@ class Users{
     // Удаляем все соединения / полностью удаляем пользователя
     // Добавить функционал по отправке статуса
     static delUser(userId){
-        let user = users.get(userId);
-        let users_friends = user.friends;
-        users_friends.forEach(function (users_friends) {
-            let friend = friends.get(users_friends.userId);
-            if(friend.has(userId)){
-                friend.delete(userId);
-            }
-        });
-        users.delete(userId);
+        if(users.has(userId)) {
+            let user = users.get(userId);
+            let users_friends = user.friends;
+            users_friends.forEach(function (users_friends) {
+                let friend = friends.get(users_friends.userId);
+                if (friend.has(userId)) {
+                    friend.delete(userId);
+                }
+            });
+            users.delete(userId);
+        }
     }
 
     // Отправка сообщения
