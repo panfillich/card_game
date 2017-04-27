@@ -8,7 +8,6 @@ const initialState = {
     friends         : new Map()
 };
 
-
 export default function chat(state = initialState, action) {
     switch (action.type) {
         // Пользовательские изменения без отправки на сервер

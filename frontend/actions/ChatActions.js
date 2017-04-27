@@ -149,7 +149,6 @@ class FromServer{
     static addMessage(recordId, message){
         return function (dispatch, getState) {
             let friends = getState().chat.friends;
-            let old_selected_friend = chat.selected_friend;
             let new_friends = _.cloneDeep(friends);
 
             let friend = new_friends.get(recordId);
@@ -169,7 +168,7 @@ class FromServer{
             return dispatch({
                 type: "CHAT_ADD_NEW_MESSAGE",
                 friends: new_friends,
-                selected_friend: new_friends.get(old_selected_friend.recordId)
+                selected_friend: new_friends
             });
         }
     }
