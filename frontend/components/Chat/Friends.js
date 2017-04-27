@@ -8,18 +8,18 @@ import ChatAction from '../../actions/ChatActions'
 class Friends extends Component {
 
     render() {
-        let friends = this.props.chat.friends;
-        let setFriend = this.props.setFriend;
+        let friends     = this.props.chat.friends;
+        let setFriend   = this.props.setFriend;
 
         let html_friends = [];
-        friends.forEach(function(friend){
+        for(let friend of friends.values()){
             html_friends.push(
                 <li className="list-group-item justify-content-between list-group-item-action list-group-item-success"
                     onClick={function(){setFriend(friend.recordId)}}>
                     ({friend.unread_messages}) {friend.login} ({friend.status})
                 </li>
             );
-        });
+        };
 
         return (
             <div>

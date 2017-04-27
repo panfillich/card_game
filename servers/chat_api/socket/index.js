@@ -82,14 +82,14 @@ io.on('connection', function(client) {
                 });
 
                 // Отправляем этот список
-                client.emit('friend:list', friend_list_for_client);
+                client.emit('friends', friend_list_for_client);
 
                 // Узнаем статуса друзей (асинхронно)
                 friends.forEach(function (friend) {
                     Session.getSessionById(friend.userId, function (err, res) {
                        if(!err && res){
                            if(res.status){
-                               client.emit('friend:status', {
+                               client.emit('status:friend', {
                                    status  : res.status,
                                    recordId: friend.recordId
                                });

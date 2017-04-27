@@ -151,8 +151,7 @@ class Users{
                 // Отправитель найден
                 // Отправляем сообщение
                 user.clientIds.forEach(function (clientId) {
-                    io.sockets.connected[clientId].emit('message', {
-                        type: 'friend',
+                    io.sockets.connected[clientId].emit('message:friend', {
                         recordId: recordId,
                         text: param.text,
                         time: param.time
@@ -179,8 +178,7 @@ class Users{
                 // Получатель найден
                 // Отправляем сообщение
                 user.clientIds.forEach(function (clientId) {
-                    io.sockets.connected[clientId].emit('message', {
-                        type: 'self',
+                    io.sockets.connected[clientId].emit('message:user', {
                         recordId: recordId,
                         text: param.text,
                         time: param.time
@@ -208,7 +206,7 @@ class Users{
 
             // Проходимся по всем соединениям
             user.clientIds.forEach(function (clientId) {
-                io.sockets.connected[clientId].emit('friend:status', {
+                io.sockets.connected[clientId].emit('status:friend', {
                     status: status,
                     recordId: RECORD_ID
                 });

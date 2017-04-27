@@ -7,7 +7,7 @@ const MAX_MESSAGES_PER_USER = 50;
 // const initialState = {
 //     action_type : '',
 //     is_connect : false,
-//     current_friend : false,
+//     selected_friend : false,
 //     status : 'OFFLINE',
 //     friends : new Map(),
 //     unconfirmed_friends: new Map(),
@@ -18,9 +18,32 @@ const MAX_MESSAGES_PER_USER = 50;
 // Действия в рамках клинта, никаких запросов на сервер или обработка ответов
 class Client{
     static setFriend(recordId){
-        return {
-            type: "CHAT_CURRENT_FRIEND",
-            recordId: recordId
+        return function (dispatch, getState) {
+            let chat = getState().chat;
+
+            let old_friends         = chat.friends;
+            let old_selected_friend = chat.selected_friend;
+
+            // Если мы выбрали пользователя, который уже был выбран
+            if(recordId == old_selected_friend.recordId){
+                return false;
+            }
+
+            let new_friends = _.cloneDeep(old_friends);
+
+            let new_selected_friend = new_friends.get(recordId);
+            new_selected_friend.is_selected = true;
+
+            // Убираем отметку у старого отмеченного/выбранного пользовате на текущем состоянии
+            if(old_selected_friend) {
+                new_friends.get(old_selected_friend.recordId).is_selected = false;
+            }
+
+            return dispatch({
+                type: "CHAT_CHANGE_CURRENT_FRIEND",
+                friends:  new_friends,
+                selected_friend: new_selected_friend
+            });
         }
     }
 }
@@ -82,39 +105,43 @@ class FromServer{
 
     // Cписок друзей (оффлайн), первый ответ с сервера
     static setOfflineFriends(friends){
-        let old_friends = getState().chat.friends;
-        let old_selected_friend = getState().chat.selected_friend;
+        return function (dispatch, getState) {
+            let old_friends = getState().chat.friends;
+            let old_selected_friend = getState().chat.selected_friend;
 
-        let new_friends = new Map();
-        let new_selected_friend = 0;
+            let new_friends = new Map();
+            let new_selected_friend = false;
 
-        friends.forEach(function (friend) {
-            friend.is_selected = false;
-            friend.status = 'OFFLINE';
-            friend.messages = [];
-            friend.unread_messages = 0;
+            friends.forEach(function (friend) {
+                friend.is_selected = false;
+                friend.status = 'OFFLINE';
+                friend.messages = [];
+                friend.unread_messages = 0;
 
-            if(new_selected_friend == 0){
-                if(friend.recordId == old_selected_friend){
-                    new_selected_friend = old_selected_friend;
+                if (!new_selected_friend) {
+                    if (friend.recordId == old_selected_friend.recordId) {
+                        new_selected_friend = old_selected_friend;
+                    }
                 }
-            }
 
-            if(old_friends.has(friend.recordId)){
-                let old_friend = old_friends.get(friend.recordId);
-                friend.messages         = old_friend.messages;
-                friend.unread_messages  = old_friend.unread_messages;
-                if(old_friend.is_selected){
-                    friend.is_selected = true;
+                if (old_friends.has(friend.recordId)) {
+                    let old_friend = old_friends.get(friend.recordId);
+                    friend.messages = old_friend.messages;
+                    friend.unread_messages = old_friend.unread_messages;
+                    if (old_friend.is_selected) {
+                        friend.is_selected = true;
+                    }
                 }
-            }
-        });
 
-        return dispatch({
-            type: "CHAT_NEW_FRIENDS_LIST",
-            friends : new_friends,
-            selected_friend: new_selected_friend
-        });
+                new_friends.set(friend.recordId, friend);
+            });
+
+            return dispatch({
+                type: "CHAT_NEW_FRIENDS_LIST",
+                friends: new_friends,
+                selected_friend: new_selected_friend
+            });
+        }
     }
 
 
@@ -122,6 +149,7 @@ class FromServer{
     static addMessage(recordId, message){
         return function (dispatch, getState) {
             let friends = getState().chat.friends;
+            let old_selected_friend = chat.selected_friend;
             let new_friends = _.cloneDeep(friends);
 
             let friend = new_friends.get(recordId);
@@ -140,7 +168,8 @@ class FromServer{
 
             return dispatch({
                 type: "CHAT_ADD_NEW_MESSAGE",
-                friends: new_friends
+                friends: new_friends,
+                selected_friend: new_friends.get(old_selected_friend.recordId)
             });
         }
     }
@@ -176,8 +205,6 @@ class FromServer{
         return function (dispatch, getState) {
             let friends = getState().chat.friends;
             let new_friends = _.cloneDeep(friends);
-
-            let friends = getState().chat.friends;
 
             friend.is_selected = false;
             friend.messages = [];

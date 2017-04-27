@@ -9,8 +9,6 @@ class Messages extends Component {
         this.state = {
             recordId: 0
         };
-
-        this.getFriend      = this.getFriend.bind(this);
         this.sendMessage    = this.sendMessage.bind(this);
     }
 
@@ -22,34 +20,27 @@ class Messages extends Component {
         });
     }
 
-    getFriend(){
-        let friends = this.props.chat.friends;
-        for(let i = 0; i<friends.length; i++){
-            let friend = friends[i];
-            if(friend.is_selected){
-                return friend;
-            }
-        }
-        return false;
-    }
-
     render() {
         let {user} = this.props;
 
+        console.log('----------');
         if(!user.is_auth){
             return null;
         }
 
-        let friend = this.getFriend();
+        let friend = this.props.chat.selected_friend;
         let html_messages = [];
+        console.log(friend);
         if(friend) {
             if(friend.messages.length > 0) {
                 let friend_login = friend.login;
                 let user_login  = user.login;
 
+
                 friend.messages.forEach(function (message) {
+                    console.log(message);
                     let login = '';
-                    if(message.type == 'self') {
+                    if(message.type == 'user') {
                         login = user_login;
                     } else if(message.type == 'friend'){
                         login = friend_login;
@@ -57,7 +48,7 @@ class Messages extends Component {
 
                     html_messages.push(
                         <li className="list-group-item justify-content-between">
-                            {message.date} : {login} <br />{message.text}
+                            {message.time} : {login} <br />{message.text}
                         </li>
                     );
                 });
@@ -84,15 +75,17 @@ class Messages extends Component {
                     <form role="form">
                         <div className="btn-group" style={{width:"100%"}}>
                             <div className="form-group" style={{width:"80%", float:"left"}}>
-                                    <textarea
-                                        style={{"border-bottom-right-radius":0, "border-top-right-radius":0}}
-                                        className="form-control" placeholder="Enter message..."></textarea>
+                                <textarea
+                                    style={{"border-bottom-right-radius":0, "border-top-right-radius":0}}
+                                    className="form-control" placeholder="Enter message...">
+                                </textarea>
                             </div>
                             <div className="form-group bg-faded" style={{width:"20%", float:"right"}}>
                                 <button style={{height:"68px", width:"100%", "border-bottom-left-radius":0, "border-top-left-radius":0}}
                                         className="btn btn-outline-success" type="button"
-                                    onClick={()=>{this.sendMessage(friend.recordId)}}
-                                >Send</button>
+                                    onClick={()=>{this.sendMessage(friend.recordId)}}>
+                                    Send
+                                </button>
                             </div>
                         </div>
                     </form>
