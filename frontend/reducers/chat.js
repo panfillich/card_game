@@ -1,11 +1,12 @@
-import CHAT from '../constants/Chat'
-
 const initialState = {
     action_type     : '',
     is_connect      : false,
-    selected_friend : false,
     status          : 'OFFLINE',
-    friends         : new Map()
+    friends         : new Map(),
+    sort            : 'relevant',
+    filter_by_name  : '',
+    selected_friend_recordId : false,
+
 };
 
 export default function chat(state = initialState, action) {
@@ -13,9 +14,21 @@ export default function chat(state = initialState, action) {
         // Пользовательские изменения без отправки на сервер
         case "CHAT_CHANGE_CURRENT_FRIEND":
             return Object.assign({}, state, {
+                action_type : action.type,
+                friends     : action.friends,
+                selected_friend_recordId : action.selected_friend_recordId,
+            });
+
+        case "CHAT_CHANGE_SORT":
+            return Object.assign({}, state, {
+                action_type : action.type,
+                sort        : action.sort
+            });
+
+        case "CHAT_CHANGE_FILTER_BY_NAME":
+            return Object.assign({}, state, {
                 action_type     : action.type,
-                selected_friend : action.selected_friend,
-                friends         : action.friends
+                filter_by_name  : action.filter_by_name
             });
 
         // Могут быть вызван как пользователем вручную, так и сервером
@@ -62,9 +75,9 @@ export default function chat(state = initialState, action) {
             return Object.assign({}, state, {
                 action_type     : action.type,
                 friends         : action.friends,
-                selected_friend : action.selected_friend,
                 is_connect      : true,
-                status          : 'ONLINE'
+                status          : 'ONLINE',
+                selected_friend_recordId : action.selected_friend_recordId,
             });
 
         case "CHAT_ADD_NEW_MESSAGE":

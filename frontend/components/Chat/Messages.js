@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import API from '../../actions/API'
+import _ from 'lodash'
 
 class Messages extends Component {
     constructor(props){
@@ -21,24 +22,18 @@ class Messages extends Component {
     }
 
     render() {
-        let {user} = this.props;
+        let {login} = this.props.user
+        let {selected_friend_recordId, friends} = this.props.chat;
 
-        console.log('----------');
-        if(!user.is_auth){
-            return null;
-        }
-
-        let friend = this.props.chat.selected_friend;
+        let friend = friends.get(selected_friend_recordId);
         let html_messages = [];
-        console.log(friend);
+
         if(friend) {
             if(friend.messages.length > 0) {
                 let friend_login = friend.login;
-                let user_login  = user.login;
+                let user_login  = login;
 
-
-                friend.messages.forEach(function (message) {
-                    console.log(message);
+                friend.messages.forEach(function (message) {                   
                     let login = '';
                     if(message.type == 'user') {
                         login = user_login;

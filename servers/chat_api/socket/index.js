@@ -87,24 +87,29 @@ io.on('connection', function(client) {
                 // Узнаем статуса друзей (асинхронно)
                 friends.forEach(function (friend) {
                     Session.getSessionById(friend.userId, function (err, res) {
-                       if(!err && res){
-                           if(res.status){
-                               client.emit('status:friend', {
-                                   status  : res.status,
-                                   recordId: friend.recordId
-                               });
-                           }
-                       }
+                        if(err || !res){
+                          return false;
+                        }
+                        if(res.status != 'OFFLINE') {
+                            client.emit('status:friend', {
+                                status: res.status,
+                                recordId: friend.recordId
+                            });
+                        }
                     });
                 });
             }
 
-            // создаем нового пользователя
+            // Cоздаем нового пользователя
             let User = Users.createNewUser({
                 user: user,
                 friends: friends,
                 clientId: client.id
             });
+
+
+            redis_client.publish("status:" + USER_ID, 'ONLINE');
+
 
             // Пользователь послал сообщение
             client.on('message', function (data) {
@@ -149,7 +154,7 @@ io.on('connection', function(client) {
                         return logout();
                     }
 
-                    Session.setParamsInSession(USER_ID, TOKEN, {status: 'ONLINE'});
+                    Session.setParamsInSession(USER_ID, TOKEN, {status: data.status});
                     redis_client.publish("status:" + USER_ID, data.status);
                 });
             });
@@ -166,12 +171,13 @@ io.on('connection', function(client) {
 
             // Отключили пользователя
             client.on('disconnect', function (data) {
-                User.friends.forEach(function () {
-                    redis_client.publish("status:" + USER_ID, 'OFFLINE');
+                Session.checkUserSession(USER_ID, function (err, user_in_session) {
+                    if (!err && user_in_session) {
+                        Session.setParamsInSession(USER_ID, TOKEN, {status: 'OFFLINE'});
+                        redis_client.publish("status:" + USER_ID, 'OFFLINE');
+                    }
+                    Users.delUser(USER_ID);
                 });
-                Users.delUser(USER_ID);
-                console.log(data);
-                console.log('user disconnected');
             });
         });
     });

@@ -4,6 +4,14 @@ import CloseButton from './CloseButton'
 
 class Header extends Component {
     render() {
+        let {selected_friend_recordId, friends} = this.props.chat;
+        let login = '---';
+
+        if(selected_friend_recordId) {
+            let friend = friends.get(selected_friend_recordId);
+            login = friend.login;
+        }
+
         return (
             <div className="portlet-heading">
                 <nav className="bg-faded">
@@ -14,11 +22,10 @@ class Header extends Component {
                         </button>
                         <ul className="dropdown-menu float-left" aria-labelledby="chat-status-dropdown">
                             <li><a className="dropdown-item" onClick={()=>{}} value="en" href="#">Online</a></li>
-                            <li><a className="dropdown-item" onClick={()=>{}} value="ru" href="#">Away</a></li>
                             <li><a className="dropdown-item" onClick={()=>{}} value="ru" href="#">Offline</a></li>
                         </ul>
                         <button type="button" style={{width:"50%"}} className="btn btn-outline-info">
-                            <span id="search_concept">User1</span><span className="caret"></span>
+                            <span id="search_concept">{login}</span><span className="caret"></span>
                         </button>
 
                         <CloseButton style={{float:"right", width:"20%"}} className='btn btn-outline-danger btn btn-outline-success'/>
@@ -28,12 +35,12 @@ class Header extends Component {
             </div>
         );
     }
-
 }
 
 function mapStateToProps(state) {
     return {
-        chat: state.chat
+        chat: state.chat,
+        user: state.user
     }
 }
 

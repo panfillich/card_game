@@ -7,7 +7,7 @@ const MAX_MESSAGES_PER_USER = 50;
 // const initialState = {
 //     action_type : '',
 //     is_connect : false,
-//     selected_friend : false,
+//     selected_friend_recordId : false,
 //     status : 'OFFLINE',
 //     friends : new Map(),
 //     unconfirmed_friends: new Map(),
@@ -21,11 +21,11 @@ class Client{
         return function (dispatch, getState) {
             let chat = getState().chat;
 
-            let old_friends         = chat.friends;
-            let old_selected_friend = chat.selected_friend;
+            let old_friends                  = chat.friends;
+            let old_selected_friend_recordId = chat.selected_friend_recordId;
 
             // Если мы выбрали пользователя, который уже был выбран
-            if(recordId == old_selected_friend.recordId){
+            if(recordId == old_selected_friend_recordId){
                 return false;
             }
 
@@ -33,17 +33,34 @@ class Client{
 
             let new_selected_friend = new_friends.get(recordId);
             new_selected_friend.is_selected = true;
+            if(new_selected_friend.unread_messages>0) {
+                new_selected_friend.unread_messages = 0;
+            }
 
             // Убираем отметку у старого отмеченного/выбранного пользовате на текущем состоянии
-            if(old_selected_friend) {
-                new_friends.get(old_selected_friend.recordId).is_selected = false;
+            if(old_selected_friend_recordId) {
+                new_friends.get(old_selected_friend_recordId).is_selected = false;
             }
 
             return dispatch({
                 type: "CHAT_CHANGE_CURRENT_FRIEND",
                 friends:  new_friends,
-                selected_friend: new_selected_friend
+                selected_friend_recordId: recordId
             });
+        }
+    }
+
+    static setSort(sort){
+        return {
+            type: "CHAT_CHANGE_SORT",
+            sort: sort
+        }
+    }
+
+    static setFilterByName(name){
+        return {
+            type: "CHAT_CHANGE_FILTER_BY_NAME",
+            filter_by_name: name
         }
     }
 }
@@ -107,10 +124,10 @@ class FromServer{
     static setOfflineFriends(friends){
         return function (dispatch, getState) {
             let old_friends = getState().chat.friends;
-            let old_selected_friend = getState().chat.selected_friend;
+            let old_selected_friend_recordId = getState().chat.selected_friend_recordId;
 
             let new_friends = new Map();
-            let new_selected_friend = false;
+            let new_selected_friend_recordId = false;
 
             friends.forEach(function (friend) {
                 friend.is_selected = false;
@@ -118,9 +135,10 @@ class FromServer{
                 friend.messages = [];
                 friend.unread_messages = 0;
 
-                if (!new_selected_friend) {
-                    if (friend.recordId == old_selected_friend.recordId) {
-                        new_selected_friend = old_selected_friend;
+                if (!new_selected_friend_recordId) {
+                    if (friend.recordId == old_selected_friend_recordId) {
+                        new_selected_friend_recordId = old_selected_friend_recordId;
+                        console.log(old_selected_friend_recordId);
                     }
                 }
 
@@ -136,10 +154,14 @@ class FromServer{
                 new_friends.set(friend.recordId, friend);
             });
 
+            if(friends.length > 0 && !new_selected_friend_recordId){
+                new_selected_friend_recordId = friends[0].recordId;
+            }
+
             return dispatch({
                 type: "CHAT_NEW_FRIENDS_LIST",
                 friends: new_friends,
-                selected_friend: new_selected_friend
+                selected_friend_recordId: new_selected_friend_recordId
             });
         }
     }
@@ -165,10 +187,21 @@ class FromServer{
 
             friend.messages.push(message);
 
+            //Отсортируем по времени
+            friend.messages.sort(function(message_one, message_two) {
+                switch (true){
+                    case message_one.time > message_two.time:
+                        return -1;
+                    case message_one.time < message_two.time:
+                        return 1;
+                    default:
+                        return 0;
+                }
+            });
+
             return dispatch({
                 type: "CHAT_ADD_NEW_MESSAGE",
-                friends: new_friends,
-                selected_friend: new_friends
+                friends: new_friends
             });
         }
     }

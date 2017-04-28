@@ -7,19 +7,59 @@ import ChatAction from '../../actions/ChatActions'
 
 class Friends extends Component {
 
+    // get friends/recordIds list in right order and count
+    getFriendList(){
+        let {sort, filter_by_name, friends} = this.props.chat;
+
+        let new_array_friends = [];
+
+        for(let friend of friends.values()){
+            new_array_friends.push(friend);
+        }
+
+        if(filter_by_name!=''){
+
+        }
+
+        switch (sort){
+            case 'relevant':
+                new_array_friends.sort(function (friend_first, friend_second) {
+                    if(friend_first.status == 'ONLINE' && friend_second.status == 'OFFLINE'){
+                        return -1;
+                    } else if(friend_first.status == 'OFFLINE' && friend_second.status == 'ONLINE'){
+                        return 1;
+                    } else {
+                        return friend_first.login.localeCompare(friend_second.login);
+                    }
+                });
+                return new_array_friends;
+            case 'name':
+                new_array_friends.sort(function (friend_first, friend_second) {
+                    return friend_first.login.localeCompare(friend_second.login);
+                });
+                return new_array_friends;
+            case 'message':
+                return new_array_friends;
+            default:
+                return new_array_friends;
+        }
+    }
+
     render() {
-        let friends     = this.props.chat.friends;
-        let setFriend   = this.props.setFriend;
+        // let friends   = this.props.chat.friends;
+        let setFriend = this.props.setFriend;
 
         let html_friends = [];
-        for(let friend of friends.values()){
+        let friends = this.getFriendList();
+
+        friends.forEach(function (friend) {
             html_friends.push(
                 <li className="list-group-item justify-content-between list-group-item-action list-group-item-success"
                     onClick={function(){setFriend(friend.recordId)}}>
                     ({friend.unread_messages}) {friend.login} ({friend.status})
                 </li>
             );
-        };
+        });
 
         return (
             <div>
@@ -34,7 +74,6 @@ class Friends extends Component {
             </div>
         );
     }
-
 }
 
 function mapStateToProps(state) {
