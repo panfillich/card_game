@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
+import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
+
+import ChatAction from '../../actions/ChatActions'
 
 class SortFilter extends Component {
     render() {
+        let {setSort, setFilterByName} = this.props;
         return (
         <div>
         <div className="input-group" style={{"padding-top":"7px", "padding-bottom":"7px"}}>
@@ -11,13 +15,16 @@ class SortFilter extends Component {
                  <span id="search_concept">Sort by</span> <span className="caret"></span>
                 </button>
                 <ul className="dropdown-menu float-left" aria-labelledby="search_concept">
-                    <li><a className="dropdown-item" onClick={()=>{}} value="en" href="">Online</a></li>
-                    <li><a className="dropdown-item" onClick={()=>{}} value="ru" href="">Away</a></li>
-                    <li><a className="dropdown-item" onClick={()=>{}} value="ru" href="">Offline</a></li>
+                    <li className="dropdown-item" onClick={function () {setSort('relevant')}}>relevant</li>
+                    <li className="dropdown-item" onClick={function () {setSort('message')}}>message</li>
+                    <li className="dropdown-item" onClick={function () {setSort('name')}}>name</li>
                 </ul>
             </div>
-            <input name="search_param" value="all" id="search_param" type="hidden" />
-            <input className="form-control" name="x" placeholder="Filter by name..." type="text" />
+            <input onChange={function (elem) {setFilterByName(elem.target.value)}}
+                   className="form-control" name="x"
+                   placeholder="Filter by name..."
+                   type="text"
+            />
         </div>
         </div>
         );
@@ -33,8 +40,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        // changeLanguage  : bindActionCreators(LangAction.changeLanguage, dispatch),
-        // logout          : bindActionCreators(UserAction.logout, dispatch)
+        setSort          : bindActionCreators(ChatAction.Client.setSort, dispatch),
+        setFilterByName  : bindActionCreators(ChatAction.Client.setFilterByName, dispatch)
     }
 }
 
