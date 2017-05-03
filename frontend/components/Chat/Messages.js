@@ -8,12 +8,13 @@ class Messages extends Component {
         super(props);
 
         this.state = {
-            recordId: 0
+            recordId: 0,
+            textarea: ''
         };
         this.sendMessage    = this.sendMessage.bind(this);
     }
 
-    sendMessage(recordId){
+    sendMessage(recordId, text){
         let client = API.chat.getClient();
         client.emit('message', {
            recordId:  recordId,
@@ -71,6 +72,12 @@ class Messages extends Component {
                         <div className="btn-group" style={{width:"100%"}}>
                             <div className="form-group" style={{width:"80%", float:"left"}}>
                                 <textarea
+                                    ref={(textarea)=>{this.state.textarea = textarea}}
+                                    onChange={function(textarea){
+                                        if(textarea.target.value.length > 128){
+                                            textarea.target.value = textarea.target.value.substr(0, 125) + '...';
+                                        }
+                                    }}
                                     style={{"border-bottom-right-radius":0, "border-top-right-radius":0}}
                                     className="form-control" placeholder="Enter message...">
                                 </textarea>
