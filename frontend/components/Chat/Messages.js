@@ -9,22 +9,27 @@ class Messages extends Component {
 
         this.state = {
             recordId: 0,
-            textarea: ''
+            textarea: false
         };
         this.sendMessage    = this.sendMessage.bind(this);
     }
 
-    sendMessage(recordId, text){
-        let client = API.chat.getClient();
-        client.emit('message', {
-           recordId:  recordId,
-           text: 'test'
-        });
+    sendMessage(){
+        const value = this.state.textarea.value;
+        if(this.state.recordId != 0 && value!='') {
+            let client = API.chat.getClient();
+            client.emit('message', {
+                recordId: this.state.recordId,
+                text: value
+            });
+            this.state.textarea.value = '';
+        }
     }
 
     render() {
         let {login} = this.props.user
         let {selected_friend_recordId, friends} = this.props.chat;
+        this.state.recordId = selected_friend_recordId;
 
         let friend = friends.get(selected_friend_recordId);
         let html_messages = [];
@@ -72,8 +77,9 @@ class Messages extends Component {
                         <div className="btn-group" style={{width:"100%"}}>
                             <div className="form-group" style={{width:"80%", float:"left"}}>
                                 <textarea
-                                    ref={(textarea)=>{this.state.textarea = textarea}}
-                                    onChange={function(textarea){
+                                    ref = {(input)=>{this.state.textarea=input;}}
+                                    onKeyDown={(e)=>{console.log(e)}}
+                                    onChange = { function(textarea){
                                         if(textarea.target.value.length > 128){
                                             textarea.target.value = textarea.target.value.substr(0, 125) + '...';
                                         }
@@ -84,8 +90,9 @@ class Messages extends Component {
                             </div>
                             <div className="form-group bg-faded" style={{width:"20%", float:"right"}}>
                                 <button style={{height:"68px", width:"100%", "border-bottom-left-radius":0, "border-top-left-radius":0}}
-                                        className="btn btn-outline-success" type="button"
-                                    onClick={()=>{this.sendMessage(friend.recordId)}}>
+                                    className="btn btn-outline-success" type="button"
+                                    onClick={this.sendMessage}
+                                >
                                     Send
                                 </button>
                             </div>
