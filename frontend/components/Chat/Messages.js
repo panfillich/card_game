@@ -23,6 +23,7 @@ class Messages extends Component {
                 text: value
             });
             this.state.textarea.value = '';
+            this.state.textarea.focus();
         }
     }
 
@@ -78,10 +79,10 @@ class Messages extends Component {
                             <div className="form-group" style={{width:"80%", float:"left"}}>
                                 <textarea
                                     ref = {(input)=>{this.state.textarea=input;}}
-                                    onKeyDown={(e)=>{console.log(e)}}
+                                    onKeyDown={(e)=>{if(e.keyCode==13){this.sendMessage(); e.preventDefault()}}}
                                     onChange = { function(textarea){
                                         if(textarea.target.value.length > 128){
-                                            textarea.target.value = textarea.target.value.substr(0, 125) + '...';
+                                           textarea.target.value = textarea.target.value.substr(0, 125) + '...';
                                         }
                                     }}
                                     style={{"border-bottom-right-radius":0, "border-top-right-radius":0}}

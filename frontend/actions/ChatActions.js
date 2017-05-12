@@ -156,6 +156,7 @@ class FromServer{
 
             if(friends.length > 0 && !new_selected_friend_recordId){
                 new_selected_friend_recordId = friends[0].recordId;
+                friends[0].is_selected = true;
             }
 
             return dispatch({

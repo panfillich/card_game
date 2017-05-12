@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
+import classnames from 'classnames'
 
 import SortFilter from './SortFilter'
 import ChatAction from '../../actions/ChatActions'
@@ -74,12 +75,29 @@ class Friends extends Component {
 
         friends.forEach(function (friend) {
 
-            
+            let class_li_param = {
+                "list-group-item": true,
+                "justify-content-between": true,
+                "list-group-item-success": false,
+                "list-group-item-warning": false
+            };
+
+            let on_click = function(){setFriend(friend.recordId)};
+
+            switch (true) {
+                case friend.is_selected:
+                    class_li_param["list-group-item-warning"] = true;
+                    on_click = new Function();
+                    break;
+                case friend.status == 'ONLINE':
+                    class_li_param["list-group-item-success"] = true;
+                    break;
+            }
 
             html_friends.push(
-                <li className="list-group-item justify-content-between list-group-item-action list-group-item-success"
-                    onClick={function(){setFriend(friend.recordId)}}>
-                    ({friend.unread_messages}) {friend.login} ({friend.status})
+                <li className={classnames(class_li_param)}
+                    onClick={on_click}>
+                    ({friend.unread_messages}) {friend.login}
                 </li>
             );
         });
