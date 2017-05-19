@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, IndexRoute } from 'react-router'
+import { Route, IndexRoute, browserHistory } from 'react-router'
 import App from './containers/App'
 import Link from './components/Link'
 
@@ -9,8 +9,18 @@ import Main     from './containers/Main'
 import Articles from './containers/Articles'
 import Article  from './containers/Article'
 import Nav      from './containers/Nav'
+import Deck     from './containers/Deck'
 
 import NotFound from './components/NotFound'
+
+import store from './store'
+
+function checkAuth() {
+    let state = store.getState();
+    if(!state.user.is_auth){
+        browserHistory.push('/auth');
+    }
+}
 
 
 export const routes = (
@@ -26,6 +36,7 @@ export const routes = (
 
             <Route path='/link'     component={Link} />
             <Route path='/nav'      component={Nav} />
+            <Route path='/deck' onEnter={ checkAuth }  component={Deck} />
             <Route path='*'         component={NotFound} />
         </Route>
     </div>

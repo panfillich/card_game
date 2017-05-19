@@ -9,16 +9,6 @@ import Message from '../components/Chat/Messages'
 class Chat extends Component {
     render() {
         const { lang, user } = this.props;
-        /*var socket = require('socket.io-client')('http://localhost:3004');
-        socket.on('connect', function(data) {
-            console.log('connect');
-            socket.emit('join', 'Hello World from client');
-            socket.on('message', function (data) {
-                console.log(data);
-                // socket.emit('join', 'Hello World from client2');
-            });
-
-        });*/
         if(!user.is_auth){
              return null;
         }
