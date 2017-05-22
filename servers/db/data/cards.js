@@ -180,5 +180,68 @@ module.exports = [
     normalCost:   5,
     attack:       5,
     health:       6
-  }
+  },
+  {
+    cardId:       21,
+    type:         constants.type.COMMON,
+    rarity:       constants.rarity.COMMON,
+    specialCost:  0,
+    normalCost:   6,
+    attack:       6,
+    health:       6
+  },
+  {
+    cardId:       22,
+    type:         constants.type.COMMON,
+    rarity:       constants.rarity.COMMON,
+    specialCost:  0,
+    normalCost:   6,
+    attack:       4,
+    health:       7
+  },
+  {
+    cardId:       23,
+    type:         constants.type.COMMON,
+    rarity:       constants.rarity.COMMON,
+    specialCost:  0,
+    normalCost:   6,
+    attack:       3,
+    health:       8
+  },
+  {
+    cardId:       24,
+    type:         constants.type.COMMON,
+    rarity:       constants.rarity.COMMON,
+    specialCost:  0,
+    normalCost:   6,
+    attack:       7,
+    health:       3
+  },
+  {
+    cardId:       25,
+    type:         constants.type.COMMON,
+    rarity:       constants.rarity.COMMON,
+    specialCost:  0,
+    normalCost:   6,
+    attack:       6,
+    health:       4
+  },
+  {
+    cardId:       26,
+    type:         constants.type.COMMON,
+    rarity:       constants.rarity.COMMON,
+    specialCost:  0,
+    normalCost:   6,
+    attack:       8,
+    health:       2
+  },
+  {
+    cardId:       27,
+    type:         constants.type.COMMON,
+    rarity:       constants.rarity.COMMON,
+    specialCost:  0,
+    normalCost:   7,
+    attack:       7,
+    health:       7
+  },
 ];

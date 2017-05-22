@@ -25,5 +25,11 @@ module.exports = function(Sequelize, DataTypes) {
         as: 'UsersFriends'
     });
 
+    models['cards'].belongsTo(models['collections'], {
+        foreignKey: 'cardId',
+        otherKey: 'cardId',
+        as: 'UsersCollection'
+    });
+
     return return_models;
 }
