@@ -1,16 +1,26 @@
+
+
 class Deck {
     //Подключаемся к базе
     switchToDB(db) {
         if (db) {
             this.db = db;
-            this.deck = this.db.deck;
+            this.decks = this.db.decks;
             return true;
         }
         return false;
     }
 
-    // Взять все колоды
-    getAllDeck(userId) {
+    // Получить краткую информацию о колодах
+    // Возвращает номер колоды + кол-во карт в ней
+    getDecksInfo(userId, callback) {
+        let decks = this.deck;
+
+        decks.findAll({});
+    }
+
+    // Получить инфо об одной колоде
+    getOneDeck(){
 
     }
 

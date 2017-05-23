@@ -7,7 +7,7 @@ let ResFormat   = require('../../common_libs/res_format');
 let articles_const = require('../../db/consts/articles');
 
 //Получить статью по Id
-router.get('/:article_id([0-9]{1,10}$)', function(req, res, next) {
+router.get('/:article_id([0-9]{1,10})', function(req, res, next) {
     const ARTICLE_ID = req.params.article_id;
     const PARAMS = {
         articleId     : ARTICLE_ID,

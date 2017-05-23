@@ -10,11 +10,6 @@ class Collections{
         return false;
     }
 
-    // param = {
-    //      userId: ...,
-    //      ...
-    // }
-
     // Берем коллекцию
     getCollection(param, callback){
         let userId      = param.userId;
@@ -93,11 +88,38 @@ class Collections{
 
         let collections = this.collections;
         collections.findAll({
+            attributes: [
+                'cardId',
+                'count'
+            ],
+            where: {
+                userId: userId,
+                cardId: {
+                    in: cards
+                }
+            }
+        }).then(function(data) {
+            let result = [];
 
+            cards.forEach(function (cardId) {
+                result.push({cardId: cardId, count: 0});
+            });
+
+            data.forEach(function (data_card) {
+                for (let key_card in result){
+                    if(result[key_card].cardId == data_card.dataValues.cardId){
+                        result[key_card].count = data_card.dataValues.count;
+                        break;
+                    }
+                }
+            });
+            callback(null, result);
+        }).catch(function(error){
+            callback(error, null);
         });
     }
 
-    // Удалить карту/карты из коллекции
+    // Удалить карту из коллекции
     delCard(param, callback){
         let userId = param.userId;
         let cardId = param.cardId;
@@ -111,7 +133,7 @@ class Collections{
             }
 
             if (count == 0){ // Запись уже удалена
-                callback(null, true);
+                callback(null, false);
             } else if(count == 1){ // Удаляем запись
                 collections.destroy({
                     where: {
@@ -145,45 +167,64 @@ class Collections{
     // Добавить карту/карты в коллекцию
     addCards(param, callback){
         let userId = param.userId;
-        let cards = param.cards;
+        let cards  = param.cards;
 
         let collections = this.collections;
+        let db = this.db;
 
         // Смотрим есть ли эта карта в коллекции
-        this.checkCountCards(param, function (err, count) {
+        this.checkCountCards(param, function (err, all_cards) {
             if(err){
                 return callback(err, null);
             }
 
-            let data = [];
-            cards.forEach(function (cardId) {
-                data.push()
+            let for_insert = [];
+            let for_update = [];
+
+            all_cards.forEach(function (card) {
+                if(card.count == 0){
+                    for_insert.push({
+                        userId: userId,
+                        cardId: card.cardId,
+                        count : 1
+                    });
+                } else if (card.count > 0){
+                    for_update.push(card.cardId);
+                }
             });
 
-            if(count == 0){ // Добавляем новую запись
-                collections.bulkCreate(
+            db.sequelize.transaction(function (t) {
+                let promises = []
+                if(for_insert.length > 0){
+                    let newPromise = collections.bulkCreate(for_insert, {transaction: t});
+                    promises.push(newPromise);
+                }
 
-                ).then(function (result) {
-                    callback(null, true);
-                }).catch(function(error){
-                    callback(error, null);
-                });
-            } else {   // Увеличиваем count
-                collections.update(
-                    {
-                        count:  count - 1,
-                    },
-                    {
-                        where: {
-                            userId: userId,
-                            cardId: cardId
+                if(for_update.length > 0) {
+                    let newPromise = collections.update(
+                        {
+                            count: db.sequelize.literal('`count` + 1')
+                        },
+                        {
+                            transaction: t,
+                            where: {
+                                userId: userId,
+                                cardId: {
+                                    in: for_update
+                                }
+                            }
                         }
-                    }).then(function (result) {
-                    callback(null, true);
-                }).catch(function(error){
-                    callback(error, null);
-                });
-            }
+                    );
+                    promises.push(newPromise);
+                }
+
+                return Promise.all(promises);
+            }).then(function (result) {
+                console.log(result);
+                return callback(err, true);
+            }).catch(function (err) {
+                return callback(err, false);
+            });
         });
     }
 }
