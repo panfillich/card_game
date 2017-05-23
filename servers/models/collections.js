@@ -167,7 +167,6 @@ class Collections{
     // Добавить карту/карты в коллекцию
     addCards(param, callback){
         let userId = param.userId;
-        let cards  = param.cards;
 
         let collections = this.collections;
         let db = this.db;

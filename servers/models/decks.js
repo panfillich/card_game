@@ -13,10 +13,33 @@ class Deck {
 
     // Получить краткую информацию о колодах
     // Возвращает номер колоды + кол-во карт в ней
-    getDecksInfo(userId, callback) {
-        let decks = this.deck;
+    getDecksInfo(param, callback) {
+        let userId = param.userId;
 
-        decks.findAll({});
+        let decks     = this.decks;
+        let sequelize = this.db.sequelize;
+
+        decks.findAll({
+            attributes: [
+                'number',
+                [sequelize.fn('SUM', sequelize.col('count')), 'countCards']
+            ],
+            where: {
+                userId: userId
+            },
+            group: ['number']
+        }).then(function (data) {
+            let result = [];
+            data.forEach(function (data_deck) {
+                result.push({
+                    'deck_number':data_deck.dataValues.number,
+                    'cards_count': data_deck.dataValues.countCards
+                });
+            });
+            callback(null, result);
+        }).catch(function(error){
+            callback(error, null);
+        });
     }
 
     // Получить инфо об одной колоде
