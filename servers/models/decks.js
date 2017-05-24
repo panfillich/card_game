@@ -1,5 +1,3 @@
-
-
 class Deck {
     //Подключаемся к базе
     switchToDB(db) {
@@ -43,17 +41,65 @@ class Deck {
     }
 
     // Получить инфо об одной колоде
-    getOneDeck(){
+    getOneDeck(param, callback) {
+        let userId   = param.userId;
+        let deck_num = param.deck_num;
 
+        let decks    = this.decks;
+
+        decks.findAll({
+            attributes: [
+                'cardId',
+                'count'
+            ],
+            where: {
+                userId: userId,
+                number: deck_num
+            }
+        }).then(function (data) {
+            let result = [];
+
+            data.forEach(function (cards) {
+                result.push({
+                    'cardId':cards.dataValues.cardId,
+                    'count': cards.dataValues.count
+                });
+            });
+            return callback(null, result);
+        }).catch(function(error){
+            callback(error, null);
+        });
     }
 
-    // Установить колоду по умолчанию (в сессию)
-    setDefaultDeck(userId, deck) {
+    // Проверить существование колоды
+    checkDeckNum(param, callback){
+        let userId   = param.userId;
+        let deck_num = param.deck_num;
 
+        let decks    = this.decks;
+
+        decks.findOne({
+            attributes: [
+               'number'
+            ],
+            where: {
+                userId: userId,
+                number: deck_num
+            },
+            limit: 1
+        }).then(function (data) {
+           if(data){
+               callback(null, true);
+           } else {
+               callback(null, false);
+           }
+        }).catch(function(error){
+            callback(error, null);
+        });
     }
 
     // Создать новую колоду
-    createNewDeck(userId, deck) {
+    createNewDeck(param, callback) {
 
     }
 
