@@ -52,7 +52,22 @@ function checkBody(body, param) {
     return true;
 }
 
-function checkCardsAndCollection(cards, collection) {
+function checkDeckCards(deck_cards, collection) {
+    for (let deck_card_key in deck_cards){
+        let is_found_card = false;
+        for (let collection_key in collection){
+            if(deck_cards[deck_card_key].cardId == collection[collection_key].cardId){
+                is_found_card = true;
+                if(deck_cards[deck_card_key].count > collection[collection_key].count){
+                    return false;
+                }
+                break;
+            }
+        }
+        if(!is_found_card){
+            return false;
+        }
+    }
     return true;
 }
 
@@ -134,7 +149,7 @@ router.post('/:deck_num([0-9]{1,1})', function (req, res, next) {
             if (err) return next(err);
 
             // Проверяем есть ли карты колоды в коллекции
-            if(!checkCardsAndCollection(req.body.cards, collection)){
+            if(!checkDeckCards(req.body.cards, collection)){
                 let status = 400;
                 let json = ResFormat(status, MESSAGE + " contains cards that are not in the collection");
                 return res.status(status).send(JSON.stringify(json));
