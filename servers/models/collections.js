@@ -219,7 +219,6 @@ class Collections{
 
                 return Promise.all(promises);
             }).then(function (result) {
-                console.log(result);
                 return callback(err, true);
             }).catch(function (err) {
                 return callback(err, false);

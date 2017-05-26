@@ -28,12 +28,8 @@ function checkBody(body, param) {
         return false;
     }
 
-    // проверяем кол-во карт
-    if(body.cards.length < param.min_count_cards || body.cards.length > param.max_count_cards){
-        return false;
-    }
-
     // смотрим структуру массива/карт
+    let card_count = 0;
     for (let key in body.cards){
         let card = body.cards[key];
         if(!card.cardId || !card.count){
@@ -47,6 +43,13 @@ function checkBody(body, param) {
         if(card.count > param.max_duplicate){
             return false;
         }
+
+        card_count += card.count;
+    }
+
+    // проверяем кол-во карт
+    if(card_count < param.min_count_cards || card_count > param.max_count_cards){
+        return false;
     }
 
     return true;
@@ -114,13 +117,28 @@ router.delete('/:deck_num([0-9]{1,1})', function (req, res, next) {
         userId: USER_ID,
         deck_num: DECK_NUM
     };
+
+    Decks.delDeck(param, function (err, is_deleted) {
+        if (err) return next(err);
+
+        if(!is_deleted){
+            let status = 404;
+            let json = ResFormat(status, 'Deck #' + DECK_NUM + " didn't find");
+            return res.status(status).send(JSON.stringify(json));
+        }
+
+        let status = 200;
+        let json = ResFormat(status, 'Deck #' + DECK_NUM + ' deleted');
+        return res.status(status).send(JSON.stringify(json));
+    });
 });
 
-// Добавить новую колоду
-router.post('/:deck_num([0-9]{1,1})', function (req, res, next) {
+// Валидация
+router.param('deck_num', function (req, res, next) {
+    if (["GET", "DELETE"].indexOf(req.method)!=-1) return next();
+
     const USER_ID = req.session.get('userId');
     const DECK_NUM = req.params.deck_num;
-    const MESSAGE = "Can't create new deck #" + DECK_NUM + ", because this deck "
 
     let param = {
         userId: USER_ID,
@@ -130,7 +148,7 @@ router.post('/:deck_num([0-9]{1,1})', function (req, res, next) {
     //Проверяем валидность тела запроса
     if(!checkBody(req.body)){
         let status = 400;
-        let json = ResFormat(status, MESSAGE + "has invalid body");
+        let json = ResFormat(status, "End-point has invalid body");
         return res.status(status).send(JSON.stringify(json));
     }
 
@@ -138,41 +156,99 @@ router.post('/:deck_num([0-9]{1,1})', function (req, res, next) {
     Decks.checkDeckNum(param, function (err, is_deck_exist) {
         if (err) return next(err);
 
-        if (is_deck_exist) {
+        const MESSAGE = "Deck #" + DECK_NUM + " ";
+
+        if (is_deck_exist && req.method == 'POST') {
             let status = 400;
             let json = ResFormat(status, MESSAGE + "is already exist");
             return res.status(status).send(JSON.stringify(json));
         }
 
-        // Если колода существует, то проверяем а есть ли вообще такие карты в коллекции пользователя (да еще в нужном кол-ве)
+        if(!is_deck_exist && ["PATCH", "PUT"].indexOf(req.method)!=-1){
+            let status = 404;
+            let json = ResFormat(status, MESSAGE + "didn't find");
+            return res.status(status).send(JSON.stringify(json));
+        }
+
+        // Проверяем а есть ли вообще такие карты в коллекции пользователя (да еще в нужном кол-ве)
         Collections.getCollection(param, function (err, collection) {
             if (err) return next(err);
 
             // Проверяем есть ли карты колоды в коллекции
             if(!checkDeckCards(req.body.cards, collection)){
                 let status = 400;
-                let json = ResFormat(status, MESSAGE + " contains cards that are not in the collection");
+                let json = ResFormat(status, MESSAGE + "contains cards that are not in the collection");
                 return res.status(status).send(JSON.stringify(json));
             }
 
-            let status = 200;
-            let json = ResFormat(status, 'deck #'+DECK_NUM, collection);
-            return res.status(status).send(JSON.stringify(json));
-
+            return next();
         });
+    });
+});
+
+// Добавить новую колоду
+router.post('/:deck_num([0-9]{1,1})', function (req, res, next) {
+    const USER_ID = req.session.get('userId');
+    const DECK_NUM = req.params.deck_num;
+
+    let param = {
+        userId: USER_ID,
+        deck_num: DECK_NUM,
+        cards: req.body.cards
+    };
+
+    Decks.createNewDeck(param, function (err, data) {
+        if (err) return next(err);
+
+        let status = 200;
+        let json = ResFormat(status, 'New deck #'+DECK_NUM+' created');
+        return res.status(status).send(JSON.stringify(json));
     });
 });
 
 // Изменить колоду полностью
 router.put('/:deck_num([0-9]{1,1})', function (req, res, next) {
     const USER_ID = req.session.get('userId');
-    const CARD_ID = req.params.deck_num;
+    const DECK_NUM = req.params.deck_num;
+
+    let param = {
+        userId:     USER_ID,
+        deck_num:   DECK_NUM,
+        cards:      req.body.cards
+    };
+
+    //Удаляем старую колоду
+    Decks.delDeck(param, function (err) {
+        if (err) return next(err);
+
+        Decks.createNewDeck(param, function (err, data) {
+            if (err) return next(err);
+
+            let status = 200;
+            let json = ResFormat(status, 'Old deck #'+DECK_NUM+' deleted and added new deck #'+DECK_NUM);
+            return res.status(status).send(JSON.stringify(json));
+        });
+    });
 });
 
 // Добавить часть в колоду
-router.patch('/:deck_num([0-9]{1,1})', function (req, res, next) {
+/*router.patch('/:deck_num([0-9]{1,1})', function (req, res, next) {
     const USER_ID = req.session.get('userId');
-    const CARD_ID = req.params.deck_num;
-});
+    const DECK_NUM = req.params.deck_num;
+
+    let param = {
+        userId:     USER_ID,
+        deck_num:   DECK_NUM,
+        cards:      req.body.cards
+    };
+
+    Decks.changeDeck(param, function (err) {
+        if (err) return next(err);
+
+        let status = 200;
+        let json = ResFormat(status, 'Deck #'+DECK_NUM+' was changing');
+        return res.status(status).send(JSON.stringify(json));
+    });
+});*/
 
 module.exports = router;
