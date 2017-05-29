@@ -77,6 +77,11 @@ class Nav extends React.Component {
             );
             user_block.push(
                 <li className="nav-item">
+                    <NavLink to='/collection' className="nav-link">{lang.nav.menu.collection}</NavLink>
+                </li>
+            );
+            user_block.push(
+                <li className="nav-item">
                     <NavLink to='/game' className="nav-link">{lang.nav.menu.game}</NavLink>
                 </li>
             );

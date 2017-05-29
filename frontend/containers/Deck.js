@@ -1,13 +1,21 @@
 import React, { Component } from 'react'
 import className from 'classnames'
 import RightSide from '../containers/RightSide'
+import Helmet from "react-helmet"
 import { connect } from 'react-redux'
 
 class Deck extends Component {
     render() {
-       return (
+        let lang = this.props.lang.deck;
+        return (
             <div>
-                Hi....
+                <Helmet
+                    title={lang.title}
+                />
+
+                <h2>
+                    {lang.header}
+                </h2>
             </div>
         );
     }
@@ -16,7 +24,7 @@ class Deck extends Component {
 
 function mapStateToProps(state) {
     return {
-        deck: state.deck
+        lang: state.lang
     }
 }
 

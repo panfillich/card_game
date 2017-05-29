@@ -10,6 +10,7 @@ import Articles from './containers/Articles'
 import Article  from './containers/Article'
 import Nav      from './containers/Nav'
 import Deck     from './containers/Deck'
+import Collection from './containers/Collection'
 
 import NotFound from './components/NotFound'
 
@@ -34,10 +35,11 @@ export const routes = (
             <Route path='/article/:article_id' component={Article} />
             <Route path='/articles(/:page)'    component={Articles} />
 
-            <Route path='/link'     component={Link} />
-            <Route path='/nav'      component={Nav} />
-            <Route path='/deck' onEnter={ checkAuth }  component={Deck} />
-            <Route path='*'         component={NotFound} />
+            <Route path='/link' component={Link} />
+            <Route path='/nav'  component={Nav} />
+            <Route path='/deck' component={Deck}    onEnter={ checkAuth }/>
+            <Route path='/collection' component={Collection}    onEnter={ checkAuth }/>
+            <Route path='*'     component={NotFound} />
         </Route>
     </div>
 )

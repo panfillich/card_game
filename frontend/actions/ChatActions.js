@@ -294,18 +294,8 @@ class ToServer{
 }
 
 
-
 export default {
     Client : Client,
     ToServer : ToServer,
     FromServer : FromServer
-
-    /*addFriendMessage: addFriendMessage,
-    addUserMessage: addUserMessage,
-    changeFriendStatus: changeFriendStatus,
-    changeMyStatus: changeMyStatus,
-    setStateFriendsToOffline :setStateFriendsToOffline,
-    setActualFriendList : setActualFriendList,
-    logOut: logOut,
-    disconnect: disconnect*/
 }

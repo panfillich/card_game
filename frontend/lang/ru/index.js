@@ -11,7 +11,8 @@ module.exports = {
             main: 'Главная',
             news: 'Новости',
             chat: 'Чат',
-            deck: 'Колода',
+            deck: 'Колоды',
+            collection: 'Коллекция',
             game: 'Игра',
             reg:  'Регистрация',
             auth: 'Авторизация',
@@ -64,7 +65,17 @@ module.exports = {
                 not_found: 'Пользователь не найден.'
             }
         },
-     },
+    },
+
+    deck: {
+        title: 'Колоды',
+        header: 'Колоды'
+    },
+
+    collection: {
+        title:  'Коллекция',
+        header:  'Коллекция'
+    },
 
     reg: {
         title: 'Регистрация',

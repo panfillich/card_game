@@ -11,7 +11,8 @@ module.exports = {
             main    : 'Home',
             news    : 'News',
             chat    : 'Chat',
-            deck    : 'Deck',
+            deck    : 'Decks',
+            collection : 'Collection',
             game    : 'Game',
             reg     : 'Registration',
             auth    : 'Authorization',
@@ -64,6 +65,16 @@ module.exports = {
             }
         },
 
+    },
+
+    deck: {
+        title: 'Decks',
+        header: 'Decks'
+    },
+
+    collection: {
+        title: 'Collection',
+        header: 'Collection'
     },
 
     reg: {
