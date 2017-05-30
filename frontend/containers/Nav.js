@@ -72,7 +72,7 @@ class Nav extends React.Component {
             );
             user_block.push(
                 <li className="nav-item">
-                    <NavLink to='/deck' className="nav-link">{lang.nav.menu.deck}</NavLink>
+                    <NavLink to='/decks' className="nav-link">{lang.nav.menu.decks}</NavLink>
                 </li>
             );
             user_block.push(

@@ -3,8 +3,9 @@ class Collections{
     switchToDB(db){
         if(db){
             this.db = db;
-            this.collections = this.db.collections;
-            this.cards = this.db.cards;
+            this.collections    = this.db.collections;
+            this.cards          = this.db.cards;
+            this.decks          = this.db.decks;
             return true;
         }
         return false;
@@ -124,43 +125,88 @@ class Collections{
         let userId = param.userId;
         let cardId = param.cardId;
 
+        let db          = this.db;
         let collections = this.collections;
+        let decks       = this.decks;
+
 
         // Смотрим есть ли эта карта в коллекции
         this.checkCountCard(param, function (err, count) {
-            if(err){
-                return callback(err, null);
-            }
+            if (err) return callback(err, null)
 
-            if (count == 0){ // Запись уже удалена
-                callback(null, false);
-            } else if(count == 1){ // Удаляем запись
-                collections.destroy({
+            // Если запись уже удалена
+            if (count == 0)  return callback(null, false);
+
+            // Тут начинается самое веселое (т.к. мы сохраняем место на диске по-максимуму)
+            db.sequelize.transaction(function (t) {
+                let promises = [];
+
+
+                // Работа с коллекцией
+                if (count == 1) { // Удаляем запись
+                    promises.push(
+                        collections.destroy({
+                            transaction: t,
+                            where: {
+                                userId: userId,
+                                cardId: cardId
+                            }
+                        })
+                    );
+                } else {   // Уменьшаем count
+                    promises.push(
+                        collections.update(
+                            {
+                                count: count - 1,
+                            },
+                            {
+                                transaction: t,
+                                where: {
+                                    userId: userId,
+                                    cardId: cardId
+                                }
+                            }
+                        )
+                    );
+                }
+
+
+                // Работа с колодами
+                // Тут мы не делаем много навороченной логики)))
+
+                // Удаляем запись, если карта в единственном экземпляре
+                promises.push(decks.destroy({
+                    transaction: t,
                     where: {
                         userId: userId,
-                        cardId: cardId
+                        cardId: cardId,
+                        count: 1
                     }
-                }).then(function (result) {
-                    callback(null, true);
-                }).catch(function(error){
-                    callback(error, null);
-                });
-            } else {   // Уменьшаем count
-                collections.update(
-                {
-                    count:  count - 1,
-                },
-                {
-                    where: {
-                        userId: userId,
-                        cardId: cardId
+                }));
+
+                // Уменьшаем кол-во копий 1й карты
+                promises.push(decks.update(
+                    {
+                        count: db.sequelize.literal('`count` - 1')
+                    },
+                    {
+                        transaction: t,
+                        where: {
+                            userId: userId,
+                            cardId: cardId,
+                            count: {
+                                gt: 1
+                            }
+                        }
                     }
-                }).then(function (result) {
-                    callback(null, true);
-                }).catch(function(error){
-                    callback(error, null);
-                });
-            }
+                ));
+
+                return Promise.all(promises);
+            }).then(function (result) {
+                return callback(err, true);
+            }).catch(function (err) {
+                return callback(err, false);
+            });
         });
     }
 

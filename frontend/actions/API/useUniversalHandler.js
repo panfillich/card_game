@@ -12,7 +12,7 @@ export default function (URL, CONFIG, callback) {
                     return Promise.reject(new Error('server_error'));
             }
         }
-        return Promise.reject('serv_error');
+        return Promise.reject('server_error');
     }).then(function(data) {
         callback(null, data);
     }).catch(function (reason) {

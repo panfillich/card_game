@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import className from 'classnames'
-import RightSide from '../containers/RightSide'
 import Helmet from "react-helmet"
 import { connect } from 'react-redux'
+import API from  '../actions/API'
 
 class Deck extends Component {
     render() {
-        let lang = this.props.lang.deck;
+        let lang = this.props.lang.decks;
         return (
             <div>
                 <Helmet

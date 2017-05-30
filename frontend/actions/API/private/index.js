@@ -30,6 +30,26 @@ class Private{
     getUserInfo(callback){
         this.send('user/me', {method: 'GET'}, callback);
     }
+
+
+    // --- Работа с коллекцией ---
+
+    // Получить всю коллекцию
+    getCollection(callback){
+        this.send('collection', {method: 'GET'}, callback);
+    }
+
+    // Удалить карту из коллекции
+    delCardInCollection(cardId, callback){
+        this.send('collection/card/' + cardId, {method: 'DELETE'}, callback);
+    }
+
+    // --- Работа с колодами ---
+
+    // Получить краткую информацию о всех колодах
+    getDecksInfo(cardId, callback){
+        this.send('decks' + cardId, {method: 'GET'}, callback);
+    }
 }
 
 /*class Private{

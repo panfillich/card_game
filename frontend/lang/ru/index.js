@@ -11,7 +11,7 @@ module.exports = {
             main: 'Главная',
             news: 'Новости',
             chat: 'Чат',
-            deck: 'Колоды',
+            decks: 'Колоды',
             collection: 'Коллекция',
             game: 'Игра',
             reg:  'Регистрация',
@@ -67,7 +67,7 @@ module.exports = {
         },
     },
 
-    deck: {
+    decks: {
         title: 'Колоды',
         header: 'Колоды'
     },
