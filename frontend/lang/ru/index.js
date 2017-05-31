@@ -69,12 +69,57 @@ module.exports = {
 
     decks: {
         title: 'Колоды',
-        header: 'Колоды'
+        header: 'Колоды',
+
+        loading: {
+            search: 'Поиск информации о колодах на сервере',
+            delete: 'Удаление колоды'
+        },
+
+        count_cards: '[число карт]:',
+
+        action: {
+            add: 'Добавить',
+            delete: 'Удалить',
+            edit: 'Изменить'
+        }
+    },
+
+    deck: {
+        title: 'Колода',
+        header: 'Колода',
+
+        loading: {
+            collection: 'Поиск коллекции на сервере',
+            deck: 'Поиск колоды на сервере',
+            save: 'Сохранение колоды'
+        },
+
+        back: 'назад',
+        h_collection: 'Все карты в коллекции',
+        h_deck: 'Колода',
+
+        number: '[номер]',
+        count_cards: '[число карт]',
+        count_cards_in_deck: '[карт в колоде]',
+
+        action: {
+            add: 'добавить',
+            delete: 'удалить',
+            save_deck: 'Сохранить колоду'
+        }
     },
 
     collection: {
         title:  'Коллекция',
-        header:  'Коллекция'
+        header:  'Коллекция',
+
+        loading: {
+            search: 'Поиск коллекции на сервере',
+            delete: 'Удаление карты из коллекции'
+        },
+
+        count: '[число карт]',
     },
 
     reg: {

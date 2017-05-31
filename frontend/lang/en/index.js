@@ -67,14 +67,60 @@ module.exports = {
 
     },
 
+
     decks: {
         title: 'Decks',
-        header: 'Decks'
+        header: 'Decks',
+
+        loading: {
+            search: 'Searching decks info in server',
+            delete: 'Deleting deck'
+        },
+
+        count_cards: '[count cards]:',
+
+        action: {
+            add: 'add',
+            delete: 'delete',
+            edit: 'edit'
+        }
+    },
+
+    deck: {
+        title: 'Deck',
+        header: 'Deck',
+
+        loading: {
+            collection: 'Searching collection in server',
+            deck: 'Searching deck in server',
+            save: 'Saving deck'
+        },
+
+        back: 'back',
+        h_collection: 'All cards in collection',
+        h_deck: 'Deck',
+
+        number: '[number]',
+        count_cards: '[count cards]',
+        count_cards_in_deck: '[cards in deck]',
+
+        action: {
+            add: 'add',
+            delete: 'delete',
+            save_deck: 'Save deck'
+        }
     },
 
     collection: {
-        title: 'Collection',
-        header: 'Collection'
+        title:  'Collection',
+        header:  'Collection',
+
+        loading: {
+            search: 'Searching collection in server',
+            delete: 'Deleting card from collection'
+        },
+
+        count: '[count cards]'
     },
 
     reg: {

@@ -20,8 +20,8 @@ class Collection extends Component {
     }
 
     getCollection(){
-        let {startLoading, finishLoading} = this.props;
-        startLoading();
+        let {lang, startLoading, finishLoading} = this.props;
+        startLoading(lang.collection.loading.search);
         API.private.getCollection((err, data) => {
             if(err){ /*Показать ошибку*/finishLoading();}
             else {
@@ -33,8 +33,8 @@ class Collection extends Component {
     }
 
     delCard(cardId){
-        let {startLoading, finishLoading} = this.props;
-        startLoading();
+        let {lang, startLoading, finishLoading} = this.props;
+        startLoading(lang.collection.loading.delete);
         API.private.delCardInCollection(cardId, (err, data) => {
             if(err){ /*Показать ошибку*/finishLoading();}
             else {
@@ -82,7 +82,7 @@ class Collection extends Component {
             }
             collection_in_html_format.push(
                 <li className = "list-group-item justify-content-between">
-                    id:{card.cardId} count:{card.count} {button}
+                    [id]:{card.cardId}, {lang.count}:{card.count} {button}
                 </li>
             );
         });

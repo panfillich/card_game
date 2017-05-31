@@ -22,9 +22,14 @@ class Private{
         if(!token){
             return callback(new Error('invalid_token'),null)
         }
+
+        if(final_config.body){
+            final_config.body = JSON.stringify(final_config.body);
+        }
+
         final_config.headers.token = token;
         let final_url = this.SERVER + '/' + url;
-        useUniversalHandler(final_url, final_config, callback);
+        return useUniversalHandler(final_url, final_config, callback);
     }
 
     getUserInfo(callback){
@@ -47,8 +52,28 @@ class Private{
     // --- Работа с колодами ---
 
     // Получить краткую информацию о всех колодах
-    getDecksInfo(cardId, callback){
-        this.send('decks' + cardId, {method: 'GET'}, callback);
+    getDecksInfo(callback){
+        this.send('decks', {method: 'GET'}, callback);
+    }
+
+    // Получить детальную информацию о колоде
+    getDeckInfoDetail(deck_num, callback){
+        this.send('decks/' + deck_num, {method: 'GET'}, callback);
+    }
+
+    // Cохранить новую колоду
+    saveNewDeck(deck_num, body, callback){
+        this.send('decks/' + deck_num, {method: 'POST', body: body}, callback);
+    }
+
+    // Полностью обновить старую колоду
+    updateOldDeck(deck_num, body, callback){
+        this.send('decks/' + deck_num, {method: 'PUT', body: body}, callback);
+    }
+
+    // Удалить старую колоду
+    deleteDeck(deck_num, callback){
+        this.send('decks/' + deck_num, {method: 'DELETE'}, callback);
     }
 }
 

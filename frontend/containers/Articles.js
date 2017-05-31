@@ -47,7 +47,7 @@ class Articles extends Component {
                 this.setState(function () {
                     finishLoading();
                 });
-            } //
+            }
         });
     }
 

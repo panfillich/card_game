@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
+import {bindActionCreators} from 'redux'
 import className from 'classnames'
 import Helmet from "react-helmet"
 import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 import LoaderAction   from '../actions/LoaderAction'
 import API from  '../actions/API'
+import { Link } from 'react-router'
 
 class Decks extends Component {
 
@@ -16,28 +19,52 @@ class Decks extends Component {
 
         this.getDecks       = this.getDecks.bind(this);
         this.delDeck        = this.delDeck.bind(this);
-        this.createNewDeck  = this.createNewDeck.bind(this);
     }
 
     getDecks(){
-        let {startLoading, finishLoading} = this.props;
-        startLoading();
-        API.private.getDecksInfo(function (err, data) {
+        let {lang, startLoading, finishLoading} = this.props;
+        startLoading(lang.decks.loading.search);
+        API.private.getDecksInfo((err, data) => {
             if(err){ /*Показать ошибку*/finishLoading();}
             else {
-                this.setState({decks : data.detail.decks}, function () {
+                this.setState({decks : data.detail.decks_info}, function () {
                     finishLoading();
                 });
             }
         });
     }
 
-    delDeck(deck_num){
+    delDeck(deck_number){
+        let {lang, startLoading, finishLoading} = this.props;
+        startLoading(lang.decks.loading.delete);
+        API.private.deleteDeck(deck_number, (err, data) => {
+            if(err){ /*Показать ошибку*/finishLoading();}
+            else {
+                let deck_key = false;
+                for(let key in this.state.decks){
+                    let deck = this.state.decks[key];
+                    if(deck.deck_number == deck_number){
+                        deck_key = key;
+                    }
+                }
 
+                if(deck_key!==false){
+                    this.state.decks.splice(deck_key, 1);
+                }
+
+                this.setState({}, function () {
+                    finishLoading();
+                });
+            }
+        });
     }
 
-    createNewDeck(deck_num){
+    editDeck(deck_number){
+        browserHistory.push('/deck/' + deck_number + '/edit');
+    }
 
+    addDeck(deck_number){
+        browserHistory.push('/deck/' + deck_number + '/add');
     }
 
     componentWillMount(){
@@ -47,12 +74,32 @@ class Decks extends Component {
     render() {
         let lang = this.props.lang.decks;
 
-        let decks_in_html_format;
+        let decks_in_html_format = [];
 
-        for(let i=1; i <= 9; i++){
-
+        for(let deck_number=1; deck_number <= 9; deck_number++){
+            let is_found = false;
+            for(let key in this.state.decks){
+                let deck =  this.state.decks[key];
+                if(deck.deck_number == deck_number){
+                    is_found = true;
+                    decks_in_html_format.push(
+                        <li className = "list-group-item justify-content-between">
+                            {deck.deck_number}.) {lang.count_cards}:{deck.cards_count}...
+                            <button onClick={()=>{this.editDeck(deck.deck_number)}}>{lang.action.edit}</button>
+                            <button onClick={()=>{this.delDeck(deck.deck_number)}}>{lang.action.delete}</button>
+                        </li>
+                    );
+                    break;
+                }
+            }
+            if(!is_found) {
+                decks_in_html_format.push(
+                    <li className="list-group-item justify-content-between">
+                        {deck_number}.) Empty deck... <button onClick={()=>{this.addDeck(deck_number)}}>{lang.action.add}</button>
+                    </li>
+                );
+            }
         }
-
 
         return (
             <div>
@@ -63,6 +110,16 @@ class Decks extends Component {
                 <h2>
                     {lang.header}
                 </h2>
+
+                <div className="container align-top" id="content">
+                    <div className="row">
+                        <div className="col-12">
+                            <ul className="list-group">
+                                {decks_in_html_format}
+                            </ul>
+                        </div>
+                    </div>
+                 </div>
             </div>
         );
     }
