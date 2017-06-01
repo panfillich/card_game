@@ -1,18 +1,31 @@
 import React, { Component } from 'react'
 import Helmet from "react-helmet"
-import Content from '../containers/Content'
-export default class Auth extends Component {
+import { connect } from 'react-redux'
+import {Link} from 'react-router'
+
+class Auth extends Component {
     render() {
+
+        let land = this.props.lang.main;
+
         return (
             <div>
                 <Helmet
-                    title="Главная"
+                    title={land.title}
                 />
 
-                <h2>Главная</h2>
-                <p>Давай авторизовывайся</p>
+                <h2>{land.header}</h2>
+                <p><Link to="/auth">{land.description}</Link></p>
 
             </div>
         )
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        lang: state.lang
+    }
+}
+
+export default connect(mapStateToProps)(Auth);

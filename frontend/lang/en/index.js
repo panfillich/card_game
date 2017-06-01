@@ -5,6 +5,13 @@ module.exports = {
         text: 'Loading...'
     },
 
+    main: {
+        title   : 'Main',
+        header  : 'Main',
+
+        description: "Let's go auth"
+    },
+
     nav:{
         user_greeting: 'Hello, ',
         menu: {

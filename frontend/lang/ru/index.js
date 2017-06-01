@@ -1,6 +1,13 @@
 module.exports = {
     cur_lang: 'ru',
 
+    main: {
+        title   : 'Главная',
+        header  : 'Главная',
+
+        description: "Давай авторизовывайся"
+    },
+
     loader: {
         text: 'Загрузка...'
     },
