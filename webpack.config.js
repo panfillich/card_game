@@ -21,6 +21,7 @@ module.exports = {
         path: __dirname + "/public",
         // publicPath: "/",
         filename: "[name].js",
+        chunkFilename: '[name].js', //-[chunkhash]
         //Весь модуль будет засунут в переменную window.my_library_name
         //library:  "[name]",
         //Папка для динамической загрузки
@@ -57,6 +58,8 @@ module.exports = {
             "window.Tether": 'tether',
             Tether: 'tether'
         }),
+
+        //new webpack.optimize.CommonsChunkPlugin({name: 'main', async: true}),
 
         //--Убирает комментарии и сжимает css
         /*new OptimizeCssAssetsPlugin({
@@ -95,7 +98,7 @@ module.exports = {
                         ],
                         plugins: []
                     }
-                }],
+                }]
             },
             {
                 test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,

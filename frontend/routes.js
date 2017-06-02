@@ -11,6 +11,7 @@ import Article  from './containers/Article'
 import Nav      from './containers/Nav'
 import Deck     from './containers/Deck'
 import Decks     from './containers/Decks'
+import Game     from './containers/Game'
 import Collection from './containers/Collection'
 
 import NotFound from './components/NotFound'
@@ -38,9 +39,11 @@ export const routes = (
 
             <Route path='/link' component={Link} />
             <Route path='/nav'  component={Nav} />
-            <Route path='/decks' component={Decks}    onEnter={ checkAuth }/>
-            <Route path='/deck/:deck_num/*' component={Deck}    onEnter={ checkAuth }/>
-            <Route path='/collection' component={Collection}    onEnter={ checkAuth }/>
+
+            <Route path='/game'             component={Game}        onEnter={ checkAuth }/>
+            <Route path='/decks'            component={Decks}       onEnter={ checkAuth }/>
+            <Route path='/deck/:deck_num/*' component={Deck}        onEnter={ checkAuth }/>
+            <Route path='/collection'       component={Collection}  onEnter={ checkAuth }/>
             <Route path='*'     component={NotFound} />
         </Route>
     </div>
