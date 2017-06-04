@@ -40,7 +40,7 @@ export const routes = (
             <Route path='/link' component={Link} />
             <Route path='/nav'  component={Nav} />
 
-            <Route path='/game'             component={Game}        onEnter={ checkAuth }/>
+            <Route path='/game'             component={Game}        /*onEnter={ checkAuth }*//>
             <Route path='/decks'            component={Decks}       onEnter={ checkAuth }/>
             <Route path='/deck/:deck_num/*' component={Deck}        onEnter={ checkAuth }/>
             <Route path='/collection'       component={Collection}  onEnter={ checkAuth }/>

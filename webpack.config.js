@@ -25,7 +25,7 @@ module.exports = {
         //Весь модуль будет засунут в переменную window.my_library_name
         //library:  "[name]",
         //Папка для динамической загрузки
-        publicPath: '/'
+        publicPath:  '/'
     },
 
     watch: true,    //Автообновление
@@ -86,7 +86,7 @@ module.exports = {
 
     //ES7(ES2016) to ES6(ES2015)
     module: {
-        noParse: [/.*(pixi\.js).*/],
+        // noParse: [/.*(pixi\.js).*/],
         rules: [
             {   test: /\.js$/,
                 use: [{
@@ -122,6 +122,10 @@ module.exports = {
                 })
 
             },
+            {
+                test: /\.png$/,
+                use: 'file-loader'
+            }
             // {
             //     test: /\.json$/,
             //     use: [{

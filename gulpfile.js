@@ -63,7 +63,7 @@ gulp.task('webpack-dev-server', function (callback) {
              aggregateTimeout: 30,
              poll: true // is this the same as specifying --watch-poll?
         },
-        publicPath: "/public/",
+        publicPath: "/public",
         contentBase: __dirname + "/public/",
         stats: {
             colors: true
@@ -86,6 +86,12 @@ gulp.task('webpack-dev-server', function (callback) {
             },
             {   context: ['/*.*'],
                 target: 'http://localhost:3000/public'
+            },
+            {   context: ['/public/*.*'],
+                target: 'http://localhost:3000',
+                bypass: function(req, res, proxyOptions) {
+                    return '/public/';
+                }
             },
             {   context: ['/**'],
                 target: 'http://localhost:3000',
