@@ -26,6 +26,8 @@ class Game extends Component {
         }, 'game');
     }
 
+
+
     componentDidMount() {
         // Setup PIXI Canvas in componentDidMount
         /*this.renderer = PIXI.autoDetectRenderer(1366, 768);
