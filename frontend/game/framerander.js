@@ -1,11 +1,7 @@
 class FrameRender {
 
     constructor(){
-        this.repository = {
-            startEvents: [],
-            mainEvents: [],
-            endEvents: []
-        }
+        this.clear();
     }
 
 
@@ -57,6 +53,16 @@ class FrameRender {
     }
 
 
+    // Очистить события
+    clear(){
+        this.repository = {
+            startEvents: [],
+            mainEvents: [],
+            endEvents: []
+        }
+    }
+
+
     //ASK - по возрастанию
     //DESK - по убыванию
     static сallEvents(events){
@@ -64,6 +70,7 @@ class FrameRender {
             event();
         });
     }
+
 }
 
 module.exports = FrameRender;

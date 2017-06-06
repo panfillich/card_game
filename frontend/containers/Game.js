@@ -13,19 +13,85 @@ import { browserHistory } from 'react-router'
 class Game extends Component {
     constructor(props) {
         super(props);
-        this.game = {};
+        this.game = null;
+        this.state = {
+            button_start:   true,
+            button_pause:   false,
+            button_unpause: false,
+            button_reload:  false,
+            button_stop:    false
+        }
 
-        this.startGame = this.startGame.bind(this);
+        this.startGame    = this.startGame.bind(this);
+        this.pauseGame    = this.pauseGame.bind(this);
+        this.unpauseGame  = this.unpauseGame.bind(this);
+        this.reloadGame   = this.reloadGame.bind(this);
+        this.stopGame     = this.stopGame.bind(this);
     }
 
     startGame(){
         require.ensure(['../game'], require=>{
             let GAME = require('../game/index.js');
 
-            this.game = new GAME({canvas: this.refs.gameCanvas});
+            this.setState({
+                button_start:   false,
+                button_pause:   true,
+                button_reload:  true,
+                button_stop:    true
+            }, ()=>{
+                this.game = new GAME({canvas: this.refs.gameCanvas});
+            });
         }, 'game');
     }
 
+    pauseGame(){
+        this.setState({
+            button_pause:   false,
+            button_unpause: true
+        },() => {
+            if(this.game){
+                this.game.pause();
+            }
+        });
+    }
+
+    unpauseGame(){
+        this.setState({
+            button_pause:   true,
+            button_unpause: false
+        },() => {
+            if(this.game){
+                this.game.unpause();
+            }
+        });
+    }
+
+    reloadGame(){
+        if(this.state.button_unpause){
+            this.setState({
+                button_pause:   true,
+                button_unpause: false
+            },() => {
+                if(this.game){
+                    this.game = this.game.reload();
+                }
+            });
+        }
+    }
+
+    stopGame(){
+        this.setState({
+            button_start:   true,
+            button_pause:   false,
+            button_unpause: false,
+            button_reload:  false,
+            button_stop:    false
+        },() =>{
+            if(this.game){
+                this.game = this.game.destroy();
+            }
+        });
+    }
 
 
     componentDidMount() {
@@ -39,13 +105,44 @@ class Game extends Component {
         this.stage.height = 768;*/
     }
 
-    render() { //
-         return (
-            <div>
-                <div className="game-canvas-container" ref="gameCanvas">
-                </div>
-                <button onClick={this.startGame}>Start game</button>
+    render() {
+        let button_html = [];
+
+        if (this.state.button_start){
+            button_html.push(
+             <button onClick={this.startGame}>Start</button>
+            );
+        }
+
+        if (this.state.button_pause){
+            button_html.push(
+                <button onClick={this.pauseGame}>Pause</button>
+            );
+        }
+        if (this.state.button_unpause){
+            button_html.push(
+                <button onClick={this.unpauseGame}>Unpause</button>
+            );
+        }
+
+        if (this.state.button_reload){
+            button_html.push(
+                <button onClick={this.reloadGame}>Reload</button>
+            );
+        }
+
+        if (this.state.button_stop){
+            button_html.push(
+                <button onClick={this.stopGame}>Stop</button>
+            );
+        }
+
+        return (
+        <div>
+            <div className="game-canvas-container" ref="gameCanvas">
             </div>
+            {button_html}
+        </div>
         );
     }
 }

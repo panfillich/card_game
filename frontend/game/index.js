@@ -5,7 +5,6 @@ let path = require('./path');
 let PIXI = require('pixi.js');
 
 let FrameRender = require('./framerander');
-let frameRender = new FrameRender();
 let subMath = require('./subMath');
 /*if(true) {
     require.ensure(['stats.js'], function(require) {
@@ -95,6 +94,8 @@ function animate() {
 */
 class Game {
     constructor(param) {
+        this.param = param;
+
         this.html = {
             main_div: param.canvas,
             fps: param.fps
@@ -113,14 +114,19 @@ class Game {
             }
         };
 
+        this.spead = 1;
+        this.is_pause = false;
+
+        this._animate = this._animate.bind(this);
+
 
         this.renderer = PIXI.autoDetectRenderer({backgroundColor: 0x1099bb});
         // this.renderer = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
         // this.renderer.resize(900,300);
         this.html.main_div.appendChild(this.renderer.view);
         this.stage = new PIXI.Container();
-
-        this.resize();
+        this.frameRender = new FrameRender();
+        this._resize();
 
 
         //
@@ -129,11 +135,32 @@ class Game {
         this.startGame();
 
         window.onresize = () => {
-            this.resize();
+            this._resize();
         }
     }
 
-    resize(){
+    pause(){
+        this.is_pause = true;
+    }
+
+    unpause(){
+        this.is_pause = false;
+        this._animate();
+    }
+
+    destroy(){
+        this.is_pause = true;
+        this.renderer.destroy();
+        for (let i = this.stage.children.length - 1; i >= 0; i--) {
+            this.stage.removeChild(this.stage.children[i]);
+        }
+    }
+
+    reload(){
+        this.renderer.destroy();
+    }
+
+    _resize(){
         let px_width = this.html.main_div.offsetWidth;
         let px_height = px_width * this.screen.parity_of_parties.height / this.screen.parity_of_parties.width;
 
@@ -144,9 +171,7 @@ class Game {
 
         this.renderer.resize(px_width, px_height);
 
-
         let coefficient = px_width/px_width_old;
-
 
         this.stage.children.forEach((child)=>{
              child.position.x = child.position.x * coefficient;
@@ -156,12 +181,9 @@ class Game {
              child.width  = child.width  * coefficient;
         });
 
-    }
-
-    // % -> px
-    // ширина = 1000%, ширина != 1000% всё зависит от разрешения 16:9
-    scale(percentages){
-
+        if(this.is_pause) {
+            this.renderer.render(this.stage);
+        }
     }
 
     createNewBunny() {
@@ -177,36 +199,31 @@ class Game {
     }
 
 
-
+    _animate(){
+        if(!this.is_pause) {
+            this.frameRender.startEvents();
+            this.frameRender.mainEvents();
+            this.frameRender.endEvents();
+        }
+    }
 
     startGame() {
+        // this.stage.children.forEach(function (elem) {
+        //     console.log(elem);
+        // });
 
-        for (let i = 0; i <= 100; i++) {
+        this.frameRender.addMainEvent(() => {
+            requestAnimationFrame(this._animate);
+
             this.createNewBunny();
-        }
-
-        this.stage.children.forEach(function (elem) {
-            console.log(elem);
-        });
-
-        let renderering = () => {
-            requestAnimationFrame(animate);
-
-
-
+            // for (let i = 0; i <= 1; i++) {
+            //     this.createNewBunny();
+            // }
             this.renderer.render(this.stage);
 
-        }
+        });
 
-        frameRender.addStartEvent(renderering);
-
-        animate();
-
-        function animate() {
-            frameRender.startEvents();
-            frameRender.mainEvents();
-            frameRender.endEvents();
-        }
+        this._animate();
     }
 }
 
