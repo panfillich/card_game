@@ -39,7 +39,7 @@ class Game extends Component {
                 button_reload:  true,
                 button_stop:    true
             }, ()=>{
-                this.game = new GAME({canvas: this.refs.gameCanvas});
+                this.game = new GAME({canvas: this.refs.gameCanvas, fps: this.refs.gameCanvas});
             });
         }, 'game');
     }
@@ -67,19 +67,12 @@ class Game extends Component {
     }
 
     reloadGame(){
-        if(this.state.button_unpause){
-            this.setState({
-                button_pause:   true,
-                button_unpause: false
-            },() => {
-                if(this.game){
-                    this.game = this.game.reload();
-                }
-            });
-        }
+        this.stopGame(()=>{
+            this.startGame();
+        });
     }
 
-    stopGame(){
+    stopGame(callback){
         this.setState({
             button_start:   true,
             button_pause:   false,
@@ -89,6 +82,9 @@ class Game extends Component {
         },() =>{
             if(this.game){
                 this.game = this.game.destroy();
+                if(callback){
+                    callback();
+                }
             }
         });
     }

@@ -1,60 +1,11 @@
-let path = require('./path');
+import * as PIXI from 'pixi.js';
 
-// let conf = require('./config/index');
-
-let PIXI = require('pixi.js');
-
-let FrameRender = require('./framerander');
-let subMath = require('./subMath');
-/*if(true) {
-    require.ensure(['stats.js'], function(require) {
-        let Stats = require('stats.js');
-        let stats = new Stats();
-        document.body.appendChild(stats.domElement);
-        stats.domElement.style.position = "absolute";
-        stats.domElement.style.top = "0px";
-        frameRender.addStartEvent(stats.begin);
-        frameRender.addEndEvent(stats.end);//
-    });
-}
-
-let subMath = require('./subMath');
-
-var renderer = PIXI.autoDetectRenderer(300, 300,{backgroundColor : 0x1099bb});
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
-
-// create a texture from an image path
-var texture = PIXI.Texture.fromImage(require('../../public/bunny.png'));
-
-//Рисуем прямоугольник
-var graphics = new PIXI.Graphics();
-graphics.lineStyle(2, 0xFF00FF, 1);
-graphics.beginFill(0xFF00BB, 0.25);
-graphics.drawRoundedRect(150, 200, 63, 88, 15);
-graphics.endFill();
-stage.addChild(graphics);
+import FrameRender from './framerander';
+import createCard from './objects/card'
+import subMath from './subMath';
 
 
-
-function createNewBunny() {
-    let bunny = new PIXI.Sprite(texture);
-    bunny.anchor.x = 0.5;
-    bunny.anchor.y = 0.5;
-    bunny.position.x = subMath.getRandomInt(0,300);
-    bunny.position.y = subMath.getRandomInt(0,300);
-    bunny.height    = 20;
-    bunny.width     = 20;
-    stage.addChild(bunny);
-}
-
-/*for (let i = 0; i <=1; i++) {
-    createNewBunny();
-}
-
-function renderering() {
+/*function renderering() {
     requestAnimationFrame(animate);
 
 
@@ -82,26 +33,18 @@ function renderering() {
     //stats.end();
 }
 
-frameRender.addStartEvent(renderering);
-
-animate();
-
-function animate() {
-    frameRender.startEvents();
-    frameRender.mainEvents();
-    frameRender.endEvents();
-}
 */
 class Game {
     constructor(param) {
         this.param = param;
 
+        // Dom elements
         this.html = {
             main_div: param.canvas,
             fps: param.fps
         };
 
-        // Default setting
+        // Default screan setting
         this.screen = {
             parity_of_parties: {
                 group_id: 1,
@@ -117,22 +60,16 @@ class Game {
         this.spead = 1;
         this.is_pause = false;
 
-        this._animate = this._animate.bind(this);
-
-
         this.renderer = PIXI.autoDetectRenderer({backgroundColor: 0x1099bb});
-        // this.renderer = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
-        // this.renderer.resize(900,300);
         this.html.main_div.appendChild(this.renderer.view);
         this.stage = new PIXI.Container();
         this.frameRender = new FrameRender();
         this._resize();
 
-
-        //
-        // this.stage = this.renderer.stage;
+        this._animate = this._animate.bind(this);
 
         this.startGame();
+        this._showFPS();
 
         window.onresize = () => {
             this._resize();
@@ -148,16 +85,30 @@ class Game {
         this._animate();
     }
 
-    destroy(){
+    destroy() {
         this.is_pause = true;
-        this.renderer.destroy();
-        for (let i = this.stage.children.length - 1; i >= 0; i--) {
-            this.stage.removeChild(this.stage.children[i]);
+        this.renderer.destroy({removeView: true});
+        this.stage.destroy({
+            children: true,
+            texture: true,
+            baseTexture: true
+        });
+        if(this.html.fps){
+            this.html.fps.removeChild(this.stats.domElement);
         }
     }
 
-    reload(){
-        this.renderer.destroy();
+    _showFPS(){
+        require.ensure(['stats.js'], (require)=>{
+            let Stats = require('stats.js');
+            let stats = new Stats();
+            this.html.fps.appendChild(stats.domElement);
+            stats.domElement.style.position = "absolute";
+            stats.domElement.style.top = "0px";
+            this.frameRender.addStartEvent(stats.begin);
+            this.frameRender.addEndEvent(stats.end);//\
+            this.stats = stats;
+        }, 'stats');
     }
 
     _resize(){
@@ -212,10 +163,12 @@ class Game {
         //     console.log(elem);
         // });
 
+        createCard(this.screen, this.stage);
+
         this.frameRender.addMainEvent(() => {
             requestAnimationFrame(this._animate);
 
-            this.createNewBunny();
+            // this.createNewBunny();
             // for (let i = 0; i <= 1; i++) {
             //     this.createNewBunny();
             // }
