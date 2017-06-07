@@ -163,7 +163,15 @@ class Game {
         //     console.log(elem);
         // });
 
-        createCard(this.screen, this.stage);
+        createCard({
+            screen: this.screen,
+            stage: this.stage,
+            stats: {
+                attack: 5,
+                health: 7,
+                cost: 5
+            }
+        });
 
         this.frameRender.addMainEvent(() => {
             requestAnimationFrame(this._animate);

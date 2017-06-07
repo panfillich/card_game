@@ -7,9 +7,6 @@ import LoaderAction   from '../actions/LoaderAction'
 import API from  '../actions/API'
 import { browserHistory } from 'react-router'
 
-
-// import * as PIXI from 'pixi.js';
-
 class Game extends Component {
     constructor(props) {
         super(props);
@@ -27,6 +24,12 @@ class Game extends Component {
         this.unpauseGame  = this.unpauseGame.bind(this);
         this.reloadGame   = this.reloadGame.bind(this);
         this.stopGame     = this.stopGame.bind(this);
+    }
+
+    componentWillUnmount(){
+        if(this.game) {
+            this.game = this.game.destroy();
+        }
     }
 
     startGame(){
@@ -87,18 +90,6 @@ class Game extends Component {
                 }
             }
         });
-    }
-
-
-    componentDidMount() {
-        // Setup PIXI Canvas in componentDidMount
-        /*this.renderer = PIXI.autoDetectRenderer(1366, 768);
-        this.refs.gameCanvas.appendChild(this.renderer.view);
-
-        // create the root of the scene graph
-        this.stage = new PIXI.Container();
-        this.stage.width = 1366;
-        this.stage.height = 768;*/
     }
 
     render() {
